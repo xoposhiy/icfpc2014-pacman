@@ -275,8 +275,9 @@ namespace Lib
 #...#
 #####");
 			var sim = new GameSim(map, Main);
-			sim.Tick();
-			Assert.AreEqual(128, sim.time);
+			for(int i=0; i<128; i++)
+				sim.Tick();
+			Assert.AreEqual(129, sim.time);
 			Assert.AreEqual(new Point(2, 3), sim.world.man.location);
 
 		}
