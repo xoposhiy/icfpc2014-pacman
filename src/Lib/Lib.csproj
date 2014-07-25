@@ -46,6 +46,7 @@
     <Compile Include="Annoattions.cs" />
     <Compile Include="Frame.cs" />
     <Compile Include="GameSim.cs" />
+    <Compile Include="GreedyLambdaMen.cs" />
     <Compile Include="LambdaMan.cs" />
     <Compile Include="LConvertor.cs" />
     <Compile Include="LocallyGreedyCarefulLambdaMan.cs" />
