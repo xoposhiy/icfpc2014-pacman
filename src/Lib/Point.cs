@@ -1,3 +1,5 @@
+using System;
+
 namespace Lib
 {
 	public class Point
@@ -34,6 +36,15 @@ namespace Lib
 			{
 				return (X*397) ^ Y;
 			}
+		}
+
+		public Point MoveTo(Direction direction)
+		{
+			if (direction == Direction.Down) return new Point(X, Y+1);
+			if (direction == Direction.Up) return new Point(X, Y-1);
+			if (direction == Direction.Left) return new Point(X-1, Y);
+			if (direction == Direction.Right) return new Point(X+1, Y);
+			throw new Exception(direction.ToString());
 		}
 	}
 }

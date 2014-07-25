@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Lib
 {
@@ -16,6 +18,32 @@ namespace Lib
 		public readonly LManState LMan;
 		public readonly List<GhostState> Ghosts;
 		public readonly int FruitTicksRemaining;
+
+		public override string ToString()
+		{
+			int h = Map.GetLength(0);
+			int w = Map.GetLength(1);
+			var sb = new StringBuilder();
+			for (int y = 0; y < h; y++)
+			{
+				for (int x = 0; x < w; x++)
+				{
+					var p = new Point(x, y);
+					var mapCell = Map[y, x];
+					var ch = MapUtils.CharFromMapCell(mapCell);
+					if (mapCell == MapCell.LManStartLoc || mapCell == MapCell.GhostStartLoc || mapCell == MapCell.Fruit && FruitTicksRemaining == 0)
+						ch = ' ';
+					if (p.Equals(LMan.Location))
+						ch = '\\';
+					if (Ghosts.Any(g => g.Location.Equals(p)))
+						ch = '=';
+					sb.Append(ch);
+				}
+				sb.AppendLine();
+			}
+			sb.AppendFormat("Lives: {0}; Score: {1}", LMan.Lives, LMan.Score);
+			return sb.ToString();
+		}
 	}
 
 	public enum MapCell
@@ -41,7 +69,7 @@ namespace Lib
 		}
 
 		public readonly GhostVitality Vitality;
-		public readonly Point Location;
+		public Point Location;
 		public readonly Direction Direction;
 	}
 
@@ -66,9 +94,9 @@ namespace Lib
 		///<summary>Lambda man vitality</summary>
 		public readonly int PowerPillRemainingTicks;
 
-		public readonly Point Location;
+		public Point Location;
 
-		public readonly Direction Direction;
+		public Direction Direction;
 
 		public readonly int Lives;
 
