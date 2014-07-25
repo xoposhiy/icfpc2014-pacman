@@ -48,6 +48,7 @@
     <Compile Include="GameSim.cs" />
     <Compile Include="LambdaMan.cs" />
     <Compile Include="LConvertor.cs" />
+    <Compile Include="LocallyGreedyCarefulLambdaMan.cs" />
     <Compile Include="LValue.cs" />
     <Compile Include="LValueExtensions.cs" />
     <Compile Include="MapGenerator.cs" />
