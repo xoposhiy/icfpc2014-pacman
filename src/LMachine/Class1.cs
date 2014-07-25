@@ -161,7 +161,7 @@ namespace LMachine
 			var x = state.DataStack.Pop().GetValue();
 			if (y == 0)
 				throw new InvalidOperationException("TODO");
-			var z = unchecked(x / y);
+			var z = unchecked(x / y); // todo !!! -3 / 2 = -2
 			state.DataStack.Push(LValue.FromInt(z));
 			state.CurrentAddress++;
 		}
@@ -176,7 +176,11 @@ namespace LMachine
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-
+			var y = state.DataStack.Pop().GetValue();
+			var x = state.DataStack.Pop().GetValue();
+			var z = x == y ? 1 : 0;
+			state.DataStack.Push(LValue.FromInt(z));
+			state.CurrentAddress++;
 		}
 	}
 
@@ -189,7 +193,11 @@ namespace LMachine
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-
+			var y = state.DataStack.Pop().GetValue();
+			var x = state.DataStack.Pop().GetValue();
+			var z = x > y ? 1 : 0;
+			state.DataStack.Push(LValue.FromInt(z));
+			state.CurrentAddress++;
 		}
 	}
 
@@ -202,7 +210,11 @@ namespace LMachine
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-
+			var y = state.DataStack.Pop().GetValue();
+			var x = state.DataStack.Pop().GetValue();
+			var z = x >= y ? 1 : 0;
+			state.DataStack.Push(LValue.FromInt(z));
+			state.CurrentAddress++;
 		}
 	}
 
@@ -215,7 +227,10 @@ namespace LMachine
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-
+			var x = state.DataStack.Pop();
+			var z = x.Tag == LTag.Int ? 1 : 0;
+			state.DataStack.Push(LValue.FromInt(z));
+			state.CurrentAddress++;
 		}
 	}
 
@@ -228,7 +243,10 @@ namespace LMachine
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-
+			var y = state.DataStack.Pop();
+			var x = state.DataStack.Pop();
+			state.DataStack.Push(LValue.FromPair(x, y)); // todo !!! memmory heap managemnet / gc ?
+			state.CurrentAddress++;
 		}
 	}
 
@@ -241,7 +259,9 @@ namespace LMachine
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-
+			var x = state.DataStack.Pop().GetPair();
+			state.DataStack.Push(x.Head);
+			state.CurrentAddress++;
 		}
 	}
 
@@ -254,7 +274,9 @@ namespace LMachine
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-
+			var x = state.DataStack.Pop().GetPair();
+			state.DataStack.Push(x.Tail);
+			state.CurrentAddress++;
 		}
 	}
 

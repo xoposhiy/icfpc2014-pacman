@@ -4,6 +4,26 @@ using JetBrains.Annotations;
 
 namespace Lib
 {
+	public class Pair
+	{
+		public Pair([NotNull] LValue head, [NotNull] LValue tail)
+		{
+			Head = head;
+			Tail = tail;
+		}
+
+		[NotNull]
+		public readonly LValue Head;
+
+		[NotNull]
+		public readonly LValue Tail;
+
+		public override string ToString()
+		{
+			return string.Format("({0}, {1})", Head, Tail);
+		}
+	}
+
 	public class LValue
 	{
 		public override string ToString()
@@ -11,7 +31,7 @@ namespace Lib
 			if (Tag == LTag.Int)
 				return Value.ToString(CultureInfo.InvariantCulture);
 			if (Tag == LTag.Pair)
-				return string.Format("({0}, {1})", Head, Tail);
+				return Pair.ToString();
 			return "{" + Value + "}";
 		}
 
@@ -30,24 +50,24 @@ namespace Lib
 		[NotNull]
 		public static LValue FromPair([NotNull] LValue head, [NotNull] LValue tail)
 		{
-			return new LValue(LTag.Pair, head: head, tail: tail);
+			return new LValue(LTag.Pair, pair: new Pair(head, tail));
 		}
 
-		public LValue(LTag tag, int value = 0, uint address = 0, [CanBeNull] LValue head = null, [CanBeNull] LValue tail = null, [CanBeNull] Frame frame = null)
+		private LValue(LTag tag, int value = 0, uint address = 0, [CanBeNull] Pair pair = null, [CanBeNull] Frame frame = null)
 		{
 			Tag = tag;
 			Value = value;
 			Address = address;
-			Head = head;
-			Tail = tail;
+			Pair = pair;
 			Frame = frame;
 		}
 
 		public readonly LTag Tag;
 		public readonly int Value;
 		public readonly uint Address;
-		public readonly LValue Head;
-		public readonly LValue Tail;
+
+		[CanBeNull]
+		public readonly Pair Pair;
 
 		[CanBeNull]
 		public readonly Frame Frame;
@@ -91,8 +111,18 @@ namespace Lib
 		public int GetValue()
 		{
 			if (Tag != LTag.Int)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException(ToString());
 			return Value;
+		}
+
+		[NotNull]
+		public Pair GetPair()
+		{
+			if (Tag != LTag.Pair)
+				throw new InvalidOperationException(ToString());
+			if (Pair == null)
+				throw new InvalidOperationException("TODO");
+			return Pair;
 		}
 	}
 
