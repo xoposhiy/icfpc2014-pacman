@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework.Constraints;
 
 namespace Lib
 {
 	class MapGenerator
 	{
-		private Random random = new Random();
-		private int[] dx = {0, 0, 1, -1};
-		private int[] dy = {1, -1, 0, 0};
-		private bool man = false;
+		private readonly Random random = new Random();
+		private readonly int[] dxs = {0, 0, 1, -1};
+		private readonly int[] dys = {1, -1, 0, 0};
+		private bool man;
 
 		private bool CheckMapWalls(MapCell[,] map)
 		{
@@ -70,10 +65,10 @@ namespace Lib
 					for (int k = 0; k < 4; k++)
 					{
 						int d = random.Next()%4;
-						if (TryFree(map, toGrow.X + dx[d], toGrow.Y + dy[d]))
+						if (TryFree(map, toGrow.X + dxs[d], toGrow.Y + dys[d]))
 						{
 							done = true;
-							free.Add(new Point(toGrow.X + dx[d], toGrow.Y + dy[d]));
+							free.Add(new Point(toGrow.X + dxs[d], toGrow.Y + dys[d]));
 							break;
 						}
 					}
@@ -111,7 +106,6 @@ namespace Lib
 
 			GenerateAlley(map, 1 + random.Next() % (width - 2), 1 + random.Next() % (height - 2), height * 5);
 
-			bool setMan = false;
 			while (ghosts > 0)
 			{
 				int x = random.Next()%width;
