@@ -4,13 +4,13 @@ using System.Drawing;
 
 namespace Lib
 {
-	class GameSim
+    class GameSim
 	{
 		public MapCell[,] Map { get; set; }
-		public Func<LValue, World, Tuple<LValue, Direction>> Step { get; set; }
+		public LMStep Step { get; set; } //
 		public LValue InitialState { get; set; }
 
-		public GameSim(MapCell[,] map, Func<LValue, World, Tuple<LValue, Direction>> step, LValue initialState)
+		public GameSim(MapCell[,] map, LMStep step, LValue initialState)
 		{
 			Map = map;
 			Step = step;
