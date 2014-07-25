@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="GameSim.cs" />
     <Compile Include="LValue.cs" />
+    <Compile Include="LValueExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
