@@ -18,13 +18,13 @@ namespace Lib
 		[NotNull]
 		public static LValue FromInt(int value)
 		{
-			return new LValue(LTag.Int, value);
+			return new LValue(LTag.Int, value: value);
 		}
 
 		[NotNull]
-		public static LValue FromClosure(int address, [CanBeNull] Frame frame)
+		public static LValue FromClosure(uint address, [CanBeNull] Frame frame)
 		{
-			return new LValue(LTag.Closure, address, frame: frame);
+			return new LValue(LTag.Closure, address: address, frame: frame);
 		}
 
 		[NotNull]
@@ -33,10 +33,11 @@ namespace Lib
 			return new LValue(LTag.Pair, head: head, tail: tail);
 		}
 
-		public LValue(LTag tag, int value = 0, [CanBeNull] LValue head = null, [CanBeNull] LValue tail = null, [CanBeNull] Frame frame = null)
+		public LValue(LTag tag, int value = 0, uint address = 0, [CanBeNull] LValue head = null, [CanBeNull] LValue tail = null, [CanBeNull] Frame frame = null)
 		{
 			Tag = tag;
 			Value = value;
+			Address = address;
 			Head = head;
 			Tail = tail;
 			Frame = frame;
@@ -44,6 +45,7 @@ namespace Lib
 
 		public readonly LTag Tag;
 		public readonly int Value;
+		public readonly uint Address;
 		public readonly LValue Head;
 		public readonly LValue Tail;
 
@@ -84,6 +86,13 @@ namespace Lib
 			var value = FromInt(int.Parse(text.Substring(pos, last - pos)));
 			pos = last;
 			return value;
+		}
+
+		public int GetValue()
+		{
+			if (Tag != LTag.Int)
+				throw new InvalidOperationException("TODO");
+			return Value;
 		}
 	}
 

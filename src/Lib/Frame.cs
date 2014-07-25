@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 
 namespace Lib
 {
@@ -30,5 +31,16 @@ namespace Lib
 
 		[NotNull]
 		public LValue[] Values { get; private set; }
+
+		[NotNull]
+		public LValue GetValue(uint valueIndex)
+		{
+			if (valueIndex >= Values.Length)
+				throw new InvalidOperationException("TODO");
+			var value = Values[valueIndex];
+			if (value == null)
+				throw new InvalidOperationException("TODO");
+			return value;
+		}
 	}
 }
