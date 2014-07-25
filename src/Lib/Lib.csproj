@@ -45,9 +45,12 @@
   <ItemGroup>
     <Compile Include="GameSim.cs" />
     <Compile Include="LambdaMan.cs" />
+    <Compile Include="LConvertor.cs" />
     <Compile Include="LValue.cs" />
     <Compile Include="LValueExtensions.cs" />
     <Compile Include="MapGenerator.cs" />
+    <Compile Include="LValue_Tests.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Visualizer.cs" />
   </ItemGroup>

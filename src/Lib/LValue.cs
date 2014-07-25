@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace Lib
 {
@@ -37,6 +38,38 @@ namespace Lib
 		public readonly LValue Head;
 		public readonly LValue Tail;
 
+		public static LValue Parse(string text)
+		{
+			var pos = 0;
+			return Parse(text, ref pos);
+		}
+
+		public static LValue Parse(string text, ref int pos)
+		{
+			return text[pos] == '(' 
+				? ParsePair(text, ref pos) 
+				: ParseInt(text, ref pos);
+		}
+
+		private static LValue ParsePair(string text, ref int pos)
+		{
+			pos++;
+			var head = Parse(text, ref pos);
+			while (text[pos] == ' ' || text[pos] == ',') pos++;
+			var tail = Parse(text, ref pos);
+			if (text[pos] != ')') throw new Exception("syntax error. ) expected but found: " + text[pos]+ " at pos " + pos);
+			pos++;
+			return FromPair(head, tail);
+		}
+
+		private static LValue ParseInt(string text, ref int pos)
+		{
+			var last = pos;
+			while (last < text.Length && char.IsDigit(text[last])) last++;
+			LValue value = FromInt(int.Parse(text.Substring(pos, last - pos)));
+			pos = last;
+			return value;
+		}
 	}
 
 	public enum LTag
