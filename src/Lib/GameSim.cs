@@ -1,19 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using NUnit.Framework;
 
 namespace Lib
 {
-    class GameSim
+	class GameSim
 	{
-		public MapCell[,] Map { get; set; }
-		public LMStep Step { get; set; } //
-		public LValue InitialState { get; set; }
+		private World world;
+		private MapCell[,] map;
+		private LMStep step;
+		private LValue initialState;
 
 		public GameSim(MapCell[,] map, LMStep step, LValue initialState)
 		{
-			Map = map;
-			Step = step;
-			InitialState = initialState;
+			this.map = map;
+			this.step = step;
+			this.initialState = initialState;
+			var lmState = new LManState(
+				0,
+				GetLocationsOf(map, MapCell.LManStartLoc).Single(),
+				Direction.Up,
+				3,
+				0);
+			List<GhostState> ghosts =
+				GetLocationsOf(map, MapCell.GhostStartLoc)
+				.Select(p => new GhostState(GhostVitality.Standard, p, Direction.Up))
+				.ToList();
+			world = new World(map,
+				lmState,
+				ghosts,
+				0);
+		}
+
+		private IEnumerable<Point> GetLocationsOf(MapCell[,] map, MapCell mapCell)
+		{
+			for (int y = 0; y < map.GetLength(0); y++)
+				for (int x = 0; x < map.GetLength(1); x++)
+					if (map[y, x] == mapCell) yield return new Point(x, y);
 		}
 
 		public void Tick()
@@ -22,84 +47,19 @@ namespace Lib
 		}
 	}
 
-	public class World
+	class GameSim_Tests
 	{
-		public World(MapCell[,] map, LManState lMan, List<GhostState> ghosts, int fruitTicksRemaining)
+		[Test]
+		public void Create()
 		{
-			Map = map;
-			LMan = lMan;
-			Ghosts = ghosts;
-			FruitTicksRemaining = fruitTicksRemaining;
+			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
+			var sim = new GameSim(map, Step, LValue.FromInt(42));
+			sim.Tick();
 		}
 
-		public readonly MapCell[,] Map;
-		public readonly LManState LMan;
-		public readonly List<GhostState> Ghosts;
-		public readonly int FruitTicksRemaining;
-	}
-	
-	public enum MapCell
-	{
-		Wall = '#',
-		Empty = ' ',
-		Pill = '.',
-		PowerPill = 'o',
-		Fruit = '%',
-		LManStartLoc = '\\',
-		GhostStartLoc = '=',
-	}
-
-
-
-	public class GhostState
-	{
-		public GhostState(GhostVitality vitality, Point location, Direction direction)
+		private Tuple<LValue, Direction> Step(LValue currentaistate, World currentworldstate)
 		{
-			Vitality = vitality;
-			Location = location;
-			Direction = direction;
+			return Tuple.Create(currentaistate, Direction.Left);
 		}
-
-		public readonly GhostVitality Vitality;
-		public readonly Point Location;
-		public readonly Direction Direction;
-	}
-
-	public enum GhostVitality
-	{
-		Standard = 0,
-		Fright,
-		Invisible
-	}
-
-	public class LManState
-	{
-		public LManState(int powerPillRemainingTicks, Point location, Direction direction, int lives, int score)
-		{
-			PowerPillRemainingTicks = powerPillRemainingTicks;
-			Location = location;
-			Direction = direction;
-			Lives = lives;
-			Score = score;
-		}
-
-		///<summary>Lambda man vitality</summary>
-		public readonly int PowerPillRemainingTicks;
-
-		public readonly Point Location;
-
-		public readonly Direction Direction;
-
-		public readonly int Lives;
-
-		public readonly int Score;
-	}
-
-	public enum Direction
-	{
-		Up = 0,
-		Right,
-		Down,
-		Left
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using NUnit.Framework;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -99,23 +98,23 @@ namespace Lib
 			}
 		}
 
-		///<summary>return wight*height array</summary>
-		public MapCell[,] GenerateRandomMap(int height, int wight, int ghosts)
+		///<summary>return width*height array</summary>
+		public MapCell[,] GenerateRandomMap(int height, int width, int ghosts)
 		{
-			var map = new MapCell[wight,height];
+			var map = new MapCell[width,height];
 
-			for (int x = 0; x < wight; x++)
+			for (int x = 0; x < width; x++)
 				for (int y = 0; y < height; y++)
 				{
 					map[x, y] = MapCell.Wall;
 				}
 
-			GenerateAlley(map, 1 + random.Next() % (wight - 2), 1 + random.Next() % (height - 2), height * 5);
+			GenerateAlley(map, 1 + random.Next() % (width - 2), 1 + random.Next() % (height - 2), height * 5);
 
 			bool setMan = false;
 			while (ghosts > 0)
 			{
-				int x = random.Next()%wight;
+				int x = random.Next()%width;
 				int y = random.Next()%height;
 				if (map[x, y] == MapCell.Empty)
 				{

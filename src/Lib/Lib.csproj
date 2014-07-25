@@ -50,9 +50,11 @@
     <Compile Include="LValueExtensions.cs" />
     <Compile Include="MapGenerator.cs" />
     <Compile Include="LValue_Tests.cs" />
+    <Compile Include="MapUtils.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Visualizer.cs" />
+    <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

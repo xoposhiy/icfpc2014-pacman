@@ -16,7 +16,7 @@ namespace Lib
 			for (int x = 0; x < n; x++)
 			{
 				for (int y = 0; y < m; y++)
-					Console.Out.Write((char)map[x, y]);
+					Console.Out.Write(MapUtils.CharFromMapCell(map[x, y]));
 				Console.Out.Write("\n");
 			}
 		}
