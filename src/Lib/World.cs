@@ -6,6 +6,22 @@ namespace Lib
 {
 	public class World
 	{
+		public World(MapCell[,] map)
+		{
+			this.map = map;
+			man = new LManState(
+				0,
+				map.GetLocationsOf(MapCell.LManStartLoc).Single(),
+				Direction.Up,
+				3,
+				0);
+			ghosts =
+				map.GetLocationsOf(MapCell.GhostStartLoc)
+				.Select((p, i) => new GhostState(GhostVitality.Standard, p, Direction.Up, i % 4))
+				.ToList();
+			fruitTicksRemaining = 0;
+		}		
+		
 		public World(MapCell[,] map, LManState man, List<GhostState> ghosts, int fruitTicksRemaining)
 		{
 			this.map = map;
@@ -19,6 +35,26 @@ namespace Lib
 		public readonly List<GhostState> ghosts;
 		public int fruitTicksRemaining;
 
+		public LValue ToLValue()
+		{
+			return
+				LValue.FromTuple(
+					LValue.FromList(GetCells(), row => LValue.FromList(row, cell => LValue.FromInt((int)cell))),
+					man.ToLValue(),
+					LValue.FromList(ghosts, g => g.ToLValue()),
+					LValue.FromInt(fruitTicksRemaining)
+					);
+		}
+
+		private IEnumerable<IEnumerable<MapCell>> GetCells()
+		{
+			int h = map.GetLength(0);
+			int w = map.GetLength(1);
+			return 
+				Enumerable.Range(0, h)
+				.Select(y => Enumerable.Range(0, w).Select(x => map[y, x]));
+		} 
+
 		public override string ToString()
 		{
 			int h = map.GetLength(0);
@@ -30,7 +66,7 @@ namespace Lib
 				{
 					var p = new Point(x, y);
 					var mapCell = map[y, x];
-					var ch = MapUtils.CharFromMapCell(mapCell);
+					var ch = mapCell.ToChar();
 					if (mapCell == MapCell.LManStartLoc || mapCell == MapCell.GhostStartLoc || mapCell == MapCell.Fruit && fruitTicksRemaining == 0)
 						ch = ' ';
 					var ghost = ghosts.FirstOrDefault(g => g.location.Equals(p));
@@ -84,6 +120,15 @@ namespace Lib
 		public Point location;
 		public Direction direction;
 		public readonly int ghostIndex;
+
+		public LValue ToLValue()
+		{
+			return LValue.FromTuple(
+				(int)vitality,
+				location,
+				(int)direction
+				);
+		}
 	}
 
 	public enum GhostVitality
@@ -119,6 +164,17 @@ namespace Lib
 		public int ghostsKilledInThisFrightSession;
 
 		public readonly Point initialLocation;
+
+		public LValue ToLValue()
+		{
+			return LValue.FromTuple(
+				powerPillRemainingTicks,
+				location,
+				(int)direction,
+				lives,
+				score
+				);
+		}
 	}
 
 	public enum Direction

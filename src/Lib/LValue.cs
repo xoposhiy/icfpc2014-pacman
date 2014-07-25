@@ -1,10 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace Lib
 {
 	public class LValue
 	{
+		public static implicit operator LValue(int value)
+		{
+			return FromInt(value);
+		}
+		public static implicit operator LValue(Point value)
+		{
+			return FromPair(value.X, value.Y);
+		}
+
 		[NotNull]
 		public static LValue FromInt(int value)
 		{
@@ -119,6 +130,29 @@ namespace Lib
 				default:
 					throw new InvalidOperationException(string.Format("Invalid Tag: {0}", Tag));
 			}
+		}
+
+		public static LValue FromTuple(params LValue[] items)
+		{
+			return FromTupleTail(items, 0);
+		}
+
+		private static LValue FromTupleTail(LValue[] items, int startIndex)
+		{
+			return startIndex == items.Length - 1 
+				? items.Last() 
+				: FromPair(items[startIndex], FromTupleTail(items, startIndex + 1));
+		}
+
+		public static LValue FromList<T>(IEnumerable<T> list, Func<T, LValue> map)
+		{
+			return list
+				.Select(map)
+				.Reverse()
+				.Aggregate(
+					FromInt(0), 
+					(current, item) => FromPair(item, current));
+
 		}
 	}
 }

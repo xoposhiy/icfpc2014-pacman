@@ -42,11 +42,11 @@ namespace Lib
 
 		}
 		private readonly List<UpdateInfo> updateQueue = new List<UpdateInfo>();
-		public World world;
-		private MapCell[,] map;
-		private LMStep step;
+		public readonly World world;
+		private readonly MapCell[,] map;
+		private readonly LMStep step;
 		private LValue state;
-		public GameSettings settings = new GameSettings();
+		public readonly GameSettings settings = new GameSettings();
 		public int time;
 		public bool finished;
 		private int pillsCount;
@@ -55,27 +55,14 @@ namespace Lib
 		public GameSim(MapCell[,] map, LMMain main)
 		{
 			this.map = map;
-			var lmState = new LManState(
-				0,
-				GetLocationsOf(map, MapCell.LManStartLoc).Single(),
-				Direction.Up,
-				3,
-				0);
-			List<GhostState> ghosts =
-				GetLocationsOf(map, MapCell.GhostStartLoc)
-				.Select((p, i) => new GhostState(GhostVitality.Standard, p, Direction.Up, i%4))
-				.ToList();
-			world = new World(map,
-				lmState,
-				ghosts,
-				0);
+			world = new World(map);
 			var res = main(world);
 			state = res.Item1;
 			step = res.Item2;
 			time = 1;
 			pillsCount = GetLocationsOf(map, MapCell.Pill).Count();
 			updateQueue.Add(new UpdateInfo(time + settings.lambdaManPeriod, -1));
-			for (int i = 0; i < ghosts.Count; i++)
+			for (int i = 0; i < world.ghosts.Count; i++)
 				updateQueue.Add(new UpdateInfo(time + settings.ghostPeriod[i], i));
 			finished = false;
 		}
