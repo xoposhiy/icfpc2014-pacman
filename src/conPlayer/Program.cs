@@ -11,9 +11,9 @@ namespace conPlayer
 //			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
 //			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
 			
-			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main);
+			var sim = new GameSim(MapUtils.LoadFromKnownLocation("small.txt"), main);
 			var oldState = "";
-			while (true)
+			while (!sim.finished)
 			{
 				sim.Tick();
 				var newState = sim.world.ToString();
@@ -23,9 +23,11 @@ namespace conPlayer
 					Console.WriteLine(newState);
 					Console.WriteLine("Use Cursor keys to control Lambda Man. Time: {0}", sim.time);
 					oldState = newState;
-					Console.ReadKey();
+//					Console.ReadKey();
 				}
 			}
+			Console.WriteLine("Game over");
+			Console.WriteLine("Score " + sim.world.man.score);
 		}
 
 		private static Tuple<LValue, Direction> ConsoleStep(LValue currentaistate, World currentworldstate)

@@ -16,19 +16,19 @@ namespace Lib
 			return new Tuple<LValue, LMStep>(initState, Step);
 		}
 
-		public Tuple<LValue, Direction> Step(LValue currentAIState, World currentWorldState)
+		public Tuple<LValue, Direction> Step(LValue currentAiState, World currentWorldState)
 		{
 			// currentAIState содержит наши координаты на прошлом шаге
 
-			var curr = currentWorldState.LMan.Location;
-			var currentPair = currentAIState.GetPair();
+			var curr = currentWorldState.man.location;
+			var currentPair = currentAiState.GetPair();
 			var prev = new Point(currentPair.Head.GetValue(), currentPair.Tail.GetValue());
 
 			var dirWeight = new List<int>() { 0, 0, 0, 0 };
 			var dir = new List<Point>() { new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0) };
 			Func<Point, Point, Point> sum = (p1, p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
 
-			var map = currentWorldState.Map;
+			var map = currentWorldState.map;
 			Func<Point, bool> isCorrect = (p) => !(p.X < 0 || p.X >= map.GetLength(0) || p.Y < 0 || p.Y >= map.GetLength(1) || map[p.X, p.Y] == MapCell.Wall);
 			for (var d = 0; d < 4; ++d)
 			{
@@ -60,7 +60,7 @@ namespace Lib
 					if (!isCorrect(nnext) && !nnext.Equals(curr))
 						continue;
 					var nnextCell = map[nnext.X, nnext.Y];
-					if (currentWorldState.Ghosts.Any(gost => gost.Vitality == GhostVitality.Standard && gost.Location.Equals(nnext)))
+					if (currentWorldState.ghosts.Any(gost => gost.vitality == GhostVitality.Standard && gost.location.Equals(nnext)))
 						dirWeight[d] -= 100;
 					if (nnextCell == MapCell.Pill)
 						dirWeight[d]++;

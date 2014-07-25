@@ -48,7 +48,10 @@ namespace Lib
 		private LValue state;
 		public GameSettings settings = new GameSettings();
 		public int time;
+		public bool finished;
+		private int pillsCount;
 
+		//TODO add ghost AIs
 		public GameSim(MapCell[,] map, LMMain main)
 		{
 			this.map = map;
@@ -60,7 +63,7 @@ namespace Lib
 				0);
 			List<GhostState> ghosts =
 				GetLocationsOf(map, MapCell.GhostStartLoc)
-				.Select(p => new GhostState(GhostVitality.Standard, p, Direction.Up))
+				.Select((p, i) => new GhostState(GhostVitality.Standard, p, Direction.Up, i%4))
 				.ToList();
 			world = new World(map,
 				lmState,
@@ -70,9 +73,11 @@ namespace Lib
 			state = res.Item1;
 			step = res.Item2;
 			time = 1;
+			pillsCount = GetLocationsOf(map, MapCell.Pill).Count();
 			updateQueue.Add(new UpdateInfo(time + settings.lambdaManPeriod, -1));
 			for (int i = 0; i < ghosts.Count; i++)
 				updateQueue.Add(new UpdateInfo(time + settings.ghostPeriod[i], i));
+			finished = false;
 		}
 
 		private static IEnumerable<Point> GetLocationsOf(MapCell[,] map, MapCell mapCell)
@@ -103,59 +108,71 @@ namespace Lib
 
 		private void HandleLose()
 		{
-			//			throw new NotImplementedException();
+			if (world.man.lives == 0 || time >= 127 * map.GetLength(0) * map.GetLength(1) * 16)
+				finished = true;
 		}
 
 		private void HandleWin()
 		{
-			//			throw new NotImplementedException();
+			if (pillsCount == 0)
+			{
+				world.man.score *= (world.man.lives + 1);
+				finished = true;
+			}
 		}
 
 		private void MeetGhosts()
 		{
-			for (int iGhost = 0; iGhost < world.Ghosts.Count; iGhost++)
+			foreach (var ghost in world.ghosts.Where(g => g.location.Equals(world.man.location)))
 			{
-				var ghost = world.Ghosts[iGhost];
-				if (ghost.Vitality == GhostVitality.Standard)
+				if (ghost.vitality == GhostVitality.Standard)
 					KillLambdaMan();
-				if (ghost.Vitality == GhostVitality.Fright)
-				{
-					KillGhost(iGhost);
-				}
+				if (ghost.vitality == GhostVitality.Fright)
+					KillGhost(ghost);
 			}
 		}
 
-		private void KillGhost(int iGhost)
+		private void KillGhost(GhostState ghost)
 		{
-			//TODO
+			world.man.ghostsKilledInThisFrightSession++;
+			world.man.score += 100 * (1 << Math.Min(4, world.man.ghostsKilledInThisFrightSession));
+			ghost.vitality = GhostVitality.Invisible;
+			ghost.location = ghost.initialLocation;
 		}
 
 		private void KillLambdaMan()
 		{
-			//TODO
+			world.man.lives--;
+			world.man.location = world.man.initialLocation;
+			foreach (var ghost in world.ghosts)
+			{
+				ghost.vitality = GhostVitality.Standard;
+				ghost.location = ghost.initialLocation;
+			}
 		}
 
 		private void Eat()
 		{
-			var man = world.LMan.Location;
-			var mapCell = world.Map[man.Y, man.X];
+			var man = world.man.location;
+			var mapCell = world.map[man.Y, man.X];
 			if (mapCell == MapCell.Pill)
 			{
-				world.LMan.Score += 10;
-				world.Map[man.Y, man.X] = MapCell.Empty;
+				world.man.score += 10;
+				world.map[man.Y, man.X] = MapCell.Empty;
+				pillsCount--;
 			}
 			if (mapCell == MapCell.PowerPill)
 			{
-				world.LMan.Score += 50;
-				world.Map[man.Y, man.X] = MapCell.Empty;
-				world.LMan.PowerPillRemainingTicks = settings.frightModeDuration;
-				foreach (var g in world.Ghosts)
-					g.Vitality = GhostVitality.Fright;
+				world.man.score += 50;
+				world.map[man.Y, man.X] = MapCell.Empty;
+				world.man.powerPillRemainingTicks = settings.frightModeDuration;
+				foreach (var g in world.ghosts)
+					g.vitality = GhostVitality.Fright;
 			}
-			if (mapCell == MapCell.Fruit && world.FruitTicksRemaining > 0)
+			if (mapCell == MapCell.Fruit && world.fruitTicksRemaining > 0)
 			{
-				world.LMan.Score += GetFruitCost();
-				world.FruitTicksRemaining = 0;
+				world.man.score += GetFruitCost();
+				world.fruitTicksRemaining = 0;
 			}
 		}
 
@@ -170,19 +187,20 @@ namespace Lib
 		{
 			var fruit = settings.fruits.FirstOrDefault(f => f.appearsTime == time);
 			if (fruit != null)
-				world.FruitTicksRemaining = fruit.expiresTime - time;
+				world.fruitTicksRemaining = fruit.expiresTime - time;
 			else
-				world.FruitTicksRemaining = Math.Max(0, world.FruitTicksRemaining - 1);
+				world.fruitTicksRemaining = Math.Max(0, world.fruitTicksRemaining - 1);
 		}
 
 		private void DeactivateFrightMode()
 		{
-			var man = world.LMan;
-			man.PowerPillRemainingTicks--;
-			if (man.PowerPillRemainingTicks == 0)
+			var man = world.man;
+			man.powerPillRemainingTicks--;
+			if (man.powerPillRemainingTicks == 0)
 			{
-				foreach (var g in world.Ghosts)
-					g.Vitality = GhostVitality.Standard;
+				foreach (var g in world.ghosts)
+					g.vitality = GhostVitality.Standard;
+				man.ghostsKilledInThisFrightSession = 0;
 			}
 		}
 
@@ -196,9 +214,9 @@ namespace Lib
 
 		private void MoveGhost(int ghostIndex)
 		{
-			var ghost = world.Ghosts[ghostIndex];
-			ghost.Location = TryMove(ghost.Location, ghost.Direction);
-			var period = settings.ghostPeriod[ghostIndex]; // TODO Ghost index!!!
+			var ghost = world.ghosts[ghostIndex];
+			ghost.location = TryMove(ghost.location, ghost.direction);
+			var period = settings.ghostPeriod[ghost.ghostIndex];
 			updateQueue.Add(new UpdateInfo(time + period, ghostIndex));
 		}
 
@@ -209,12 +227,12 @@ namespace Lib
 
 		private void MoveLMan()
 		{
-			var man = world.LMan;
+			var man = world.man;
 			var res = step(state, world);
 			state = res.Item1;
-			man.Direction = res.Item2;
-			man.Location = TryMove(man.Location, man.Direction);
-			var eat = IsEatable(world.Map[man.Location.Y, man.Location.X]);
+			man.direction = res.Item2;
+			man.location = TryMove(man.location, man.direction);
+			var eat = IsEatable(world.map[man.location.Y, man.location.X]);
 			var period = (eat ? settings.lambdaManEatingPeriod : settings.lambdaManPeriod);
 			//TODO eaten ghost increases period too?
 			updateQueue.Add(new UpdateInfo(time + period, -1));
@@ -272,7 +290,7 @@ namespace Lib
 			var sim = new GameSim(map, Main);
 			sim.Tick();
 			Assert.AreEqual(128, sim.time);
-			Assert.AreEqual(new Point(2, 3), sim.world.LMan.Location);
+			Assert.AreEqual(new Point(2, 3), sim.world.man.location);
 
 		}
 

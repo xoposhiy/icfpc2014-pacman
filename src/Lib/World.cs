@@ -6,42 +6,50 @@ namespace Lib
 {
 	public class World
 	{
-		public World(MapCell[,] map, LManState lMan, List<GhostState> ghosts, int fruitTicksRemaining)
+		public World(MapCell[,] map, LManState man, List<GhostState> ghosts, int fruitTicksRemaining)
 		{
-			Map = map;
-			LMan = lMan;
-			Ghosts = ghosts;
-			FruitTicksRemaining = fruitTicksRemaining;
+			this.map = map;
+			this.man = man;
+			this.ghosts = ghosts;
+			this.fruitTicksRemaining = fruitTicksRemaining;
 		}
 
-		public readonly MapCell[,] Map;
-		public readonly LManState LMan;
-		public readonly List<GhostState> Ghosts;
-		public int FruitTicksRemaining;
+		public readonly MapCell[,] map;
+		public readonly LManState man;
+		public readonly List<GhostState> ghosts;
+		public int fruitTicksRemaining;
 
 		public override string ToString()
 		{
-			int h = Map.GetLength(0);
-			int w = Map.GetLength(1);
+			int h = map.GetLength(0);
+			int w = map.GetLength(1);
 			var sb = new StringBuilder();
 			for (int y = 0; y < h; y++)
 			{
 				for (int x = 0; x < w; x++)
 				{
 					var p = new Point(x, y);
-					var mapCell = Map[y, x];
+					var mapCell = map[y, x];
 					var ch = MapUtils.CharFromMapCell(mapCell);
-					if (mapCell == MapCell.LManStartLoc || mapCell == MapCell.GhostStartLoc || mapCell == MapCell.Fruit && FruitTicksRemaining == 0)
+					if (mapCell == MapCell.LManStartLoc || mapCell == MapCell.GhostStartLoc || mapCell == MapCell.Fruit && fruitTicksRemaining == 0)
 						ch = ' ';
-					if (p.Equals(LMan.Location))
+					var ghost = ghosts.FirstOrDefault(g => g.location.Equals(p));
+					if (ghost != null)
+					{
+						if (ghost.vitality == GhostVitality.Standard)
+							ch = '=';
+						if (ghost.vitality == GhostVitality.Invisible)
+							ch = '-';
+						if (ghost.vitality == GhostVitality.Fright)
+							ch = '~';
+					}
+					if (p.Equals(man.location))
 						ch = '\\';
-					if (Ghosts.Any(g => g.Location.Equals(p)))
-						ch = '=';
 					sb.Append(ch);
 				}
 				sb.AppendLine();
 			}
-			sb.AppendFormat("Lives: {0}; Score: {1}", LMan.Lives, LMan.Score);
+			sb.AppendFormat("Lives: {0}; Score: {1}; Fright: {2}", man.lives, man.score, man.powerPillRemainingTicks > 0);
 			return sb.ToString();
 		}
 	}
@@ -61,16 +69,21 @@ namespace Lib
 
 	public class GhostState
 	{
-		public GhostState(GhostVitality vitality, Point location, Direction direction)
+		public GhostState(GhostVitality vitality, Point location, Direction direction, int ghostIndex)
 		{
-			Vitality = vitality;
-			Location = location;
-			Direction = direction;
+			this.vitality = vitality;
+			this.location = location;
+			initialLocation = location;
+			this.direction = direction;
+			this.ghostIndex = ghostIndex;
 		}
 
-		public GhostVitality Vitality;
-		public Point Location;
-		public readonly Direction Direction;
+		public readonly Point initialLocation;
+
+		public GhostVitality vitality;
+		public Point location;
+		public Direction direction;
+		public readonly int ghostIndex;
 	}
 
 	public enum GhostVitality
@@ -84,23 +97,28 @@ namespace Lib
 	{
 		public LManState(int powerPillRemainingTicks, Point location, Direction direction, int lives, int score)
 		{
-			PowerPillRemainingTicks = powerPillRemainingTicks;
-			Location = location;
-			Direction = direction;
-			Lives = lives;
-			Score = score;
+			this.powerPillRemainingTicks = powerPillRemainingTicks;
+			this.location = location;
+			initialLocation = location;
+			this.direction = direction;
+			this.lives = lives;
+			this.score = score;
 		}
 
 		///<summary>Lambda man vitality</summary>
-		public int PowerPillRemainingTicks;
+		public int powerPillRemainingTicks;
 
-		public Point Location;
+		public Point location;
 
-		public Direction Direction;
+		public Direction direction;
 
-		public readonly int Lives;
+		public int lives;
 
-		public int Score;
+		public int score;
+
+		public int ghostsKilledInThisFrightSession;
+
+		public readonly Point initialLocation;
 	}
 
 	public enum Direction

@@ -8,8 +8,8 @@ namespace Lib
 	{
 		public static Tuple<LValue, Direction> LambdaMenGreedyStep(LValue currentAIState, World currentWorldState)
 		{
-			var map = currentWorldState.Map;
-			var lmPosition = currentWorldState.LMan.Location;
+			var map = currentWorldState.map;
+			var lmPosition = currentWorldState.man.location;
 			var stackInit = Directions
 				.Select(d => Tuple.Create<Point, Direction>(lmPosition.Add(SizeByDirection[d]), d))
 				.Where(dp => map.Get(dp.Item1) != MapCell.Wall);
@@ -17,7 +17,7 @@ namespace Lib
 			visited.Set(lmPosition, true);
 
 			var queue = new Queue<Tuple<Point, Direction>>(stackInit);
-			var founded = currentWorldState.LMan.Direction;
+			var founded = currentWorldState.man.direction;
 			while (queue.Count > 0)
 			{
 				var p = queue.Dequeue();
