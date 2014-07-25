@@ -1,0 +1,6 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=37409F90134450468F664FC90B1FC8F4/AbsolutePath/@EntryValue">D:\projects\fun\icfpc14\git\src\Diadoc.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=37409F90134450468F664FC90B1FC8F4/RelativePath/@EntryValue">..\Diadoc.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=37409F90134450468F664FC90B1FC8F4/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File37409F90134450468F664FC90B1FC8F4/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File37409F90134450468F664FC90B1FC8F4/RelativePriority/@EntryValue">1</s:Double></wpf:ResourceDictionary>
