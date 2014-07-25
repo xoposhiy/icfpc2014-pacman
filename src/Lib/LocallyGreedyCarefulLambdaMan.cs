@@ -8,7 +8,7 @@ namespace Lib
 	///     Очень простая реализация - на перекрестках идем преимущественно туда, где мы еще не были (где есть пилюли)
 	///     Если выбор не очевиден - идем в случайную сторону.
 	/// </summary>
-	public class LocallyGreedyCarefulLambdaMan : LambdaMan
+	public class LocallyGreedyCarefulLambdaMan : ILambdaMan
 	{
 		public Tuple<LValue, LMStep> Main(World initialWorldState)
 		{

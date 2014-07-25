@@ -7,17 +7,18 @@ using System.Threading.Tasks;
 
 namespace Lib
 {
-    
-    /// <summary>
-    /// Interface of step-function of Lambda-Man
-    /// </summary>
-    /// <returns>Current state of LM, Direction of move</returns>
-    public delegate Tuple<LValue, Direction> LMStep(LValue currentAIState, World currentWorldState);
+	
+	/// <summary>
+	/// Interface of step-function of Lambda-Man
+	/// </summary>
+	/// <returns>Current state of LM, Direction of move</returns>
+	public delegate Tuple<LValue, Direction> LMStep(LValue ai, World world);
+	public delegate Tuple<LValue, LMStep> LMMain(World initialWorld);
 
-    public interface LambdaMan
-    {
-       Tuple<LValue, LMStep> Main(World initialWorldState);
-    }
+	public interface ILambdaMan
+	{
+	   Tuple<LValue, LMStep> Main(World initialWorld);
+	}
 
 
    

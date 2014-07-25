@@ -49,11 +49,9 @@ namespace Lib
 		public GameSettings settings = new GameSettings();
 		public int time;
 
-		public GameSim(MapCell[,] map, LMStep step, LValue state)
+		public GameSim(MapCell[,] map, LMMain main)
 		{
 			this.map = map;
-			this.step = step;
-			this.state = state;
 			var lmState = new LManState(
 				0,
 				GetLocationsOf(map, MapCell.LManStartLoc).Single(),
@@ -68,6 +66,9 @@ namespace Lib
 				lmState,
 				ghosts,
 				0);
+			var res = main(world);
+			state = res.Item1;
+			step = res.Item2;
 			time = 1;
 			updateQueue.Add(new UpdateInfo(time + settings.lambdaManPeriod, -1));
 			for (int i = 0; i < ghosts.Count; i++)
@@ -232,13 +233,19 @@ namespace Lib
 		public void Create()
 		{
 			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
-			var sim = new GameSim(map, Step, LValue.FromInt(42));
+			var sim = new GameSim(map, Main);
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
 			Assert.AreEqual(w1, w2); // do not go to wall
 
 		}
+
+		private Tuple<LValue, LMStep> Main(World initialworld)
+		{
+			return Tuple.Create<LValue, LMStep>(LValue.FromInt(42), Step);
+		}
+
 		[Test]
 		public void DoNotGoToWall()
 		{
@@ -246,7 +253,7 @@ namespace Lib
 @"#####
 #.\.#
 #####");
-			var sim = new GameSim(map, Step, LValue.FromInt(42));
+			var sim = new GameSim(map, Main);
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
@@ -262,7 +269,7 @@ namespace Lib
 #.\.#
 #...#
 #####");
-			var sim = new GameSim(map, Step, LValue.FromInt(42));
+			var sim = new GameSim(map, Main);
 			sim.Tick();
 			Assert.AreEqual(128, sim.time);
 			Assert.AreEqual(new Point(2, 3), sim.world.LMan.Location);
