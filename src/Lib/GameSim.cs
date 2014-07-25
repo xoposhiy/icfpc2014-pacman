@@ -41,13 +41,13 @@ namespace Lib
 	
 	public enum MapCell
 	{
-		Wall = 0,
-		Empty,
-		Pill,
-		PowerPill,
-		Fruit,
-		LManStartLoc,
-		GhostStartLoc
+		Wall = '#',
+		Empty = ' ',
+		Pill = '.',
+		PowerPill = 'o',
+		Fruit = '%',
+		LManStartLoc = '\\',
+		GhostStartLoc = '=',
 	}
 
 

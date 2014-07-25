@@ -6,19 +6,21 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework.Constraints;
 
 namespace Lib
 {
 	class MapGenerator
 	{
-		private static Random random = new Random();
-		private static int[] dx = {0, 0, 1, -1};
-		private static int[] dy = {1, -1, 0, 0};
+		private Random random = new Random();
+		private int[] dx = {0, 0, 1, -1};
+		private int[] dy = {1, -1, 0, 0};
+		private bool man = false;
 
-		private static bool CheckMapWalls(MapCell[,] map)
+		private bool CheckMapWalls(MapCell[,] map)
 		{
-			int n = map.Length;
-			int m = map.GetLength(0);
+			int n = map.GetLength(0);
+			int m = map.GetLength(1);
 			for (int x = 0; x + 1 < n; x++)
 				for (int y = 0; y + 1 < m; y++)
 				{
@@ -37,8 +39,10 @@ namespace Lib
 			return true;
 		}
 
-		private static bool TryFree(MapCell[,] map, int x, int y)
+		private bool TryFree(MapCell[,] map, int x, int y)
 		{
+			if (x <= 0 || y <= 0 || x >= map.GetLength(0) - 1 || y >= map.GetLength(1) - 1)
+				return false;
 			if (map[x, y] != MapCell.Wall)
 				return false;
 
@@ -49,11 +53,13 @@ namespace Lib
 			return false;
 		}
 
-		private static void GenerateAlley(MapCell[,] map, int x, int y, int count)
+		private void GenerateAlley(MapCell[,] map, int x, int y, int count)
 		{
 			var free = new List<Point>();
 			if (!TryFree(map, x, y))
 				return;
+			if (!man)
+				map[x, y] = MapCell.LManStartLoc;
 
 			free.Add(new Point(x, y));
 			for (int i = 0; i < count; i++)
@@ -62,31 +68,61 @@ namespace Lib
 				for (int j = 0; j < 100 && !done; j++)
 				{
 					var toGrow = free[random.Next()%free.Count];
-					for (int d = 0; d < 4; d++)
+					for (int k = 0; k < 4; k++)
+					{
+						int d = random.Next()%4;
 						if (TryFree(map, toGrow.X + dx[d], toGrow.Y + dy[d]))
 						{
 							done = true;
+							free.Add(new Point(toGrow.X + dx[d], toGrow.Y + dy[d]));
 							break;
 						}
+					}
 				}
 
 				if (!done)
 					break;
 			}
+
+			if (!man)
+			{
+				foreach (var point in free)
+				{
+					if (map[point.X, point.Y] == MapCell.Empty && random.Next() % 30 == 0)
+						map[point.X, point.Y] = MapCell.Fruit;
+					if (map[point.X, point.Y] == MapCell.Empty && random.Next()%10 == 0)
+						map[point.X, point.Y] = MapCell.PowerPill;
+					if (map[point.X, point.Y] == MapCell.Empty && random.Next() % 5 == 0)
+						map[point.X, point.Y] = MapCell.Pill;
+				}
+				man = true;
+			}
 		}
 
 		///<summary>return wight*height array</summary>
-		public static MapCell[,] GenerateRandomMap(int height, int wight, int ghosts)
+		public MapCell[,] GenerateRandomMap(int height, int wight, int ghosts)
 		{
 			var map = new MapCell[wight,height];
-			
+
 			for (int x = 0; x < wight; x++)
 				for (int y = 0; y < height; y++)
 				{
 					map[x, y] = MapCell.Wall;
 				}
 
-			GenerateAlley(map, 4, 4, 10);
+			GenerateAlley(map, 1 + random.Next() % (wight - 2), 1 + random.Next() % (height - 2), height * 5);
+
+			bool setMan = false;
+			while (ghosts > 0)
+			{
+				int x = random.Next()%wight;
+				int y = random.Next()%height;
+				if (map[x, y] == MapCell.Empty)
+				{
+					map[x, y] = MapCell.GhostStartLoc;
+					ghosts--;
+				}
+			}
 
 			return map;
 		}
@@ -94,7 +130,8 @@ namespace Lib
 		[Test]
 		public void TestGenerateMap()
 		{
-			MapCell[,] map = GenerateRandomMap(20, 20, 0);
+			MapCell[,] map = GenerateRandomMap(40, 40, 5);
+			Visualizer.PrintMap(map);
 		}
 	}
 }
