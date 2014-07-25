@@ -1,7 +1,16 @@
-﻿namespace Lib
+﻿using System.Globalization;
+
+namespace Lib
 {
 	public class LValue
 	{
+		public override string ToString()
+		{
+			if (Tag == LTag.Int) return Value.ToString(CultureInfo.InvariantCulture);
+			if (Tag == LTag.Pair) return string.Format("({0}, {1})", Head, Tail);
+			return "{" + Value + "}";
+		}
+
 		public static LValue FromInt(int value)
 		{
 			return new LValue(LTag.Int, value);
