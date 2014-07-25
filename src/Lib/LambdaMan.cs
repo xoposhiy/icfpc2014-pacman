@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,13 +8,17 @@ using System.Threading.Tasks;
 namespace Lib
 {
     
-    delegate Tuple<LValue, Direction> LMStep(LValue currentAIState, World currentWorldState);
+    /// <summary>
+    /// Interface of step-function of Lambda-Man
+    /// </summary>
+    /// <returns>Current state of LM, Direction of move</returns>
+    public delegate Tuple<LValue, Direction> LMStep(LValue currentAIState, World currentWorldState);
 
-    class LambdaMan
+    public interface LambdaMan
     {
-        public Tuple<LValue, LMStep> Main(World initialWorldState)
-        {
-            throw new NotImplementedException();
-        }
+       Tuple<LValue, LMStep> Main(World initialWorldState);
     }
+
+
+   
 }
