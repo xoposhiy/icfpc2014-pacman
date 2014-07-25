@@ -6,24 +6,39 @@ using NUnit.Framework;
 
 namespace Lib
 {
-	class GameSettings
+	public class FruitInfo
+	{
+		public FruitInfo(int appearsTime, int expiresTime)
+		{
+			this.appearsTime = appearsTime;
+			this.expiresTime = expiresTime;
+		}
+
+		public int appearsTime, expiresTime;
+	}
+
+	public class GameSettings
 	{
 		public int lambdaManPeriod = 127;
 		public int lambdaManEatingPeriod = 137;
-		public int[] ghostPeriod = {130, 132, 134, 136};
-		public int[] ghostFrightPeriod = {195, 198, 201, 204};
+		public int[] ghostPeriod = { 130, 132, 134, 136 };
+		public int[] ghostFrightPeriod = { 195, 198, 201, 204 };
+		public FruitInfo[] fruits = { new FruitInfo(127 * 200, 127 * 280), new FruitInfo(127 * 400, 127 * 480), };
+		public int frightModeDuration = 127 * 20;
+		public int endOfLivesMapSizeMultiplier = 127 * 16;
 	}
 
-	class GameSim
+	public class GameSim
 	{
 		private class UpdateInfo : Tuple<int, int>
 		{
-			public UpdateInfo(int time, int ghostIndex): base(time, ghostIndex)
+			public UpdateInfo(int time, int ghostIndex)
+				: base(time, ghostIndex)
 			{
 			}
-			public int GhostIndex { get { return Item2; }}
-			public int Time { get { return Item1; }}
-			public bool LMan { get { return GhostIndex < 0; }}
+			public int GhostIndex { get { return Item2; } }
+			public int Time { get { return Item1; } }
+			public bool LMan { get { return GhostIndex < 0; } }
 
 		}
 		private readonly List<UpdateInfo> updateQueue = new List<UpdateInfo>();
@@ -55,7 +70,7 @@ namespace Lib
 				0);
 			time = 1;
 			updateQueue.Add(new UpdateInfo(time + settings.lambdaManPeriod, -1));
-			for (int i=0; i<ghosts.Count; i++)
+			for (int i = 0; i < ghosts.Count; i++)
 				updateQueue.Add(new UpdateInfo(time + settings.ghostPeriod[i], i));
 		}
 
@@ -69,46 +84,105 @@ namespace Lib
 		public void Tick()
 		{
 			var updateInfo = updateQueue.Min();
-			var ghostIndex = updateInfo.GhostIndex;
-			MoveCreatures(ghostIndex);
+			while (time == updateInfo.Time)
+			{
+				var ghostIndex = updateInfo.GhostIndex;
+				MoveCreatures(ghostIndex);
+				updateQueue.Remove(updateInfo);
+				updateInfo = updateQueue.Min();
+			}
 			DeactivateFrightMode();
 			HandleFruit();
 			Eat();
 			MeetGhosts();
 			HandleWin();
 			HandleLose();
-			time = updateInfo.Time;
-			updateQueue.Remove(updateInfo);
+			time++;
 		}
 
 		private void HandleLose()
 		{
-//			throw new NotImplementedException();
+			//			throw new NotImplementedException();
 		}
 
 		private void HandleWin()
 		{
-//			throw new NotImplementedException();
+			//			throw new NotImplementedException();
 		}
 
 		private void MeetGhosts()
 		{
-//			throw new NotImplementedException();
+			for (int iGhost = 0; iGhost < world.Ghosts.Count; iGhost++)
+			{
+				var ghost = world.Ghosts[iGhost];
+				if (ghost.Vitality == GhostVitality.Standard)
+					KillLambdaMan();
+				if (ghost.Vitality == GhostVitality.Fright)
+				{
+					KillGhost(iGhost);
+				}
+			}
+		}
+
+		private void KillGhost(int iGhost)
+		{
+			//TODO
+		}
+
+		private void KillLambdaMan()
+		{
+			//TODO
 		}
 
 		private void Eat()
 		{
-//			throw new NotImplementedException();
+			var man = world.LMan.Location;
+			var mapCell = world.Map[man.Y, man.X];
+			if (mapCell == MapCell.Pill)
+			{
+				world.LMan.Score += 10;
+				world.Map[man.Y, man.X] = MapCell.Empty;
+			}
+			if (mapCell == MapCell.PowerPill)
+			{
+				world.LMan.Score += 50;
+				world.Map[man.Y, man.X] = MapCell.Empty;
+				world.LMan.PowerPillRemainingTicks = settings.frightModeDuration;
+				foreach (var g in world.Ghosts)
+					g.Vitality = GhostVitality.Fright;
+			}
+			if (mapCell == MapCell.Fruit && world.FruitTicksRemaining > 0)
+			{
+				world.LMan.Score += GetFruitCost();
+				world.FruitTicksRemaining = 0;
+			}
+		}
+
+		private int GetFruitCost()
+		{
+			var level = 1 + (map.GetLength(0) * map.GetLength(1) - 1) / 100;
+			int[] costs = { 0, 100, 300, 500, 500, 700, 700, 1000, 1000, 2000, 2000, 3000, 3000, 5000 };
+			return costs[Math.Min(13, level)];
 		}
 
 		private void HandleFruit()
 		{
-//			throw new NotImplementedException();
+			var fruit = settings.fruits.FirstOrDefault(f => f.appearsTime == time);
+			if (fruit != null)
+				world.FruitTicksRemaining = fruit.expiresTime - time;
+			else
+				world.FruitTicksRemaining = Math.Max(0, world.FruitTicksRemaining - 1);
 		}
 
 		private void DeactivateFrightMode()
 		{
-//			throw new NotImplementedException();
+			var man = world.LMan;
+			man.PowerPillRemainingTicks--;
+			if (man.PowerPillRemainingTicks == 0)
+			{
+				foreach (var g in world.Ghosts)
+					g.Vitality = GhostVitality.Standard;
+			}
 		}
 
 		private void MoveCreatures(int ghostIndex)
@@ -116,12 +190,20 @@ namespace Lib
 			if (ghostIndex == -1) //LambdaMan
 				MoveLMan();
 			else
-				MoveGhost(world.Ghosts[ghostIndex]);
+				MoveGhost(ghostIndex);
 		}
 
-		private void MoveGhost(GhostState ghost)
+		private void MoveGhost(int ghostIndex)
 		{
+			var ghost = world.Ghosts[ghostIndex];
 			ghost.Location = TryMove(ghost.Location, ghost.Direction);
+			var period = settings.ghostPeriod[ghostIndex]; // TODO Ghost index!!!
+			updateQueue.Add(new UpdateInfo(time + period, ghostIndex));
+		}
+
+		private bool IsEatable(MapCell cell)
+		{
+			return cell == MapCell.Fruit || cell == MapCell.Pill || cell == MapCell.PowerPill;
 		}
 
 		private void MoveLMan()
@@ -131,6 +213,10 @@ namespace Lib
 			state = res.Item1;
 			man.Direction = res.Item2;
 			man.Location = TryMove(man.Location, man.Direction);
+			var eat = IsEatable(world.Map[man.Location.Y, man.Location.X]);
+			var period = (eat ? settings.lambdaManEatingPeriod : settings.lambdaManPeriod);
+			//TODO eaten ghost increases period too?
+			updateQueue.Add(new UpdateInfo(time + period, -1));
 		}
 
 		private Point TryMove(Point location, Direction direction)

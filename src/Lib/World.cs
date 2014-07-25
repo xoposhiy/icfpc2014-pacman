@@ -17,7 +17,7 @@ namespace Lib
 		public readonly MapCell[,] Map;
 		public readonly LManState LMan;
 		public readonly List<GhostState> Ghosts;
-		public readonly int FruitTicksRemaining;
+		public int FruitTicksRemaining;
 
 		public override string ToString()
 		{
@@ -68,7 +68,7 @@ namespace Lib
 			Direction = direction;
 		}
 
-		public readonly GhostVitality Vitality;
+		public GhostVitality Vitality;
 		public Point Location;
 		public readonly Direction Direction;
 	}
@@ -92,7 +92,7 @@ namespace Lib
 		}
 
 		///<summary>Lambda man vitality</summary>
-		public readonly int PowerPillRemainingTicks;
+		public int PowerPillRemainingTicks;
 
 		public Point Location;
 
@@ -100,7 +100,7 @@ namespace Lib
 
 		public readonly int Lives;
 
-		public readonly int Score;
+		public int Score;
 	}
 
 	public enum Direction

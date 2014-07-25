@@ -1,10 +1,16 @@
 using System;
+using System.IO;
 using System.Linq;
 
 namespace Lib
 {
-	class MapUtils
+	public class MapUtils
 	{
+		public static MapCell[,] LoadFromKnownLocation(string filename)
+		{
+			return Load(File.ReadAllText(@"..\..\..\..\mazes\" + filename));
+		}
+
 		public static MapCell[,] Load(string text)
 		{
 			var lines = text.Split('\n').Select(line => line.Trim()).ToList();
