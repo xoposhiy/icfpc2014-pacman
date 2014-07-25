@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lib
 {
@@ -23,15 +24,20 @@ namespace Lib
 
 		public static List<T> AsList<T>(this LValue list, Func<LValue, T> parseElement)
 		{
-			throw new NotImplementedException();
+			return list.AsEnumerable().Select(parseElement).ToList();
 		}
-
-		public static MapCell[,] AsMap(this LValue map)
+		
+		public static LValue[] AsTuple(this LValue tuple, int size)
 		{
-			throw new NotImplementedException();
+			var res = new LValue[size];
+			for (int i = 0; i < size-1; i++)
+			{
+				res[i] = tuple.Head;
+				tuple = tuple.Tail;
+			}
+			res[size-1] = tuple;
+			return res;
 		}
-
-		//... Other extension methods to interpret LValues
 
 	}
 }
