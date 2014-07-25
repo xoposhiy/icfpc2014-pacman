@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace Lib
 {
 	public class Frame
 	{
+		private static int lastFrameId;
+
 		[NotNull]
-		public static Frame Dum([CanBeNull] Frame parent, int size)
+		public static Frame Dum([CanBeNull] Frame parent, uint size)
 		{
 			return new Frame(true, parent, new LValue[size]);
 		}
@@ -19,12 +22,15 @@ namespace Lib
 
 		private Frame(bool isDum, [CanBeNull] Frame parent, [NotNull] LValue[] values)
 		{
+			Id = ++lastFrameId;
 			IsDum = isDum;
 			Parent = parent;
 			Values = values;
 		}
 
-		public bool IsDum { get; private set; }
+		public int Id { get; private set; }
+
+		public bool IsDum { get; set; }
 
 		[CanBeNull]
 		public Frame Parent { get; private set; }
@@ -41,6 +47,25 @@ namespace Lib
 			if (value == null)
 				throw new InvalidOperationException("TODO");
 			return value;
+		}
+
+		public void SetValue(uint valueIndex, [NotNull] LValue value)
+		{
+			if (valueIndex >= Values.Length)
+				throw new InvalidOperationException("TODO");
+			Values[valueIndex] = value;
+		}
+
+		public void SetValues([NotNull] LValue[] values)
+		{
+			if (Values.Length != values.Length)
+				throw new InvalidOperationException("TODO");
+			Values = values;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("Id: {0}, IsDum: {1}, Parent: {2}, Values: {3}", Id, IsDum, Parent == null ? "" : Parent.Id.ToString(), string.Join(", ", Values.Select(Convert.ToString)));
 		}
 	}
 }

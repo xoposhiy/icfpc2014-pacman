@@ -22,7 +22,7 @@ namespace Lib
 
 			var curr = currentWorldState.LMan.Location;
 			var currentPair = currentAIState.GetPair();
-			var prev = new Point(currentPair.Head.Value, currentPair.Tail.Value);
+			var prev = new Point(currentPair.Head.GetValue(), currentPair.Tail.GetValue());
 
 			var dirWeight = new List<int>() { 0, 0, 0, 0 };
 			var dir = new List<Point>() { new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0) };

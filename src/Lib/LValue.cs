@@ -1,50 +1,14 @@
 ﻿using System;
-using System.Globalization;
 using JetBrains.Annotations;
 
 namespace Lib
 {
-	public class Pair
-	{
-		public Pair([NotNull] LValue head, [NotNull] LValue tail)
-		{
-			Head = head;
-			Tail = tail;
-		}
-
-		[NotNull]
-		public readonly LValue Head;
-
-		[NotNull]
-		public readonly LValue Tail;
-
-		public override string ToString()
-		{
-			return string.Format("({0}, {1})", Head, Tail);
-		}
-	}
-
 	public class LValue
 	{
-		public override string ToString()
-		{
-			if (Tag == LTag.Int)
-				return Value.ToString(CultureInfo.InvariantCulture);
-			if (Tag == LTag.Pair)
-				return Pair.ToString();
-			return "{" + Value + "}";
-		}
-
 		[NotNull]
 		public static LValue FromInt(int value)
 		{
 			return new LValue(LTag.Int, value: value);
-		}
-
-		[NotNull]
-		public static LValue FromClosure(uint address, [CanBeNull] Frame frame)
-		{
-			return new LValue(LTag.Closure, address: address, frame: frame);
 		}
 
 		[NotNull]
@@ -53,24 +17,29 @@ namespace Lib
 			return new LValue(LTag.Pair, pair: new Pair(head, tail));
 		}
 
-		private LValue(LTag tag, int value = 0, uint address = 0, [CanBeNull] Pair pair = null, [CanBeNull] Frame frame = null)
+		[NotNull]
+		public static LValue FromClosure(uint address, [CanBeNull] Frame frame)
+		{
+			return new LValue(LTag.Closure, closure: new Closure(address, frame));
+		}
+
+		private LValue(LTag tag, int? value = null, [CanBeNull] Pair pair = null, [CanBeNull] Closure closure = null)
 		{
 			Tag = tag;
 			Value = value;
-			Address = address;
 			Pair = pair;
-			Frame = frame;
+			Closure = closure;
 		}
 
-		public readonly LTag Tag;
-		public readonly int Value;
-		public readonly uint Address;
+		public LTag Tag { get; private set; }
+
+		public int? Value { get; private set; }
 
 		[CanBeNull]
-		public readonly Pair Pair;
+		public Pair Pair { get; private set; }
 
 		[CanBeNull]
-		public readonly Frame Frame;
+		public Closure Closure { get; private set; }
 
 		public static LValue Parse(string text)
 		{
@@ -111,25 +80,45 @@ namespace Lib
 		public int GetValue()
 		{
 			if (Tag != LTag.Int)
-				throw new InvalidOperationException(ToString());
-			return Value;
+				throw new InvalidOperationException("TODO");
+			if (!Value.HasValue)
+				throw new InvalidOperationException("TODO");
+			return Value.Value;
 		}
 
 		[NotNull]
 		public Pair GetPair()
 		{
 			if (Tag != LTag.Pair)
-				throw new InvalidOperationException(ToString());
+				throw new InvalidOperationException("TODO");
 			if (Pair == null)
 				throw new InvalidOperationException("TODO");
 			return Pair;
 		}
-	}
 
-	public enum LTag
-	{
-		Int,
-		Pair,
-		Closure
+		[NotNull]
+		public Closure GetClosure()
+		{
+			if (Tag != LTag.Closure)
+				throw new InvalidOperationException("TODO");
+			if (Closure == null)
+				throw new InvalidOperationException("TODO");
+			return Closure;
+		}
+
+		public override string ToString()
+		{
+			switch (Tag)
+			{
+				case LTag.Int:
+					return GetValue().ToString();
+				case LTag.Pair:
+					return GetPair().ToString();
+				case LTag.Closure:
+					return GetClosure().ToString();
+				default:
+					throw new InvalidOperationException(string.Format("Invalid Tag: {0}", Tag));
+			}
+		}
 	}
 }

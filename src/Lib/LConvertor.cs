@@ -37,27 +37,27 @@ namespace Lib
 		{
 			var g = ghost.AsTuple(3);
 			return new GhostState(
-				(GhostVitality)g[0].Value,
+				(GhostVitality)g[0].GetValue(),
 				c.Parse<Point>(g[1]),
-				(Direction)g[2].Value
+				(Direction)g[2].GetValue()
 				);
 		}
 
 		private static Point ReadPoint(LConvertor c, LValue point)
 		{
 			var p = point.AsTuple(2);
-			return new Point(p[0].Value, p[1].Value);
+			return new Point(p[0].GetValue(), p[1].GetValue());
 		}
 
 		private static LManState ReadLManState(LConvertor c, LValue lman)
 		{
 			var m = lman.AsTuple(5);
 			return new LManState(
-				m[0].Value, 
+				m[0].GetValue(), 
 				c.Parse<Point>(m[1]),
-				(Direction)m[2].Value,
-				m[3].Value,
-				m[4].Value
+				(Direction)m[2].GetValue(),
+				m[3].GetValue(),
+				m[4].GetValue()
 				);
 		}
 
@@ -68,7 +68,7 @@ namespace Lib
 				ToArray(c.Parse<List<List<MapCell>>>(w[0])),
 				c.Parse<LManState>(w[1]),
 				w[2].AsList(c.Parse<GhostState>),
-				w[3].Value
+				w[3].GetValue()
 				);
 		}
 
@@ -85,7 +85,7 @@ namespace Lib
 
 		private static List<List<MapCell>> ReadMap(LConvertor c, LValue map)
 		{
-			return map.AsList(v => v.AsList(cell => (MapCell)cell.Value));
+			return map.AsList(v => v.AsList(cell => (MapCell)cell.GetValue()));
 		}
 
 		static void Register<T>(Func<LConvertor, LValue, T> converter) where T : class
