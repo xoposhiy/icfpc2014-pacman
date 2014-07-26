@@ -57,7 +57,7 @@ namespace Lib.LispLang
 			return TupleToCode(env, list.Concat(new SExpr[]{0}).ToArray());
 		}
 
-		private static IEnumerable<string> ReferenceToCode(Env env, string reference)
+		public static IEnumerable<string> ReferenceToCode(Env env, string reference)
 		{
 			var addr = env.GetVariableAddr(reference);
 			yield return "LD " + addr.Item1 + " " + addr.Item2 + "  ; " + reference;

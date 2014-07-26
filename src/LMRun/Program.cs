@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Lib;
+using Lib.LispLang;
 using Lib.LMachine;
 using Lib.LMachine.Parsing;
 
@@ -17,7 +18,8 @@ namespace LMRun
 
 		static void Run(string name)
 		{
-			var p = File.ReadAllText(KnownPlace.GccSamples + name + ".mgcc");
+//			var p = File.ReadAllText(KnownPlace.GccSamples + name + ".mgcc");
+			var p = Samples.anySample;
 			var prog = LParser.Parse(p);
 			var m = new LMachineInterpreter(prog.Program);
 			while (!m.State.Stopped)

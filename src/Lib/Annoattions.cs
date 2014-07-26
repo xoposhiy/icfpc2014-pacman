@@ -15,13 +15,13 @@ namespace Lib
 	/// Indicates that the value of the marked element could be <c>null</c> sometimes,
 	/// so the check for <c>null</c> is necessary before its usage
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [CanBeNull] public object Test() { return null; }
 	/// public void UseTest() {
 	///   var p = Test();
 	///   var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(
 	  AttributeTargets.Method | AttributeTargets.Parameter |
 	  AttributeTargets.Property | AttributeTargets.Delegate |
@@ -31,11 +31,11 @@ namespace Lib
 	/// <summary>
 	/// Indicates that the value of the marked element could never be <c>null</c>
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [NotNull] public object Foo() {
 	///   return null; // Warning: Possible 'null' assignment
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(
 	  AttributeTargets.Method | AttributeTargets.Parameter |
 	  AttributeTargets.Property | AttributeTargets.Delegate |
@@ -47,13 +47,13 @@ namespace Lib
 	/// Parameter, which contains format string, should be given in constructor. The format string
 	/// should be in <see cref="string.Format(IFormatProvider,string,object[])"/>-like form
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [StringFormatMethod("message")]
 	/// public void ShowError(string message, params object[] args) { /* do something */ }
 	/// public void Foo() {
 	///   ShowError("Failed: {0}"); // Warning: Non-existing argument in format string
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(
 	  AttributeTargets.Constructor | AttributeTargets.Method,
 	  AllowMultiple = false, Inherited = true)]
@@ -75,12 +75,12 @@ namespace Lib
 	/// of the parameters of the caller function. For example, ReSharper annotates
 	/// the parameter of <see cref="System.ArgumentNullException"/>
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// public void Foo(string param) {
 	///   if (param == null)
 	///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
 	public sealed class InvokerParameterNameAttribute : Attribute { }
 
@@ -99,7 +99,7 @@ namespace Lib
 	/// <item><c>SetProperty{T}(ref T, T, string)</c></item>
 	/// </list>
 	/// </remarks>
-	/// <example><code>
+	/// <example><anySample>
 	/// public class Foo : INotifyPropertyChanged {
 	///   public event PropertyChangedEventHandler PropertyChanged;
 	///   [NotifyPropertyChangedInvocator]
@@ -111,7 +111,7 @@ namespace Lib
 	///     set { _name = value; NotifyChanged("LastName"); /* Warning */ }
 	///   }
 	/// }
-	/// </code>
+	/// </anySample>
 	/// Examples of generated notifications:
 	/// <list>
 	/// <item><c>NotifyChanged("Property")</c></item>
@@ -152,27 +152,27 @@ namespace Lib
 	/// or use single attribute with rows separated by semicolon.<br/>
 	/// </syntax>
 	/// <examples><list>
-	/// <item><code>
+	/// <item><anySample>
 	/// [ContractAnnotation("=> halt")]
 	/// public void TerminationMethod()
-	/// </code></item>
-	/// <item><code>
+	/// </anySample></item>
+	/// <item><anySample>
 	/// [ContractAnnotation("halt &lt;= condition: false")]
 	/// public void Assert(bool condition, string text) // regular assertion method
-	/// </code></item>
-	/// <item><code>
+	/// </anySample></item>
+	/// <item><anySample>
 	/// [ContractAnnotation("s:null => true")]
 	/// public bool IsNullOrEmpty(string s) // string.IsNullOrEmpty()
-	/// </code></item>
-	/// <item><code>
+	/// </anySample></item>
+	/// <item><anySample>
 	/// // A method that returns null if the parameter is null, and not null if the parameter is not null
 	/// [ContractAnnotation("null => null; notnull => notnull")]
 	/// public object Transform(object data) 
-	/// </code></item>
-	/// <item><code>
+	/// </anySample></item>
+	/// <item><anySample>
 	/// [ContractAnnotation("s:null=>false; =>true,result:notnull; =>false, result:null")]
 	/// public bool TryParse(string s, out Person result)
-	/// </code></item>
+	/// </anySample></item>
 	/// </list></examples>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 	public sealed class ContractAnnotationAttribute : Attribute
@@ -193,12 +193,12 @@ namespace Lib
 	/// <summary>
 	/// Indicates that marked element should be localized or not
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [LocalizationRequiredAttribute(true)]
 	/// public class Foo {
 	///   private string str = "my string"; // Warning: Localizable string
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
 	public sealed class LocalizationRequiredAttribute : Attribute
 	{
@@ -217,7 +217,7 @@ namespace Lib
 	/// should be used instead. However, using '==' or '!=' for comparison
 	/// with <c>null</c> is always permitted.
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [CannotApplyEqualityOperator]
 	/// class NoEquality { }
 	/// class UsesNoEquality {
@@ -229,7 +229,7 @@ namespace Lib
 	///     }
 	///   }
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(
 	  AttributeTargets.Interface | AttributeTargets.Class |
 	  AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
@@ -239,12 +239,12 @@ namespace Lib
 	/// When applied to a target attribute, specifies a requirement for any type marked
 	/// with the target attribute to implement or inherit specific type or types.
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [BaseTypeRequired(typeof(IComponent)] // Specify requirement
 	/// public class ComponentAttribute : Attribute { }
 	/// [Component] // ComponentAttribute requires implementing IComponent interface
 	/// public class MyComponent : IComponent { }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
 	[BaseTypeRequired(typeof(Attribute))]
 	public sealed class BaseTypeRequiredAttribute : Attribute
@@ -367,7 +367,7 @@ namespace Lib
 	}
 
 	/// <summary>
-	/// Tells code analysis engine if the parameter is completely handled
+	/// Tells anySample analysis engine if the parameter is completely handled
 	/// when the invoked method is on stack. If the parameter is a delegate,
 	/// indicates that delegate is executed while the method is executed.
 	/// If the parameter is an enumerable, indicates that it is enumerated
@@ -380,13 +380,13 @@ namespace Lib
 	/// Indicates that a method does not make any observable state changes.
 	/// The same as <c>System.Diagnostics.Contracts.PureAttribute</c>
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [Pure] private int Multiply(int x, int y) { return x * y; }
 	/// public void Foo() {
 	///   const int a = 2, b = 2;
 	///   Multiply(a, b); // Waring: Return value of pure method is not used
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(AttributeTargets.Method, Inherited = true)]
 	public sealed class PureAttribute : Attribute { }
 
@@ -573,13 +573,13 @@ namespace Lib
 	/// ASP.NET MVC attribute. When applied to a parameter of an attribute,
 	/// indicates that this parameter is an MVC action name
 	/// </summary>
-	/// <example><code>
+	/// <example><anySample>
 	/// [ActionName("Foo")]
 	/// public ActionResult Login(string returnUrl) {
 	///   ViewBag.ReturnUrl = Url.Action("Foo"); // OK
 	///   return RedirectToAction("Bar"); // Error: Cannot resolve action
 	/// }
-	/// </code></example>
+	/// </anySample></example>
 	[AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Property)]
 	public sealed class AspMvcActionSelectorAttribute : Attribute { }
 

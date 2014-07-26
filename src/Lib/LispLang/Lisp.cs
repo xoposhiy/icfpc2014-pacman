@@ -107,6 +107,12 @@ namespace Lib.LispLang
 			SExpr a = args;
 			return new SExpr(env => a.ToCode(env).Concat(new[] { "LDF " + name, "AP " + args.Length }));
 		}
+		
+		public static SExpr CallFunRef(string name, params SExpr[] args)
+		{
+			SExpr a = args;
+			return new SExpr(env => a.ToCode(env).Add(SExpr.ReferenceToCode(env, name)).Add("AP " + args.Length));
+		}
 
 		public static SExpr Car(SExpr list)
 		{

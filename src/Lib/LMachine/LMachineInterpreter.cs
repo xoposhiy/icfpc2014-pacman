@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using Lib.LMachine.Intructions;
+using Lib.LMachine.Parsing;
 
 namespace Lib.LMachine
 {
@@ -31,6 +33,13 @@ namespace Lib.LMachine
 		{
 			while (!State.Stopped)
 				Step();
+		}
+
+		public static LMachineState Run(string code)
+		{
+			var m = new LMachineInterpreter(LParser.Parse(code).Program);
+			m.RunUntilStop();
+			return m.State;
 		}
 	}
 }

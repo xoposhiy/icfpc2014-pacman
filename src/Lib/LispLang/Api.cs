@@ -54,6 +54,13 @@ namespace Lib.LispLang
 					Call("get", Cdr("list"), Sub("index", 1)),
 					Car("list"))),
 			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
+			Def("any", ArgNames("list", "f"),
+				If(Atom("list"),
+					0,
+					If(CallFunRef("f", Car("list")), // CallFunRef дает понять, что f надо искать в Env
+						1, 
+						Call("any", Cdr("list"), "f")
+					))),
 		};
 	}
 }
