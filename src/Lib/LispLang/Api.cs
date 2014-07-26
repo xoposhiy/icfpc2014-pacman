@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Lib.LMachine.Intructions;
 
 namespace Lib.LispLang
 {
 	public class Api : Lisp
 	{
-		public static string CompileWithLibs(params SExpr[] main)
-		{
-			return Compile(loader.Concat(main).Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
-		}
-
 		public static SExpr[] worldApi =
 		{
 			Def("map", ArgNames("world"), Get(0, "world")),
@@ -26,7 +19,6 @@ namespace Lib.LispLang
 			Def("ghLoc", ArgNames("ghState"), Car(Cdr("ghState"))),
 			Def("ghVitality", ArgNames("ghState"), Car("ghState")),
 			Def("ghDir", ArgNames("ghState"), Car(Cdr(Cdr("ghState")))),
-
 			Def("sum", ArgNames("p1", "p2"),
 				Cons(Add(X("p1"), X("p2")), Add(Y("p1"), Y("p2")))),
 			Def("point", ArgNames("x", "y"), Cons("x", "y")),
@@ -35,7 +27,7 @@ namespace Lib.LispLang
 			Def("getCell", ArgNames("map", "point"), Call("get", Call("get", "map", Cdr("point")), Car("point"))),
 			Def("mapHeight", ArgNames("map"), Call("getListLength", "map")),
 			Def("mapWidth", ArgNames("map"), Call("getListLength", Car("map"))),
-			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("mapHeight", "map"), Call("mapWidth", "map")))),
+			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("mapHeight", "map"), Call("mapWidth", "map"))))
 		};
 
 		public static SExpr[] loader =
@@ -43,11 +35,10 @@ namespace Lib.LispLang
 			Cmd("LD 0 0"),
 			Cmd("LD 0 1"),
 			Cmd("LDF main"),
-			Cmd("TAP 2"),
+			Cmd("TAP 2")
 		};
 
-				
-		
+
 		public static SExpr[] queueApi =
 		{
 			Queue.Enqueue(),
@@ -66,7 +57,7 @@ namespace Lib.LispLang
 						Call("any", Cdr("list"), "f")
 						)));
 
-		public static SExpr max = 
+		public static SExpr max =
 			Def("max", ArgNames("list"),
 				Call("_max_iter", "list", int.MinValue),
 				Return(),
@@ -78,7 +69,20 @@ namespace Lib.LispLang
 					)
 				);
 
-		public static SExpr min = 
+		public static SExpr argmax =
+			Def("argmax", ArgNames("list"),
+				Call("_argmax_iter", "list", -1, int.MinValue, 0),
+				Return(),
+				Def("_argmax_iter", ArgNames("list", "maxIndex", "maxValue", "headIndex"),
+					If(Atom("list"),
+						"maxIndex",
+						If(IsGreater(Car("list"), "maxValue"),
+							Call("_argmax_iter", Cdr("list"), "headIndex", Car("list"), Add("headIndex", 1)),
+							Call("_argmax_iter", Cdr("list"), "maxIndex", "maxValue", Add("headIndex", 1))
+							)))
+				);
+
+		public static SExpr min =
 			Def("min", ArgNames("list"),
 				Call("_min_iter", "list", int.MaxValue),
 				Return(),
@@ -98,34 +102,36 @@ namespace Lib.LispLang
 					Car("list"))),
 			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
 			any,
-//			max,
+			max,
 			min
 		};
 
+		public static string CompileWithLibs(params SExpr[] main)
+		{
+			return Compile(loader.Concat(main).Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
+		}
+
 		public SExpr[] Math()
 		{
-			return new SExpr[]
+			return new[]
 			{
 				Def("max", ArgNames("aList"),
 					If(Cdr("aList"),
 						If(IsGreater(Car("aList"), Call("max", Args(Cdr("aList")))), Car("aList"), Call("max", Args(Cdr("aList")))),
-						Car("aList"))),
-
+						Car("aList")))
 			};
 		}
 
 		/// <summary>
-		/// name - имя объявляемой функции
-		/// funcName - имя функции от нескольких аргументов,
-		/// первый из которых - очередной элемент массива, а остальные - дополнительные параметры переданные в additionalParams
-		/// возвращает булево значение
+		///     name - имя объявляемой функции
+		///     funcName - имя функции от нескольких аргументов,
+		///     первый из которых - очередной элемент массива, а остальные - дополнительные параметры переданные в additionalParams
+		///     возвращает булево значение
 		/// </summary>
 		public static SExpr DefAny1(String funcName)
 		{
 			return Def("any_" + funcName, ArgNames("aList", "arg1"),
 				If(Atom("aList"), 0, If(Call(funcName, Args(Car("aList"), "arg1")), 1, Call("any_" + funcName, Args(Cdr("aList"), "arg1")))));
-
 		}
-
 	}
 }
