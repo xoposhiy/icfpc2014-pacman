@@ -18,10 +18,10 @@ namespace Lib.AI
 				);
 		}
 
-		public static Tuple<LValue, Direction> LambdaMenGreedyStep(LValue currentAIState, World currentWorldState)
+		public static Tuple<LValue, Direction> LambdaMenGreedyStep(LValue currentAIState, World world)
 		{
-			var map = currentWorldState.map;
-			var lmPosition = currentWorldState.man.location;
+			var map = world.map;
+			var lmPosition = world.man.location;
 			var stackInit = directions
 				.Select(d => LValue.FromPair(lmPosition.Add(SizeByDirection[d]), (int)d))
 				.Where(dp => map.Get(dp.Pair.Head) != MapCell.Wall)
@@ -36,18 +36,20 @@ namespace Lib.AI
 				visited.Set(tuple.Pair.Head, true);
 			}
 
-			var founded = currentWorldState.man.direction;
+			var founded = world.man.direction;
 			while (!queue.IsEmpty())
 			{
 				var p = queue.Dequeue();
 				var point = p.Pair.Head;
 				if (map.Get(point) == MapCell.Pill ||
-				    map.Get(point) == MapCell.PowerPill) // TODO: fruits!
+				    map.Get(point) == MapCell.PowerPill ||
+					(map.Get(point) == MapCell.Fruit && world.fruitTicksRemaining > 126) ||
+					(world.ghosts.Any(g => g.vitality == GhostVitality.Fright && g.location.Equals(new Point(point.Pair.Head.Value.Value, point.Pair.Tail.Value.Value)))))
 				{
 					founded = (Direction) (p.Pair.Tail.Value .Value);
 					break;
 				}
-				foreach (var newPoint in GetNeighbours(point, currentWorldState, visited))
+				foreach (var newPoint in GetNeighbours(point, world, visited))
 				{
 					queue.Enqueue(LValue.FromPair(newPoint, p.Pair.Tail));
 					visited.Set(newPoint, true);
@@ -69,12 +71,13 @@ namespace Lib.AI
 
 		public static IEnumerable<Point> GetNeighbours(LValue point, World world, bool[,] visited)
 		{
+			var standardGhost = world.ghosts.Where(g => g.vitality == GhostVitality.Standard).ToArray();
 			return GetFourNeighbours(point)
-				.Where(p => 
-					!visited.Get(p) && 
-					(world.map.Get(p) != MapCell.Wall) && 
-					world.ghosts.All(g => !p.Equals(g.location)) &&
-					world.ghosts.All(g => GetFourNeighbours(g.location).All(gn => !p.Equals(gn))));
+				.Where(p =>
+					!visited.Get(p) &&
+					(world.map.Get(p) != MapCell.Wall) &&
+					standardGhost.All(g => !p.Equals(g.location)) &&
+					standardGhost.All(g => GetFourNeighbours(g.location).All(gn => !p.Equals(gn))));
 		}
 
 		private static IEnumerable<Point> GetFourNeighbours(LValue point)
