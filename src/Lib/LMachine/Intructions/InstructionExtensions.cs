@@ -8,7 +8,8 @@ namespace Lib.LMachine.Intructions
 		[NotNull]
 		public static string ToGcc([NotNull] this IEnumerable<Instruction> program)
 		{
-			return string.Join("\r\n", program.Select(x => ToGcc((Instruction)x)));
+			var notDebugInstructions = program.Where(x =>x.Type != InstructionType.DbgView);
+			return string.Join("\r\n", notDebugInstructions.Select(ToGcc));
 		}
 
 		[NotNull]

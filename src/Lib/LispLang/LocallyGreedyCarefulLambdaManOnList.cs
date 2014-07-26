@@ -55,7 +55,7 @@ namespace Lib.LispLang
 									Args("currLoc", Call("sum", Args("currLoc", "direction")), "world", "lmstate",
 										Sub("depth", 1)))),
 							0)),
-					//					// Else
+					// Else
 					-1000)),
 			Def("scoreOfDirections", ArgNames("prevLoc", "currLoc", "world", "lmstate", "depth"),
 				List(
@@ -71,7 +71,7 @@ namespace Lib.LispLang
 						Call("lmLoc", "world"),
 						"world",
 						"lmSavedState",	
-						2)))
+						3)))
 				),
 				
 				LambdaMenLogic);
@@ -79,9 +79,9 @@ namespace Lib.LispLang
 		[Test]
 		public void Test()
 		{
-			Console.WriteLine(code);
+//			Console.WriteLine(code);
 			string result = LParser.Parse(code).Program.ToGcc();
-			//			Console.WriteLine(result);
+			Console.WriteLine(result);
 		}
 	}
 }
