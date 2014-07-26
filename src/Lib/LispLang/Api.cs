@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Lib.LMachine.Intructions;
 
 namespace Lib.LispLang
 {
@@ -20,11 +23,16 @@ namespace Lib.LispLang
 			Def("ghState", ArgNames("world", "ghInd"),
 				Call("get",
 					Call("ghStates", "world"), "ghInd")),
+			Def("ghLoc", ArgNames("ghState"), Car(Cdr("ghState"))),
+			Def("ghVitality", ArgNames("ghState"), Car("ghState")),
+			Def("ghDir", ArgNames("ghState"), Car(Cdr(Cdr("ghState")))),
+
 			Def("sum", ArgNames("p1", "p2"),
 				Cons(Add(X("p1"), X("p2")), Add(Y("p1"), Y("p2")))),
 			Def("point", ArgNames("x", "y"), Cons("x", "y")),
+			Def("pEquals", ArgNames("p1", "p2"), And(Ceq(X("p1"), X("p2")), Ceq(Y("p1"), Y("p2")))),
 			Def("pdirections", ArgNames(), List(Cons(0, -1), Cons(1, 0), Cons(0, 1), Cons(-1, 0))),
-			Def("getCell", ArgNames("map", "x", "y"), Call("get", Call("get", "map", "y"), "x")),
+			Def("getCell", ArgNames("map", "point"), Call("get", Call("get", "map", Cdr("point")), Car("point"))),
 			Def("mapHeight", ArgNames("map"), Call("getListLength", "map")),
 			Def("mapWidth", ArgNames("map"), Call("getListLength", Car("map"))),
 			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("mapHeight", "map"), Call("mapWidth", "map")))),
@@ -38,6 +46,8 @@ namespace Lib.LispLang
 			Cmd("TAP 2"),
 		};
 
+				
+		
 		public static SExpr[] queueApi =
 		{
 			Queue.Enqueue(),
@@ -62,5 +72,31 @@ namespace Lib.LispLang
 						Call("any", Cdr("list"), "f")
 					))),
 		};
+
+		public SExpr[] Math()
+		{
+			return new SExpr[]
+			{
+				Def("max", ArgNames("aList"),
+					If(Cdr("aList"),
+						If(IsGreater(Car("aList"), Call("max", Args(Cdr("aList")))), Car("aList"), Call("max", Args(Cdr("aList")))),
+						Car("aList"))),
+
+			};
+		}
+
+		/// <summary>
+		/// name - имя объявляемой функции
+		/// funcName - имя функции от нескольких аргументов,
+		/// первый из которых - очередной элемент массива, а остальные - дополнительные параметры переданные в additionalParams
+		/// возвращает булево значение
+		/// </summary>
+		public static SExpr DefAny1(String funcName)
+		{
+			return Def("any_" + funcName, ArgNames("aList", "arg1"),
+				If(Atom("aList"), 0, If(Call(funcName, Args(Car("aList"), "arg1")), 1, Call("any_" + funcName, Args(Cdr("aList"), "arg1")))));
+
+		}
+
 	}
 }

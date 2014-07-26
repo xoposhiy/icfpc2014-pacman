@@ -42,6 +42,7 @@ namespace Lib.AI
 					{
 						var score = 0;
 						var next = sum(currLoc, dir[nd]);
+
 						if (!isCorrect(next))
 							continue;
 						var nextCell = getCell(next);

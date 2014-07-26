@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Lib.Game;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,47 +9,98 @@ using System.Threading.Tasks;
 namespace Lib.LispLang
 {
 	[TestFixture]
-	class LocallyGreedyCarefulLambdaManOnList : Lisp
+	class LocallyGreedyCarefulLambdaManOnList : Api
 	{
 		[Test]
 		public void Test()
 		{
-			var macro = Compile(
-				Def("LMStep", ArgNames("lmSavedState", "world"),
-					Cons(0, 0)
+			var macro = Api.CompileWithLibs(
 
-				),
+				Def("main", ArgNames("world"),
+					Cons(
+						Call("initLMInternalState", Call("map", "world")),
+						Fun("LMStep"))
+						),
 
-				Def("getmap", ArgNames("world"), Car("world")),
-				Def("getlmState", ArgNames("world"), Car(Cdr("world"))),
-				Def("getghStates", ArgNames("world"), Car(Cdr(Cdr("world")))),
-				Def("getghState", ArgNames("world", "ghInd"), Call("get", Args(Call("getghStates", Args("world")), "ghInd"))),
-				Def("getfruit", ArgNames("world"), Car(Cdr(Cdr(Cdr("world"))))),
+					Def("LMStep", ArgNames("lmSavedState", "world"),
 
-				Def("lmLoc", ArgNames("world"), Car(Cdr(Call("lmState", "world")))),
-				Def("lmDir", ArgNames("world"), Car(Cdr(Cdr(Call("lmState", "world"))))),
-
-				Def("ghState", ArgNames("world", "ghInd"),
-					Call("get",
-						Call("ghStates", "world"),
-						"ghInd")),
-
-				Def("sum", ArgNames("p1", "p2"),
-					Cons(Add(Car("p1"), Car("p2")), Add(Cdr("p1"), Cdr("p2")))),
-
-				Def("point", ArgNames("x", "y"), Cons("x", "y")),
-				Def("pdirections", ArgNames(), List(Cons(0, -1), Cons(1, 0), Cons(0, 1), Cons(-1, 0))),
-				Def("getCell", ArgNames("map", "x", "y"), Call("get", Call("get", "map", "y"), "x")),
-
-				Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")),
-
-
-				Def("isCorrect", ArgNames("point", "map", "mapsize"), Or(IsGreater(0, Car("point")), IsGreater(Sub(Cdr("mapsize"), 1), Car("point")), IsGreater(0, Cdr("point")), IsGreater(Sub(Car("mapsize"), 1), Cdr("point"))))
-			);
-			Console.WriteLine(macro);
+						Cons(Call("lmLoc", "world"), Call("calcDirection", Args("lmSavedState", "world")))
 
 
 
+						),
+
+					worldApi,
+					listApi,
+
+
+
+					Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")),
+					Def("lmSavedState.Loc", ArgNames("lmSaveState"), Car("lmSaveState")),
+
+
+					Def("isCorrect", ArgNames("point", "map", "mapsize"),
+						Or(IsGreater(0, Car("point")), IsGreater(Sub(Cdr("mapsize"), 1), Car("point")),
+							IsGreater(0, Cdr("point")), IsGreater(Sub(Car("mapsize"), 1), Cdr("point")),
+							Ceq(Call("getCell", Args("map", "point")), (int)MapCell.Wall))),
+
+
+
+					Def("activeGhostAtPoint", ArgNames("ghost", "point"),
+						And(
+							Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Standard),
+							Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+					Def("frightGhostAtPoint", ArgNames("ghost", "point"),
+						And(
+							Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Fright),
+							Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+
+					DefAny1("activeGhostAtPoint"),
+					DefAny1("frightGhostAtPoint"),
+
+					Def("scoreOfCell", ArgNames("cell"),
+						If(Ceq("cell", (int)MapCell.Pill), 1,
+							If(Ceq("cell", (int)MapCell.PowerPill), 5,
+								If(Ceq("cell", (int)MapCell.Fruit), 3,
+									0)))),
+
+					Def("scoreOfGhosts", ArgNames("ghosts", "point"),
+						Add(
+							If(Call("any_activeGhostAtPoint", Args("ghosts", "point")), -100, 0),
+							If(Call("any_frightGhostAtPoint", Args("ghosts", "point")), 5, 0))),
+
+
+					Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "world", "depth"),
+						Add(
+							Call("scoreOfCell", Args(Call("getCell", Args(Call("map", args: "world"), "nextLoc")))),
+							Call("scoreOfGhosts", Args(Call("ghStates", args: "world"), "nextLoc")),
+							If(Call("pEq", Args("prevLoc", "point")), Sub(Sub(0, "depth"), 1), 0)))
+					,
+
+
+
+					Def("scoreOfDirection", ArgNames("prevLoc", "currLoc", "direction", "world", "lmstate", "depth"),
+
+						If(Call("isCorrect", Args(Call("sum", Args("currLoc", "direction")), Call("map", Args("world")), Call("getMapSize", Args("lmstate")))),
+							Add(Mul(Add("depth", 1), Call("scoreOfPoint", Args("prevLoc", Call("sum", Args("currLoc", "direction")), "world", "depth"))),
+								If(IsGreater("depth", 0), Call("max", Call("scoreOfDirections", Args("currLoc", Call("sum", Args("currLoc", "direction")), "world", "lmstate", Sub("depth", 1)))), 0)),
+							-1000)),
+
+					Def("scoreOfDirections", ArgNames("prevLoc", "currLoc", "world", "lmstate", "depth"),
+						List(
+							Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(-1, 0), "world", "lmstate", "depth")),
+							Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(0, 1), "world", "lmstate", "depth")),
+							Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(1, 0), "world", "lmstate", "depth")),
+							Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(0, -1), "world", "lmstate", "depth")))),
+
+					Def("calcDirection", ArgNames("lmSavedState", "world"), Call("argmax", Call("scoreOfDirections", Call("lmSavedState.Loc", "lmSavedState"), Call("lmLoc", "world"), "lmSavedState", 3)))
+					);
+		
+
+
+
+
+		Console.WriteLine(macro);
 		}
 	}
 }

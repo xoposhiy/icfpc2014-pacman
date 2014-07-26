@@ -144,9 +144,24 @@ namespace Lib.LispLang
 			return Cmd("SUB", a, b);
 		}
 
+		public static SExpr Mul(SExpr a, SExpr b)
+		{
+			return Cmd("MUL", new[] { a, b });
+		}
+
 		public static SExpr Add(SExpr a, SExpr b)
 		{
 			return Cmd("ADD", a, b);
+		}
+
+		public static SExpr Add(params SExpr[] expr)
+		{
+			if (expr.Length == 0)
+				return 0;
+			else if (expr.Length == 1)
+				return expr[0];
+			else
+				return Add(expr[0], expr.Skip(1).ToArray());
 		}
 		
 		public static SExpr And(params SExpr[] expr)
