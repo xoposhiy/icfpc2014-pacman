@@ -137,7 +137,7 @@ namespace Lib.LispLang
 		{
 			get,
 			set,
-			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
+			Def("getListLength", ArgNames("aList"), If(Atom("aList"), 0, Add(1, Call("getListLength", Cdr("aList"))))),
 			
 			Def("fold", ArgNames("initElem", "func", "elemList"),
 				If(Atom("elemList"),
@@ -164,12 +164,12 @@ namespace Lib.LispLang
 			Def("activeGhostAtPoint", ArgNames("ghost", "point"),
 				And(
 					Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Standard),
-					Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+					Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point")))),
 
 			Def("frightGhostAtPoint", ArgNames("ghost", "point"),
 				And(
 					Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Fright),
-					Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+					Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point")))),
 
 			DefAny1("activeGhostAtPoint"),
 			DefAny1("frightGhostAtPoint"),

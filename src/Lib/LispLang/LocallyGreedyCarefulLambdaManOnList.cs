@@ -8,10 +8,10 @@ using System;
 namespace Lib.LispLang
 {
 	[TestFixture]
-	class LocallyGreedyCarefulLambdaManOnList : Api
+	public class LocallyGreedyCarefulLambdaManOnList : Api
 	{
 		[Test]
-		public void Test()
+		public string GetCode()
 		{
 			var macro = Api.Compile(
 
@@ -30,7 +30,7 @@ namespace Lib.LispLang
 
 				worldApi,
 				listApi,
-				Math(),
+				
 
 				Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")),
 				Def("lmSavedState.Loc", ArgNames("lmSaveState"), Car("lmSaveState")),
@@ -87,8 +87,10 @@ namespace Lib.LispLang
 
 
 		
-		Console.WriteLine(macro);
+		
 		var result = LParser.Parse(macro);
+			Console.WriteLine(macro);
+			return macro;
 		}
 	}
 }
