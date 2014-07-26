@@ -9,7 +9,6 @@ namespace Lib.AI
 	public class InterpretedLambdaMan :LambdaMan
 	{
 		private readonly LParseResult parsedProg;
-		private LValue step;
 
 		public InterpretedLambdaMan(string prog)
 		{
@@ -20,14 +19,16 @@ namespace Lib.AI
 		{
 			var m = new LMachineInterpreter(parsedProg.Program);
 			m.State.CurrentFrame = Frame.ForFunctionCall(null, new[] { initialWorld.ToLValue(), 42 });
+			m.State.DataStack.Push(LValue.FromClosure(0, null));
+			new Tap(2).Execute(m.State);
 			m.RunUntilStop();
-			var res = m.State.DataStack.Pop();
-			var pair = res.GetPair();
-			step = res.GetPair().Tail;
-			return Tuple.Create<LValue, LMStep>(pair.Head, MakeStep);
+			var res = m.State.DataStack.Pop().GetPair();
+			var aiState = res.Head;
+			var step = res.Tail;
+			return Tuple.Create<LValue, LMStep>(aiState, (ai, world) => MakeStep(ai, world, step));
 		}
 
-		private Tuple<LValue, Direction> MakeStep(LValue ai, World world)
+		private Tuple<LValue, Direction> MakeStep(LValue ai, World world, LValue step)
 		{
 			var m = new LMachineInterpreter(parsedProg.Program);
 			m.State.DataStack.Push(ai);
@@ -38,5 +39,17 @@ namespace Lib.AI
 			var res = m.State.DataStack.Pop().GetPair();
 			return Tuple.Create(res.Head, (Direction)res.Tail.GetValue());
 		}
+
+		/*
+		 LD 0 0
+		 LD 0 1
+		 LDF main
+		 TAP 2
+		
+		 main:
+		  
+		 step
+		 
+		*/
 	}
 }
