@@ -33,7 +33,12 @@ namespace Lib.LispLang
 			yield return "";
 		}
 
-		public SExpr L(params SExpr[] items)
+		public SExpr Tuple(params SExpr[] items)
+		{
+			return new SExpr(env => SExpr.TupleToCode(env, items));
+		}
+
+		public SExpr List(params SExpr[] items)
 		{
 			return new SExpr(env => SExpr.ListToCode(env, items));
 		}
@@ -75,6 +80,11 @@ namespace Lib.LispLang
 			return Cmd("CDR", list);
 		}
 
+		public SExpr Cons(SExpr head, SExpr tail)
+		{
+			return Cmd("CONS", new[] { head, tail });
+		}
+
 		public static SExpr Cmd(string name, SExpr args)
 		{
 			return new SExpr(env => args.ToCode(env).Concat(new[] { name }));
@@ -88,11 +98,11 @@ namespace Lib.LispLang
 
 		public SExpr Car(SExpr list)
 		{
-			return Cmd("Car", list);
+			return Cmd("CAR", list);
 		}
 		public SExpr Sub(SExpr a, SExpr b)
 		{
-			return Cmd("Sub", new[] { a, b });
+			return Cmd("SUB", new[] { a, b });
 		}
 	}
 }

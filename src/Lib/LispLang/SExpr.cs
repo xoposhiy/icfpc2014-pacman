@@ -45,11 +45,16 @@ namespace Lib.LispLang
 			return new[] { "LDC " + value };
 		}
 
-		public static IEnumerable<string> ListToCode(Env env, SExpr[] list)
+		public static IEnumerable<string> TupleToCode(Env env, SExpr[] tuple)
 		{
 			return
-				list.SelectMany(item => item.ToCode(env))
-					.Concat(list.Skip(1).Select(item => "CONS"));
+				tuple.SelectMany(item => item.ToCode(env))
+					.Concat(tuple.Skip(1).Select(item => "CONS"));
+		}
+
+		public static IEnumerable<string> ListToCode(Env env, SExpr[] list)
+		{
+			return TupleToCode(env, list.Concat(new SExpr[]{0}).ToArray());
 		}
 
 		private static IEnumerable<string> ReferenceToCode(Env env, string reference)
