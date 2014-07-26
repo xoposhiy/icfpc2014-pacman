@@ -18,6 +18,24 @@ namespace Lib.LMachine
 		[NotNull]
 		public LMachineState State { get; private set; }
 
+		public void StepOver()
+		{
+			var stackDepth = State.ControlStack.Count;
+			do
+			{
+				Step();
+			} while (!State.Stopped && State.ControlStack.Count > stackDepth);
+		}
+
+		public void StepOut()
+		{
+			var stackDepth = State.ControlStack.Count;
+			do
+			{
+				Step();
+			} while (!State.Stopped && State.ControlStack.Count >= stackDepth);
+		}
+
 		public void Step()
 		{
 			if (State.Stopped)

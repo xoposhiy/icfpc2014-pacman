@@ -135,7 +135,7 @@ namespace Lib.LispLang
 
 		public static SExpr Y(SExpr point)
 		{
-			return Car(Cdr(point));
+			return Cdr(point);
 		}
 
 		public static SExpr Get(int index, SExpr list)
@@ -155,7 +155,7 @@ namespace Lib.LispLang
 
 		public static SExpr Mul(SExpr a, SExpr b)
 		{
-			return Cmd("MUL", new[] { a, b });
+			return Cmd("MUL", a, b);
 		}
 
 		public static SExpr Add(SExpr a, SExpr b)

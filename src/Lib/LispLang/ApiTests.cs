@@ -57,6 +57,17 @@ namespace Lib.LispLang
 		}
 
 		[Test]
+		public void TestMax2()
+		{
+			Check(
+				Compile(
+					Call("max", List(5, 5, 5, 5, 256)),
+					Return(),
+					max),
+				256);
+		}
+
+		[Test]
 		public void TestMin()
 		{
 			Check(
@@ -122,7 +133,7 @@ namespace Lib.LispLang
 			Console.WriteLine(code);
 			var state = LMachineInterpreter.Run(code);
 			foreach (var expectedItem in expectedStack)
-				Assert.AreEqual(expectedItem, state.DataStack.Pop().ToString());
+				Assert.AreEqual(expectedItem.ToString(), state.DataStack.Pop().ToString());
 			Assert.IsTrue(state.DataStack.IsEmpty);
 		}
 		private void Check(string code, params string[] expectedStack)
@@ -130,7 +141,7 @@ namespace Lib.LispLang
 			Console.WriteLine(code);
 			var state = LMachineInterpreter.Run(code);
 			foreach (var expectedItem in expectedStack)
-				Assert.AreEqual(expectedItem.ToString(), state.DataStack.Pop().ToString());
+				Assert.AreEqual(expectedItem, state.DataStack.Pop().ToString());
 			Assert.IsTrue(state.DataStack.IsEmpty);
 		}
 	}

@@ -1,9 +1,5 @@
 ﻿using Lib.Game;
-using Lib.LMachine.Intructions;
-using Lib.Parsing;
-using Lib.Parsing.LParsing;
 using NUnit.Framework;
-using System;
 
 namespace Lib.LispLang
 {
@@ -24,14 +20,14 @@ namespace Lib.LispLang
 
 				Def("LMStep", ArgNames("lmSavedState", "world"),
 
-					Cons(Call("lmLoc", "world"), Call("calcDirection", Args("lmSavedState", "world")))
+					Cons(Cons(Call("lmLoc", "world"), Cdr("lmSavedState")), Call("calcDirection", Args("lmSavedState", "world")))
 
 					),
 
 				worldApi,
 				listApi,
-				
 
+				
 				Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")),
 				Def("lmSavedState.Loc", ArgNames("lmSaveState"), Car("lmSaveState")),
 
@@ -58,7 +54,7 @@ namespace Lib.LispLang
 				Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "world", "depth"),
 					Add(
 						Call("scoreOfCell", Args(Call("getCell", Args(Call("map", args: "world"), "nextLoc")))),
-						Call("scoreOfGhosts", Args(Call("ghStates", args: "world"), "nextLoc")),
+						Call("scoreOfGhosts", Args(Call("ghStates", "world"), "nextLoc")),
 						If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0)))
 				,
 
@@ -78,18 +74,12 @@ namespace Lib.LispLang
 						Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(1, 0), "world", "lmstate", "depth")),
 						Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(0, -1), "world", "lmstate", "depth")))),
 
-				Def("calcDirection", ArgNames("lmSavedState", "world"), Call("argmax", Call("scoreOfDirections", Call("lmSavedState.Loc", "lmSavedState"), Call("lmLoc", "world"), "lmSavedState", 3)))
-
-		);
+				Def("calcDirection", ArgNames("lmSavedState", "world"), Call("argmax", Call("scoreOfDirections", Call("lmSavedState.Loc", "lmSavedState"), Call("lmLoc", "world"), "world", "lmSavedState", 3))),
+				LambdaMenLogic
+			);
  
-		
-
-
-
-		
-		
-		var result = LParser.Parse(macro);
-			Console.WriteLine(macro);
+			//var result = LParser.Parse(macro);
+			//Console.WriteLine(macro);
 			return macro;
 		}
 	}

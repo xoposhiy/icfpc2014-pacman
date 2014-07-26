@@ -159,7 +159,7 @@ namespace Lib.LispLang
 			return Compile(loader.Concat(main).Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
 		}
 
-		public static SExpr[] LambdaMenLogic =
+		public static readonly SExpr[] LambdaMenLogic =
 		{
 			Def("activeGhostAtPoint", ArgNames("ghost", "point"),
 				And(
@@ -196,7 +196,11 @@ namespace Lib.LispLang
 		public static SExpr DefAny1(String funcName)
 		{
 			return Def("any_" + funcName, ArgNames("aList", "arg1"),
-				If(Atom("aList"), 0, If(Call(funcName, Args(Car("aList"), "arg1")), 1, Call("any_" + funcName, Args(Cdr("aList"), "arg1")))));
+				If(Atom("aList"),
+					0,
+					If(Call(funcName, Args(Car("aList"), "arg1")),
+						1,
+						Call("any_" + funcName, Args(Cdr("aList"), "arg1")))));
 		}
 	}
 }

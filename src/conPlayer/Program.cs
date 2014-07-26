@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
-using Lib;
 using Lib.AI;
+using Lib.Debugger;
 using Lib.Game;
-using Lib.GMachine;
 using Lib.LispLang;
 using Lib.LMachine;
-using Lib.Parsing.GParsing;
 
 namespace conPlayer
 {
@@ -18,17 +15,31 @@ namespace conPlayer
 			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
 			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
 			//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
-			Console.WriteLine(LeftAi.code);
-			LMMain main = new InterpretedLambdaMan(LeftAi.code).Main;
-			//var randomGhostFactory = new RandomGhostFactory();
-			var p = File.ReadAllText(KnownPlace.GccSamples + "sample2.mghc");
-			var ghostFactory = new GMachineFactory(GParser.Parse(p).Program);
+			var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyGreedyCarefulLambdaManOnList().GetCode(), runUntilStopStep: x =>
+			{
+				var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
+				if (ex != null)
+					throw new DebuggerAbortedException(ex);
+			});
+			LMMain main = interpretedLambdaMan.Main;
+			var ghostFactory = new RandomGhostFactory();
+			//var p = File.ReadAllText(KnownPlace.GccSamples + "sample2.mghc");
+			//var ghostFactory = new GMachineFactory(GParser.Parse(p).Program);
 
 			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostFactory);
 			var oldState = "";
+			Exception exception = null;
 			while (!sim.finished)
 			{
-				sim.Tick();
+				try
+				{
+					sim.Tick();
+				}
+				catch (Exception e)
+				{
+					exception = e;
+					break;
+				}
 				var newState = sim.world.ToString();
 				if (newState != oldState)
 				{
@@ -39,9 +50,17 @@ namespace conPlayer
 					Console.ReadKey();
 				}
 			}
-			Console.WriteLine("Game over");
-			Console.WriteLine("Score " + sim.world.man.score);
-			Console.WriteLine("Press any key to continue...");
+			if (exception != null)
+			{
+				if (!(exception is DebuggerAbortedException))
+					ConsoleDebugger.Run(interpretedLambdaMan.Interpreter, interpretedLambdaMan.ProgramParseResult, exception);
+			}
+			else
+			{
+				Console.WriteLine("Game over");
+				Console.WriteLine("Score " + sim.world.man.score);
+				Console.WriteLine("Press any key to continue...");
+			}
 			var key = Console.ReadKey();
 			while (key.Key != ConsoleKey.Enter)
 				key = Console.ReadKey();
@@ -59,6 +78,13 @@ namespace conPlayer
 			if (k.Key == ConsoleKey.DownArrow)
 				return Tuple.Create(LValue.FromInt((int)Direction.Down), Direction.Down);
 			return Tuple.Create(currentaistate, (Direction)currentaistate.Value);
+		}
+	}
+
+	public class DebuggerAbortedException : Exception
+	{
+		public DebuggerAbortedException(Exception exception) : base("Debugger aborted program", exception)
+		{
 		}
 	}
 }

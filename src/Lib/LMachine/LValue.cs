@@ -90,7 +90,7 @@ namespace Lib.LMachine
 		public int GetValue()
 		{
 			if (Tag != LTag.Int)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException(string.Format("LValue is not a value: {0}", ToString()));
 			if (!Value.HasValue)
 				throw new InvalidOperationException("TODO");
 			return Value.Value;
@@ -100,7 +100,7 @@ namespace Lib.LMachine
 		public Pair GetPair()
 		{
 			if (Tag != LTag.Pair)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException(string.Format("LValue is not a pair: {0}", ToString()));
 			if (Pair == null)
 				throw new InvalidOperationException("TODO");
 			return Pair;
@@ -110,7 +110,7 @@ namespace Lib.LMachine
 		public Closure GetClosure()
 		{
 			if (Tag != LTag.Closure)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException(string.Format("LValue is not a closure: {0}", ToString()));
 			if (Closure == null)
 				throw new InvalidOperationException("TODO");
 			return Closure;

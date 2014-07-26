@@ -49,6 +49,7 @@
     <Compile Include="AI\RandomGhost.cs" />
     <Compile Include="AI\RandomGhostFactory.cs" />
     <Compile Include="Annoattions.cs" />
+    <Compile Include="Debugger\ConsoleDebugger.cs" />
     <Compile Include="Game\IGMachine.cs" />
     <Compile Include="Game\IGMachineFactory.cs" />
     <Compile Include="GMachine\Add.cs" />
