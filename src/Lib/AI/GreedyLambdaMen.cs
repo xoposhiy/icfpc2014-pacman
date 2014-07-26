@@ -22,8 +22,15 @@ namespace Lib.AI
 		{
 			var map = world.map;
 			var lmPosition = world.man.location;
+			var standardGhost = world.ghosts.Where(g => g.vitality == GhostVitality.Standard).ToArray();
 			var stackInit = directions
 				.Select(d => LValue.FromPair(lmPosition.Add(SizeByDirection[d]), (int)d))
+				.Where(pts =>
+				{
+					var point = pts.Pair.Head;
+					var position = new Point(point.Pair.Head.Value.Value, point.Pair.Tail.Value.Value);
+					return standardGhost.All(g => !g.location.Equals(position) && GetFourNeighbours(g.location).All(gn => !position.Equals(gn)));
+				})
 				.Where(dp => map.Get(dp.Pair.Head) != MapCell.Wall)
 				.ToArray();
 			var queue = new Queue_Functional();
@@ -71,13 +78,10 @@ namespace Lib.AI
 
 		public static IEnumerable<Point> GetNeighbours(LValue point, World world, bool[,] visited)
 		{
-			var standardGhost = world.ghosts.Where(g => g.vitality == GhostVitality.Standard).ToArray();
 			return GetFourNeighbours(point)
 				.Where(p =>
 					!visited.Get(p) &&
-					(world.map.Get(p) != MapCell.Wall) &&
-					standardGhost.All(g => !p.Equals(g.location)) &&
-					standardGhost.All(g => GetFourNeighbours(g.location).All(gn => !p.Equals(gn))));
+					(world.map.Get(p) != MapCell.Wall));
 		}
 
 		private static IEnumerable<Point> GetFourNeighbours(LValue point)

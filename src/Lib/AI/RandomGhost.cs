@@ -9,6 +9,8 @@ namespace Lib.AI
 {
 	public class RandomGhost : Ghost
 	{
+		private static Random random = new Random(314);
+
 		public GStep Main(int ghostId, World initialWorld)
 		{
 			return new GStep((World) => Step(ghostId, World));
@@ -30,7 +32,7 @@ namespace Lib.AI
 			var possibleDirs = dirs.Select((d, i) => i).Where(i => !isReverseDirection(dirs[i], dirs[(int)currState.direction]) && isCorrect(sum(curr, dirs[i]))).ToArray();
 			if (possibleDirs.Length > 0)
 			{
-				var rnd = new Random().Next(possibleDirs.Length);
+				var rnd = random.Next(possibleDirs.Length);
 				return (Direction)possibleDirs[rnd];
 			}
 			else
