@@ -52,6 +52,7 @@
     <Compile Include="Intructions\Ceq.cs" />
     <Compile Include="Intructions\Cgt.cs" />
     <Compile Include="Intructions\Cgte.cs" />
+    <Compile Include="Intructions\DivTests.cs" />
     <Compile Include="Intructions\Instruction.cs" />
     <Compile Include="Intructions\Cons.cs" />
     <Compile Include="ControlStackItem.cs" />

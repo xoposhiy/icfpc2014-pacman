@@ -22,7 +22,7 @@ namespace LMachine.Intructions
 			state.CurrentAddress++;
 		}
 
-		private static int floor_div2(int a, int b)
+		public static int floor_div2(int a, int b)
 		{
 			unchecked
 			{
