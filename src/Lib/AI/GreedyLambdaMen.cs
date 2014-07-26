@@ -75,6 +75,12 @@ namespace Lib.AI
 			twoStacks = LValue.FromPair(null, null);
 		}
 
+		public bool IsEmpty()
+		{
+			return twoStacks.Pair.Tail.Tag == LTag.Pair
+				|| twoStacks.Pair.Head.Tag == LTag.Pair;
+		}
+
 		public void Enqueue(int value)
 		{
 			twoStacks = LValue.FromPair(
