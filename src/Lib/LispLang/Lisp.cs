@@ -121,5 +121,10 @@ namespace Lib.LispLang
 		{
 			return Cmd("ADD", new[] { a, b });
 		}
+		
+		public SExpr And(SExpr a, SExpr b)
+		{
+			return If(a, If(b, 1, 0), 0);
+		}
 	}
 }
