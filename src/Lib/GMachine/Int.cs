@@ -13,7 +13,7 @@ namespace Lib.GMachine
 
 		public GArg I { get; private set; }
 
-		public override void Execute([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		public override void Execute([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			var @int = I.GetConstValue();
 			switch (@int)
@@ -50,31 +50,31 @@ namespace Lib.GMachine
 			}
 		}
 
-		private static void Int0([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int0([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			var newDirection = state.Registers[0] > 3 ? (Direction?)null : (Direction)state.Registers[0];
 			if (newDirection.HasValue)
 				interruptService.SetNewDirectionForThisGhost(newDirection.Value);
 		}
 
-		private static void Int1([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int1([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			var l = interruptService.GetLamdbaManCurrentLocation();
 			state.Registers[0] = (byte)l.X;
 			state.Registers[1] = (byte)l.Y;
 		}
 
-		private static void Int2([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int2([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			// nb! there is no second lambda man
 		}
 
-		private static void Int3([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int3([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			state.Registers[0] = interruptService.GetThisGhostIndex();
 		}
 
-		private static void Int4([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int4([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			var ghostState = interruptService.TryGetGhostState(state.Registers[0]);
 			if (ghostState != null)
@@ -84,7 +84,7 @@ namespace Lib.GMachine
 			}
 		}
 
-		private static void Int5([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int5([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			var ghostState = interruptService.TryGetGhostState(state.Registers[0]);
 			if (ghostState != null)
@@ -94,7 +94,7 @@ namespace Lib.GMachine
 			}
 		}
 
-		private static void Int6([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int6([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			var ghostState = interruptService.TryGetGhostState(state.Registers[0]);
 			if (ghostState != null)
@@ -104,12 +104,12 @@ namespace Lib.GMachine
 			}
 		}
 
-		private static void Int7([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int7([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			state.Registers[0] = (byte)interruptService.GetMapState(state.Registers[0], state.Registers[1]);
 		}
 
-		private static void Int8([NotNull] GMachineState state, [NotNull] IInterruptService interruptService)
+		private static void Int8([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			interruptService.DebugTrace(state.Pc, state.Registers);
 		}

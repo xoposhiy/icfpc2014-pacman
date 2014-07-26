@@ -1,3 +1,5 @@
+using Lib.Game;
+
 namespace Lib.GMachine
 {
 	public class Mov : GCmd
@@ -15,7 +17,7 @@ namespace Lib.GMachine
 		[NotNull]
 		public GArg Src { get; set; }
 
-		public override void Execute([NotNull] GMachineState state, IInterruptService interruptService)
+		public override void Execute([NotNull] GMachineState state, IGhostInterruptService interruptService)
 		{
 			var value = state.ReadValue(Src);
 			state.WriteValue(Dst, value);

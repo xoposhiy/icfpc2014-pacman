@@ -1,12 +1,13 @@
 using System;
+using Lib.Game;
 
 namespace Lib.GMachine
 {
 	public class GMachine
 	{
-		private readonly IInterruptService interruptService;
+		private readonly IGhostInterruptService interruptService;
 
-		public GMachine([NotNull] GCmd[] program, [NotNull] IInterruptService interruptService)
+		public GMachine([NotNull] GCmd[] program, [NotNull] IGhostInterruptService interruptService)
 		{
 			this.interruptService = interruptService;
 			Program = program;

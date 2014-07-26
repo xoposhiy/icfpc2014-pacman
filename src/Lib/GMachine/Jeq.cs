@@ -1,3 +1,5 @@
+using Lib.Game;
+
 namespace Lib.GMachine
 {
 	public class Jeq : GCmd
@@ -19,7 +21,7 @@ namespace Lib.GMachine
 		[NotNull]
 		public GArg Y { get; set; }
 
-		public override void Execute([NotNull] GMachineState state, IInterruptService interruptService)
+		public override void Execute([NotNull] GMachineState state, IGhostInterruptService interruptService)
 		{
 			var x = state.ReadValue(X);
 			var y = state.ReadValue(Y);

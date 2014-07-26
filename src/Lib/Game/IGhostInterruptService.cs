@@ -1,8 +1,6 @@
-using Lib.Game;
-
-namespace Lib.GMachine
+namespace Lib.Game
 {
-	public interface IInterruptService
+	public interface IGhostInterruptService
 	{
 		void SetNewDirectionForThisGhost(Direction newDirection);
 
@@ -16,6 +14,6 @@ namespace Lib.GMachine
 
 		MapCell GetMapState(byte x, byte y);
 
-		void DebugTrace(byte pc, byte[] registers);
+		void DebugTrace(byte pc, [NotNull] byte[] registers);
 	}
 }

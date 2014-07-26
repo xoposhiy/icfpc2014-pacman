@@ -1,3 +1,5 @@
+using Lib.Game;
+
 namespace Lib.GMachine
 {
 	public class Hlt : GCmd
@@ -7,7 +9,7 @@ namespace Lib.GMachine
 		{
 		}
 
-		public override void Execute([NotNull] GMachineState state, IInterruptService interruptService)
+		public override void Execute([NotNull] GMachineState state, IGhostInterruptService interruptService)
 		{
 			state.Hlt = true;
 		}
