@@ -9,6 +9,6 @@ namespace Lib.GMachine
 
 		public GCmdType Type { get; private set; }
 
-		public abstract void Execute([NotNull] GMachineState state);
+		public abstract void Execute([NotNull] GMachineState state, [NotNull] IInterruptService interruptService);
 	}
 }

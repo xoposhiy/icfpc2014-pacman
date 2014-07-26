@@ -15,7 +15,7 @@ namespace Lib.GMachine
 		[NotNull]
 		public GArg Src { get; set; }
 
-		public override void Execute([NotNull] GMachineState state)
+		public override void Execute([NotNull] GMachineState state, IInterruptService interruptService)
 		{
 			var value = state.ReadValue(Src);
 			state.WriteValue(Dst, value);

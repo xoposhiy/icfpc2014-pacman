@@ -7,7 +7,7 @@ namespace Lib.GMachine
 		{
 		}
 
-		public override void Execute([NotNull] GMachineState state)
+		public override void Execute([NotNull] GMachineState state, IInterruptService interruptService)
 		{
 			state.Hlt = true;
 		}

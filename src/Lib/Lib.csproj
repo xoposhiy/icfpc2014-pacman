@@ -60,6 +60,7 @@
     <Compile Include="GMachine\GMachineState.cs" />
     <Compile Include="GMachine\GMachine_Test.cs" />
     <Compile Include="GMachine\Hlt.cs" />
+    <Compile Include="GMachine\IInterruptService.cs" />
     <Compile Include="GMachine\Inc.cs" />
     <Compile Include="GMachine\Int.cs" />
     <Compile Include="GMachine\Jeq.cs" />

@@ -4,8 +4,11 @@ namespace Lib.GMachine
 {
 	public class GMachine
 	{
-		public GMachine([NotNull] GCmd[] program)
+		private readonly IInterruptService interruptService;
+
+		public GMachine([NotNull] GCmd[] program, [NotNull] IInterruptService interruptService)
 		{
+			this.interruptService = interruptService;
 			Program = program;
 			State = new GMachineState();
 		}
@@ -26,7 +29,7 @@ namespace Lib.GMachine
 				var cmd = Program[pc];
 				try
 				{
-					cmd.Execute(State);
+					cmd.Execute(State, interruptService);
 				}
 				catch (Exception e)
 				{
