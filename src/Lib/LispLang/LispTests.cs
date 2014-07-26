@@ -25,27 +25,5 @@ namespace Lib.LispLang
 			m.RunUntilStop();
 			Assert.AreEqual("4", m.State.DataStack.Pop().ToString());
 		}
-
-		[Test]
-		public void TestEnqueue()
-		{
-			var macro = Compile(
-				Call("enqueue", Call("sampleQueue"), 3),
-				Cmd("RTN", new SExpr()),
-				Def("sampleQueue", ArgNames(), Cons(List(), List())),
-				Enqueue());
-
-			Console.WriteLine(macro);
-			var parsed = LParser.Parse(macro);
-			var m = new LMachineInterpreter(parsed.Program);
-			m.RunUntilStop();
-			Assert.AreEqual("((3, 0), 0)", m.State.DataStack.Pop().ToString());
-		}
-
-		private SExpr Enqueue()
-		{
-			return Def("enqueue", ArgNames("queue", "value"),
-				Cons(Cons("value", Car("queue")), Cdr("queue")));
-		}
 	}
 }

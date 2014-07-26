@@ -52,6 +52,7 @@
     <Compile Include="LispLang\Env.cs" />
     <Compile Include="LispLang\Lisp.cs" />
     <Compile Include="LispLang\LispTests.cs" />
+    <Compile Include="LispLang\Queue.cs" />
     <Compile Include="LispLang\SExpr.cs" />
     <Compile Include="LMachine\Closure.cs" />
     <Compile Include="LMachine\Frame.cs" />

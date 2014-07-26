@@ -75,9 +75,15 @@ namespace Lib.LispLang
 		{
 			return prefix + "_" + (++lastLabelId);
 		}
+
 		public SExpr Cdr(SExpr list)
 		{
 			return Cmd("CDR", list);
+		}
+
+		public SExpr Atom(SExpr expr)
+		{
+			return Cmd("ATOM", expr);
 		}
 
 		public SExpr Cons(SExpr head, SExpr tail)
