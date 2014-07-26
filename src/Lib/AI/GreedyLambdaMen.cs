@@ -67,12 +67,26 @@ namespace Lib.AI
 				{Direction.Right, new Point(1, 0)}
 			};
 
-		public static IEnumerable<Point> GetNeighbours(LValue lValuePoint, World world, bool[,] visited)
+		public static IEnumerable<Point> GetNeighbours(LValue point, World world, bool[,] visited)
+		{
+			return GetFourNeighbours(point)
+				.Where(p => 
+					!visited.Get(p) && 
+					(world.map.Get(p) != MapCell.Wall) && 
+					world.ghosts.All(g => !p.Equals(g.location)) &&
+					world.ghosts.All(g => GetFourNeighbours(g.location).All(gn => !p.Equals(gn))));
+		}
+
+		private static IEnumerable<Point> GetFourNeighbours(LValue point)
+		{
+			return GetFourNeighbours(new Point(point.Pair.Head.Value.Value, point.Pair.Tail.Value.Value));
+		}
+
+		private static IEnumerable<Point> GetFourNeighbours(Point point)
 		{
 			return directions
 				.Select(d => SizeByDirection[d])
-				.Select(p => new Point(p.X + lValuePoint.Pair.Head.Value.Value, p.Y + lValuePoint.Pair.Tail.Value.Value))
-				.Where(p => !visited.Get(p) && (world.map.Get(p) != MapCell.Wall) && world.ghosts.All(g => !p.Equals(g.location)));
+				.Select(p => new Point(p.X + point.X, p.Y + point.Y));
 		}
 	}
 

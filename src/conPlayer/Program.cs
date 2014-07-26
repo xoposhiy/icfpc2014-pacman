@@ -17,7 +17,7 @@ namespace conPlayer
 //			LMMain main = new InterpretedLambdaMan(File.ReadAllText(KnownPlace.GccSamples + "stupidBot.mgcc")).Main;
 			GMain[] ghostProgs = new GMain[] { new RandomGhost().Main };
 			
-			var sim = new GameSim(MapUtils.LoadFromKnownLocation("small.txt"), main, ghostProgs);
+			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostProgs);
 			var oldState = "";
 			while (!sim.finished)
 			{
