@@ -47,6 +47,11 @@
     <Compile Include="AI\RandomGhost.cs" />
     <Compile Include="Annoattions.cs" />
     <Compile Include="Game\Ghost.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="LispLang\Env.cs" />
+    <Compile Include="LispLang\Lisp.cs" />
+    <Compile Include="LispLang\ListTests.cs" />
+    <Compile Include="LispLang\SExpr.cs" />
     <Compile Include="LMachine\Closure.cs" />
     <Compile Include="LMachine\Frame.cs" />
     <Compile Include="Game\GameSim.cs" />

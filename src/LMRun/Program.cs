@@ -13,7 +13,7 @@ namespace LMRun
 	{
 		static void Main(string[] args)
 		{
-			Run("get");
+			Run("get2");
 		}
 
 		static void Run(string name)
