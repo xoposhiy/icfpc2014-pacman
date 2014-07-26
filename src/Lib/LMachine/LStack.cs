@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Lib.LMachine
 {
-	public class LStack<T> where T : class
+	public class LStack<T> : IEnumerable<T> where T : class
 	{
 		private readonly Stack<T> stack;
 
@@ -23,6 +24,11 @@ namespace Lib.LMachine
 			stack.Push(value);
 		}
 
+		public int Count
+		{
+			get { return stack.Count; }
+		}
+
 		[NotNull]
 		public T Pop()
 		{
@@ -31,9 +37,20 @@ namespace Lib.LMachine
 			return stack.Pop();
 		}
 
+		[NotNull]
+		public IEnumerator<T> GetEnumerator()
+		{
+			return stack.GetEnumerator();
+		}
+
 		public override string ToString()
 		{
-			return string.Join("|", stack.Take(5).Select(i => i.ToString())) + (stack.Count <= 5 ? "|": "|...|");
+			return string.Join("|", stack.Take(5).Select(i => i.ToString())) + (stack.Count <= 5 ? "|" : "|...|");
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }

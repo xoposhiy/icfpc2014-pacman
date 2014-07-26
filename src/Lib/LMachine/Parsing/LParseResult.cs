@@ -8,7 +8,9 @@ namespace Lib.LMachine.Parsing
 		public Instruction[] Program { get; set; }
 
 		public int[] SourceLines { get; set; }
-		
-		public string[] CodeLines { get; set; }
+
+		public string[] AddressNames { get; set; }
+
+		public CodeLine[] CodeLines { get; set; }
 	}
 }

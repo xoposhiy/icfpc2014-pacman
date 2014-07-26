@@ -20,21 +20,23 @@ namespace Lib.LMachine.Parsing
 		public static LParseResult Parse([NotNull] string source)
 		{
 			var lines = source.Split(new[] { "\r\n" }, StringSplitOptions.None);
+			var codeLines = GetCodeLines(lines);
 			var program = new List<Instruction>();
 			var sourceLines = new List<int>();
-			var labels = ExtractLabels(lines);
-			var constants = ExtractConstants(lines);
-			var sourceLineToAddress = GetSourceLineToAddressMap(lines);
-			for (var sourceLine = 0; sourceLine < lines.Length; sourceLine++)
+			var labels = ExtractLabels(codeLines);
+			var constants = ExtractConstants(codeLines);
+			var sourceLineToAddress = GetSourceLineToAddressMap(codeLines);
+			var addressNames = new List<string>();
+			var addressToName = labels.GroupBy(x => x.Value).ToDictionary(x => sourceLineToAddress[x.Key], x => x.Any() ? x.First().Key : null);
+			for (var sourceLine = 0; sourceLine < codeLines.Length; sourceLine++)
 			{
-				var originalLine = lines[sourceLine];
-				var line = SkipConstants(SkipLabel(SkipComments(originalLine)));
-				var split = line.Split(whitespaces, StringSplitOptions.RemoveEmptyEntries);
+				var codeLine = codeLines[sourceLine];
+				var split = codeLine.Command.Split(whitespaces, StringSplitOptions.RemoveEmptyEntries);
 				if (split.Length > 0)
 				{
 					Type instructionType;
 					if (!instructionTypes.TryGetValue(split[0], out instructionType))
-						throw new InvalidOperationException(string.Format("Instruction '{0}' is not supported. Line {1}: {2}", split[0], sourceLine, originalLine));
+						throw new InvalidOperationException(string.Format("Instruction '{0}' is not supported. Line {1}: {2}", split[0], sourceLine, codeLine));
 					split = split.Skip(1).ToArray();
 					var constructors = instructionType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 					if (constructors.Length != 1)	
@@ -43,14 +45,14 @@ namespace Lib.LMachine.Parsing
 					var parameterInfos = constructor.GetParameters();
 					var parameters = new object[parameterInfos.Length];
 					if (split.Length != parameters.Length)
-						throw new InvalidOperationException(string.Format("Invalid parameter count of instruction '{0}'. Expected parameters: '{1}'. Line {2}: {3}", instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, originalLine));
+						throw new InvalidOperationException(string.Format("Invalid parameter count of instruction '{0}'. Expected parameters: '{1}'. Line {2}: {3}", instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 					for (var i = 0; i < parameterInfos.Length; i++)
 					{
 						if (parameterInfos[i].ParameterType == typeof(int))
 						{
 							int value;
 							if (!constants.TryGetValue(split[i], out value) && !int.TryParse(split[i], out value))
-								throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, originalLine));
+								throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 							parameters[i] = value;
 						}
 						else if (parameterInfos[i].ParameterType == typeof(uint))
@@ -60,7 +62,7 @@ namespace Lib.LMachine.Parsing
 							if (labels.TryGetValue(split[i], out labelSourceLine))
 								value = sourceLineToAddress[labelSourceLine];
 							else if (!uint.TryParse(split[i], out value))
-								throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, originalLine));
+								throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 							parameters[i] = value;
 						}
 						else
@@ -68,53 +70,62 @@ namespace Lib.LMachine.Parsing
 					}
 					program.Add((Instruction)Activator.CreateInstance(instructionType, parameters));
 					sourceLines.Add(sourceLine + 1);
+					string addressName;
+					addressToName.TryGetValue((uint)addressNames.Count, out addressName);
+					addressNames.Add(addressName);
 				}
 			}
 			return new LParseResult
 			{
 				Program = program.ToArray(),
 				SourceLines = sourceLines.ToArray(),
-				CodeLines = lines
+				CodeLines = codeLines,
+				AddressNames = addressNames.ToArray(),
 			};
 		}
 
 		[NotNull]
-		private static Dictionary<int, uint> GetSourceLineToAddressMap([NotNull] string[] lines)
+		private static Dictionary<int, uint> GetSourceLineToAddressMap([NotNull] CodeLine[] codeLines)
 		{
 			uint currentAddress = 0;
 			var sourceLineToAddress = new Dictionary<int, uint>();
-			for (var sourceLine = 0; sourceLine < lines.Length; sourceLine++)
+			for (var i = 0; i < codeLines.Length; i++)
 			{
-				var originalLine = lines[sourceLine];
-				var line = SkipConstants(SkipLabel(SkipComments(originalLine)));
-				var split = line.Split(whitespaces, StringSplitOptions.RemoveEmptyEntries);
-				sourceLineToAddress[sourceLine] = currentAddress;
-				if (split.Length > 0)
+				sourceLineToAddress[i] = currentAddress;
+				if (!string.IsNullOrWhiteSpace(codeLines[i].Command))
 					currentAddress++;
 			}
 			return sourceLineToAddress;
 		}
 
 		[NotNull]
-		private static Dictionary<string, int> ExtractConstants([NotNull] string[] lines)
+		private static CodeLine[] GetCodeLines([NotNull] string[] lines)
+		{
+			var codeLines = new CodeLine[lines.Length];
+			for (var i = 0; i < lines.Length; i++)
+				codeLines[i] = new CodeLine(lines[i]);
+			return codeLines;
+		}
+
+		[NotNull]
+		private static Dictionary<string, int> ExtractConstants([NotNull] CodeLine[] codeLines)
 		{
 			var constants = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-			for (var sourceLine = 0; sourceLine < lines.Length; sourceLine++)
+			for (var i = 0; i < codeLines.Length; i++)
 			{
-				var originalLine = lines[sourceLine];
-				var line = SkipLabel(SkipComments(originalLine));
-				if (line.IndexOf('=') >= 0)
+				var constantDef = codeLines[i].Constant;
+				if (!string.IsNullOrWhiteSpace(constantDef))
 				{
-					var split = line.Split(whitespaces.Concat(new[] { '=' }).ToArray(), 3, StringSplitOptions.RemoveEmptyEntries);
+					var split = constantDef.Split(whitespaces.Concat(new[] { '=' }).ToArray(), 3, StringSplitOptions.RemoveEmptyEntries);
 					if (split.Length != 2)
-						throw new InvalidOperationException(string.Format("Invalid constant deinition. Expected '<name>=<value (Int32)>'. Line {0}: {1}", sourceLine, originalLine));
+						throw new InvalidOperationException(string.Format("Invalid constant deinition. Expected '<name>=<value (Int32)>'. Line {0}: {1}", i, codeLines[i]));
 					var constantName = split[0];
 					var constantValueString = split[1];
 					if (constants.ContainsKey(constantName))
-						throw new InvalidOperationException(string.Format("Duplicate definition of constant '{0}'. Line {1}: {2}", constantName, sourceLine, originalLine));
+						throw new InvalidOperationException(string.Format("Duplicate definition of constant '{0}'. Line {1}: {2}", constantName, i, codeLines[i]));
 					int value;
 					if (!int.TryParse(constantValueString, out value))
-						throw new InvalidOperationException(string.Format("Invalid constant value '{0}'. Expected Int32. Line {1}: {2}", constantValueString, sourceLine, originalLine));
+						throw new InvalidOperationException(string.Format("Invalid constant value '{0}'. Expected Int32. Line {1}: {2}", constantValueString, i, codeLines[i]));
 					constants.Add(constantName, value);
 				}
 			}
@@ -122,44 +133,22 @@ namespace Lib.LMachine.Parsing
 		}
 
 		[NotNull]
-		private static Dictionary<string, int> ExtractLabels([NotNull] string[] lines)
+		private static Dictionary<string, int> ExtractLabels([NotNull] CodeLine[] codeLines)
 		{
 			var labels = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-			for (var sourceLine = 0; sourceLine < lines.Length; sourceLine++)
+			for (var i = 0; i < codeLines.Length; i++)
 			{
-				var originalLine = lines[sourceLine];
-				var line = SkipConstants(SkipComments(originalLine));
-				var labelIndex = line.IndexOf(':');
-				if (labelIndex >= 0)
+				var labelDef = codeLines[i].Label;
+				if (!string.IsNullOrWhiteSpace(labelDef))
 				{
-					var labelName = line.Substring(0, labelIndex).Trim(whitespaces);
+					var labelIndex = labelDef.IndexOf(':');
+					var labelName = labelDef.Substring(0, labelIndex).Trim(whitespaces);
 					if (labels.ContainsKey(labelName))
-						throw new InvalidOperationException(string.Format("Duplicate definition of label '{0}'. Line {1}: {2}", labelName, sourceLine, originalLine));
-					labels.Add(labelName, sourceLine);
+						throw new InvalidOperationException(string.Format("Duplicate definition of label '{0}'. Line {1}: {2}", labelName, i, codeLines[i]));
+					labels.Add(labelName, i);
 				}
 			}
 			return labels;
-		}
-
-		[NotNull]
-		private static string SkipComments([NotNull] string line)
-		{
-			var commentIndex = line.IndexOf(';');
-			return commentIndex >= 0 ? line.Substring(0, commentIndex) : line;
-		}
-
-		[NotNull]
-		private static string SkipLabel([NotNull] string line)
-		{
-			var labelIndex = line.IndexOf(':');
-			return labelIndex >= 0 ? line.Substring(labelIndex + 1) : line;
-		}
-
-		[NotNull]
-		private static string SkipConstants([NotNull] string line)
-		{
-			var labelIndex = line.IndexOf('=');
-			return labelIndex >= 0 ? "" : line;
 		}
 	}
 }
