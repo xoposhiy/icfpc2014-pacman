@@ -28,6 +28,17 @@ namespace Lib.LispLang
 			);
 		}
 
+		public static SExpr Peek()
+		{
+			return Def("queue_peek", ArgNames("q"),
+				If(Atom(Cdr("q")),
+					Call("queue_peek", Call("queue_transfer", "q")),
+					Car(Cdr("q"))
+				)
+			);
+			
+		}
+
 		public static SExpr Dequeue()
 		{
 			return Def("queue_dequeue", ArgNames("q"),

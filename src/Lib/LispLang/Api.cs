@@ -25,7 +25,9 @@ namespace Lib.LispLang
 			Def("point", ArgNames("x", "y"), Cons("x", "y")),
 			Def("pdirections", ArgNames(), List(Cons(0, -1), Cons(1, 0), Cons(0, 1), Cons(-1, 0))),
 			Def("getCell", ArgNames("map", "x", "y"), Call("get", Call("get", "map", "y"), "x")),
-			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("getListLength", "map"), Call("getListLength", Car("map"))))),
+			Def("mapHeight", ArgNames("map"), Call("getListLength", "map")),
+			Def("mapWidth", ArgNames("map"), Call("getListLength", Car("map"))),
+			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("mapHeight", "map"), Call("mapWidth", "map")))),
 		};
 
 		public static SExpr[] loader =
@@ -39,6 +41,7 @@ namespace Lib.LispLang
 		public static SExpr[] queueApi =
 		{
 			Queue.Enqueue(),
+			Queue.Peek(),
 			Queue.Dequeue(),
 			Queue.Transfer(),
 			Queue.IsEmpty()
