@@ -1,4 +1,7 @@
-﻿using Lib.Game;
+﻿using System;
+using Lib.Game;
+using Lib.LMachine.Intructions;
+using Lib.Parsing.LParsing;
 using NUnit.Framework;
 
 namespace Lib.LispLang
@@ -6,12 +9,7 @@ namespace Lib.LispLang
 	[TestFixture]
 	public class LocallyGreedyCarefulLambdaManOnList : Api
 	{
-		[Test]
-		public string GetCode()
-		{
-			var macro = Api.Compile(
-
-				loader,
+		public static string code = CompileWithLibs(
 				Def("main", ArgNames("world"),
 					Cons(
 						Call("initLMInternalState", Call("map", "world")),
@@ -19,15 +17,11 @@ namespace Lib.LispLang
 						),
 
 				Def("LMStep", ArgNames("lmSavedState", "world"),
-
-					Cons(Cons(Call("lmLoc", "world"), Cdr("lmSavedState")), Call("calcDirection", Args("lmSavedState", "world")))
-
+				Cons(Cons(Call("lmLoc", "world"), Cdr("lmSavedState")), 
+				Call("calcDirection", "lmSavedState", "world"))
 					),
 
-				worldApi,
-				listApi,
 
-				
 				Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")),
 				Def("lmSavedState.Loc", ArgNames("lmSaveState"), Car("lmSaveState")),
 
@@ -55,10 +49,7 @@ namespace Lib.LispLang
 					Add(
 						Call("scoreOfCell", Args(Call("getCell", Args(Call("map", args: "world"), "nextLoc")))),
 						Call("scoreOfGhosts", Args(Call("ghStates", "world"), "nextLoc")),
-						If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0)))
-				,
-
-
+					If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0))),
 
 				Def("scoreOfDirection", ArgNames("prevLoc", "currLoc", "direction", "world", "lmstate", "depth"),
 
@@ -74,13 +65,24 @@ namespace Lib.LispLang
 						Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(1, 0), "world", "lmstate", "depth")),
 						Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(0, -1), "world", "lmstate", "depth")))),
 
-				Def("calcDirection", ArgNames("lmSavedState", "world"), Call("argmax", Call("scoreOfDirections", Call("lmSavedState.Loc", "lmSavedState"), Call("lmLoc", "world"), "world", "lmSavedState", 3))),
-				LambdaMenLogic
+			Def("calcDirection", ArgNames("lmSavedState", "world"),
+				Call("argmax",
+					Call("scoreOfDirections",
+						Call("lmSavedState.Loc", "lmSavedState"),
+						Call("lmLoc", "world"),
+						"world",
+						"lmSavedState", 
+						2))),
+						LambdaMenLogic
+
 			);
- 
-			//var result = LParser.Parse(macro);
-			//Console.WriteLine(macro);
-			return macro;
+		[Test]
+		public void Test()
+		{
+			Console.WriteLine(code);
+			var result = LParser.Parse(code).Program.ToGcc();
+//			Console.WriteLine(result);
 		}
 	}
 }
+	

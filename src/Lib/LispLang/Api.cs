@@ -40,7 +40,8 @@ namespace Lib.LispLang
 			setCellXY,
 			Def("mapHeight", ArgNames("map"), Call("getListLength", "map")),
 			Def("mapWidth", ArgNames("map"), Call("getListLength", Car("map"))),
-			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("mapHeight", "map"), Call("mapWidth", "map"))))
+			Def("initLMInternalState", ArgNames("map"), 
+				Cons(Cons(-1, -1), Cons(Call("mapHeight", "map"), Call("mapWidth", "map"))))
 		};
 
 		public static SExpr[] loader =

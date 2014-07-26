@@ -15,7 +15,12 @@ namespace Lib.Parsing.LParsing
 		[NotNull]
 		public static ParseResult<Instruction> Parse([NotNull] string source)
 		{
-			return new LParser().DoParse(source);
+			var res = new LParser().DoParse(source);
+			for (int i = 0; i < res.Program.Length; i++)
+			{
+				res.Program[i].SourceLineNo = res.SourceLines[i];
+			}
+			return res;
 		}
 
 		protected override bool TryGetParameterValue([NotNull] string argString, [NotNull] ParameterInfo parameterInfo, [NotNull] Type programItemType, [NotNull] Dictionary<string, int> labels, [NotNull] Dictionary<int, uint> sourceLineToAddress, [NotNull] Dictionary<string, int> constants, out object parameter)

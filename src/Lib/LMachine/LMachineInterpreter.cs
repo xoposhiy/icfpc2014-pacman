@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Lib.LMachine.Intructions;
 using Lib.Parsing.LParsing;
 
@@ -36,6 +37,11 @@ namespace Lib.LMachine
 			} while (!State.Stopped && State.ControlStack.Count >= stackDepth);
 		}
 
+		public static void Log(string s)
+		{
+//			File.AppendAllText("log.txt", s + "\r\n");
+		}
+
 		public void Step()
 		{
 			if (State.Stopped)
@@ -43,6 +49,7 @@ namespace Lib.LMachine
 			if (State.CurrentAddress >= Program.Length)
 				throw new InvalidOperationException("TODO");
 			var instruction = Program[State.CurrentAddress];
+			Log(instruction.SourceLineNo+ "\t" +instruction.ToString());
 			instruction.Execute(State);
 		}
 

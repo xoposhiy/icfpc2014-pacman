@@ -9,6 +9,8 @@ namespace Lib.LMachine.Intructions
 			Type = type;
 		}
 
+		public int SourceLineNo { get; set; }
+
 		public InstructionType Type { get; private set; }
 
 		public abstract void Execute([NotNull] LMachineState state);

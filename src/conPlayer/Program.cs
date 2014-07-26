@@ -15,12 +15,13 @@ namespace conPlayer
 			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
 			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
 			//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
-			var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyGreedyCarefulLambdaManOnList().GetCode(), runUntilStopStep: x =>
-			{
-				var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
-				if (ex != null)
-					throw new DebuggerAbortedException(ex);
-			});
+			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
+//				, runUntilStopStep: x =>
+//			{
+//				var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
+//				if (ex != null)
+//					throw new DebuggerAbortedException(ex);
+//			});
 			LMMain main = interpretedLambdaMan.Main;
 			var ghostFactory = new RandomGhostFactory();
 			//var p = File.ReadAllText(KnownPlace.GccSamples + "sample2.mghc");
