@@ -1,4 +1,5 @@
 ﻿using Lib.Game;
+using Lib.LMachine.Parsing;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Lib.LispLang
 		[Test]
 		public void Test()
 		{
-			var macro = Api.CompileWithLibs(
+			var macro = Api.Compile(
 
 				loader,
 				Def("main", ArgNames("world"),
@@ -31,8 +32,7 @@ namespace Lib.LispLang
 
 				worldApi,
 				listApi,
-
-
+				Math(),
 
 				Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")),
 				Def("lmSavedState.Loc", ArgNames("lmSaveState"), Car("lmSaveState")),
@@ -44,19 +44,20 @@ namespace Lib.LispLang
 						Ceq(Call("getCell", Args("map", "point")), (int)MapCell.Wall))),
 
 
-
+						
 				Def("activeGhostAtPoint", ArgNames("ghost", "point"),
 					And(
 						Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Standard),
-						Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+						Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point")))),
 				Def("frightGhostAtPoint", ArgNames("ghost", "point"),
 					And(
 						Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Fright),
-						Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+						Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point")))),
 
 				DefAny1("activeGhostAtPoint"),
 				DefAny1("frightGhostAtPoint"),
 
+				
 				Def("scoreOfCell", ArgNames("cell"),
 					If(Ceq("cell", (int)MapCell.Pill), 1,
 						If(Ceq("cell", (int)MapCell.PowerPill), 5,
@@ -73,7 +74,7 @@ namespace Lib.LispLang
 					Add(
 						Call("scoreOfCell", Args(Call("getCell", Args(Call("map", args: "world"), "nextLoc")))),
 						Call("scoreOfGhosts", Args(Call("ghStates", args: "world"), "nextLoc")),
-						If(Call("pEq", Args("prevLoc", "point")), Sub(Sub(0, "depth"), 1), 0)))
+						If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0)))
 				,
 
 
@@ -93,13 +94,16 @@ namespace Lib.LispLang
 						Call("scoreOfDirection", Args("prevLoc", "currLoc", Cons(0, -1), "world", "lmstate", "depth")))),
 
 				Def("calcDirection", ArgNames("lmSavedState", "world"), Call("argmax", Call("scoreOfDirections", Call("lmSavedState.Loc", "lmSavedState"), Call("lmLoc", "world"), "lmSavedState", 3)))
-				);
+
+		);
+ 
 		
 
 
 
-
+		
 		Console.WriteLine(macro);
+		LParseResult result = 	LParser.Parse(macro);
 		}
 	}
 }
