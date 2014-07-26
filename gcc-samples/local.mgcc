@@ -1,0 +1,12 @@
+half = 21
+
+LDC  half
+LDF  doubler    ; load body
+AP   1    ; call body with 1 variable in a new frame
+RTN
+
+doubler:
+LD   0 0  ; var x    :body
+LD   0 0  ; var x
+ADD
+RTN

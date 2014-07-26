@@ -9,7 +9,7 @@ namespace Lib
 	{
 		public static MapCell[,] LoadFromKnownLocation(string filename)
 		{
-			return Load(File.ReadAllText(@"..\..\..\..\mazes\" + filename));
+			return Load(File.ReadAllText(KnownPlace.Mazes + filename));
 		}
 
 		public static MapCell[,] Load(string text)

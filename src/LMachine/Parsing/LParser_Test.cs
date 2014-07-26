@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
+using Lib;
 using LMachine.Intructions;
 using NUnit.Framework;
 
@@ -94,6 +96,17 @@ namespace LMachine.Parsing
 			var parseResult = LParser.Parse("ldc 1 ;lalala");
 			AssertInstructionEquals(new Ldc(1), parseResult.Program.Single());
 			Assert.AreEqual(1, parseResult.SourceLines.Single());
+		}
+
+		[Test]
+		public void ParseAndExecuteComplexProgram()
+		{
+			var source = File.ReadAllText(KnownPlace.GccSamples + "local.mgcc");
+			var parsedProgram = LParser.Parse(source);
+			var m = new LMachineInterpreter(parsedProgram.Program);
+			while (!m.State.Stopped)
+				m.Step();
+			Assert.AreEqual(42, m.State.DataStack.Pop().GetValue());
 		}
 	}
 }
