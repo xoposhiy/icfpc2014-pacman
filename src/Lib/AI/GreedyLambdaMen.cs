@@ -94,8 +94,8 @@ namespace Lib.AI
 
 		public bool IsEmpty()
 		{
-			return twoStacks.Pair.Tail.Tag == LTag.Pair
-				|| twoStacks.Pair.Head.Tag == LTag.Pair;
+			return twoStacks.Pair.Tail.Tag != LTag.Pair
+				&& twoStacks.Pair.Head.Tag != LTag.Pair;
 		}
 
 		public void Enqueue(LValue value)
@@ -114,13 +114,13 @@ namespace Lib.AI
 			var result = twoStacks.Pair.Tail .Pair.Head;
 			twoStacks = LValue.FromPair(
 				twoStacks.Pair.Head,
-				twoStacks.Pair.Tail .Pair.Head);
+				twoStacks.Pair.Tail .Pair.Tail);
 			return result;
 		}
 
 		private void throwLeftStackToRight()
 		{
-			LValue rightStack = null;
+			LValue rightStack = nil;
 			while (twoStacks.Pair.Head.Tag == LTag.Pair)
 			{
 				var curr = twoStacks.Pair.Head.Pair.Head;
@@ -171,11 +171,11 @@ namespace Lib.AI
 
 		private void Pop()
 		{
-			Assert.That(coll.Count == 0, Is.EqualTo(func.IsEmpty()));
+			Assert.That(func.IsEmpty(), Is.EqualTo(coll.Count == 0));
 			if (coll.Count > 0)
 			{
 				int val1 = coll.Dequeue();
-				int? val2 = func.Dequeue();
+				int? val2 = func.Dequeue().Value;
 				Assert.That(val2.HasValue);
 				Assert.That(val1, Is.EqualTo(val2.Value));
 			}
