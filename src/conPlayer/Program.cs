@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using Lib;
+using Lib.AI;
 using Lib.Game;
 using Lib.LMachine;
 
@@ -9,9 +11,10 @@ namespace conPlayer
 	{
 		static void Main(string[] args)
 		{
-			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
 //			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
 //			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
+			LMMain main = new InterpretedLambdaMan(File.ReadAllText(KnownPlace.GccSamples + "stupidBot.mgcc")).Main;
 			
 			var sim = new GameSim(MapUtils.LoadFromKnownLocation("small.txt"), main);
 			var oldState = "";
@@ -25,7 +28,7 @@ namespace conPlayer
 					Console.WriteLine(newState);
 					Console.WriteLine("Use Cursor keys to control Lambda Man. Time: {0}", sim.time);
 					oldState = newState;
-//					Console.ReadKey();
+					Console.ReadKey();
 				}
 			}
 			Console.WriteLine("Game over");

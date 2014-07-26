@@ -26,5 +26,11 @@ namespace Lib.LMachine
 			var instruction = Program[State.CurrentAddress];
 			instruction.Execute(State);
 		}
+
+		public void RunUntilStop()
+		{
+			while (!State.Stopped)
+				Step();
+		}
 	}
 }
