@@ -135,12 +135,12 @@ namespace Lib.LispLang
 
 		public static SExpr Sub(SExpr a, SExpr b)
 		{
-			return Cmd("SUB", new[] { a, b });
+			return Cmd("SUB", a, b);
 		}
 
 		public static SExpr Add(SExpr a, SExpr b)
 		{
-			return Cmd("ADD", new[] { a, b });
+			return Cmd("ADD", a, b);
 		}
 		
 		public static SExpr And(params SExpr[] expr)
@@ -161,7 +161,7 @@ namespace Lib.LispLang
 
 		public static SExpr IsGreater(SExpr a, SExpr b)
 		{
-			return Cmd("CGT", new[] { a, b });
+			return Cmd("CGT", a, b);
 		}
 
 		public static SExpr Fun(string name)

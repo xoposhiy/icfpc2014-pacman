@@ -1,5 +1,6 @@
 ﻿using System;
 using Lib.LMachine;
+using Lib.LMachine.Intructions;
 using Lib.LMachine.Parsing;
 using NUnit.Framework;
 
@@ -7,11 +8,27 @@ namespace Lib.LispLang
 {
 	public class LambdaManAi : Lisp
 	{
-		private SExpr Main()
+		public static string Compile()
 		{
-			return Def("main", ArgNames("world", "ghosts"),
-				Cons(42, )
+			return Api.CompileMain(
+				Def("main", ArgNames("world", "ghosts"),
+					Cons(42, Fun("step"))
+				),
+				Def("step", ArgNames("ai", "world"),
+					Cons(42, 3)
+				)
 			);
+		}
+	}
+
+	[TestFixture]
+	public class LambdaManAi_Test
+	{
+		[Test]
+		public void Test()
+		{
+			//Console.Out.WriteLine(LambdaManAi.Compile());
+			Console.Out.WriteLine(LParser.Parse(LambdaManAi.Compile()).Program.ToGcc());
 		}
 	}
 

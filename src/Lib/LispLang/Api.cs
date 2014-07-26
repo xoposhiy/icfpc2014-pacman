@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Lib.LMachine.Intructions;
+﻿using System.Linq;
 
 namespace Lib.LispLang
 {
@@ -8,7 +6,7 @@ namespace Lib.LispLang
 	{
 		public static string CompileWithLibs(params SExpr[] main)
 		{
-			return Compile(main.Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
+			return Compile(loader.Concat(main).Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
 		}
 
 		public static SExpr[] worldApi =
@@ -30,6 +28,13 @@ namespace Lib.LispLang
 			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("getListLength", "map"), Call("getListLength", Car("map"))))),
 		};
 
+		public static SExpr[] loader =
+		{
+			Cmd("LD 0 0"),
+			Cmd("LD 0 1"),
+			Cmd("LDF main"),
+			Cmd("TAP 2"),
+		};
 
 		public static SExpr[] queueApi =
 		{
