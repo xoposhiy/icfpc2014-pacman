@@ -24,6 +24,7 @@ namespace Lib.GMachine
 		{
 			var cycles = 0;
 			State.Pc = 0;
+			State.Hlt = false;
 			while (!State.Hlt && cycles++ < 1024)
 			{
 				var pc = State.Pc;
