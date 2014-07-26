@@ -92,6 +92,13 @@ namespace Lib.LispLang
 		}
 
 		public static SExpr Cmd(string name, params SExpr[] args)
+
+		public SExpr Ceq(SExpr head, SExpr tail)
+		{
+			return Cmd("CEQ", new[] { head, tail });
+		}
+
+		public static SExpr Cmd(string name, SExpr args)
 		{
 			return new SExpr(env => ((SExpr)args).		ToCode(env).Concat(new[] { name }));
 		}
@@ -106,7 +113,7 @@ namespace Lib.LispLang
 		{
 			return Cmd("CAR", list);
 		}
-		
+
 		public SExpr Sub(SExpr a, SExpr b)
 		{
 			return Cmd("SUB", new[] { a, b });
