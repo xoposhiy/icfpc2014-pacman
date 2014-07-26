@@ -1,8 +1,12 @@
 ﻿using System;
+using System.IO;
+using Lib;
 using Lib.AI;
 using Lib.Game;
+using Lib.GMachine;
 using Lib.LispLang;
 using Lib.LMachine;
+using Lib.Parsing.GParsing;
 
 namespace conPlayer
 {
@@ -16,9 +20,11 @@ namespace conPlayer
 			//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
 			Console.WriteLine(LeftAi.code);
 			LMMain main = new InterpretedLambdaMan(LeftAi.code).Main;
-			var randomGhostFactory = new RandomGhostFactory();
+			//var randomGhostFactory = new RandomGhostFactory();
+			var p = File.ReadAllText(KnownPlace.GccSamples + "sample.mghc");
+			var ghostFactory = new GMachineFactory(GParser.Parse(p).Program);
 
-			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, randomGhostFactory);
+			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostFactory);
 			var oldState = "";
 			while (!sim.finished)
 			{

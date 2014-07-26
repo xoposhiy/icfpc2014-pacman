@@ -60,6 +60,7 @@
     <Compile Include="GMachine\GCmd.cs" />
     <Compile Include="GMachine\GCmdType.cs" />
     <Compile Include="GMachine\GMachine.cs" />
+    <Compile Include="GMachine\GMachineFactory.cs" />
     <Compile Include="GMachine\GMachineState.cs" />
     <Compile Include="GMachine\GMachine_Test.cs" />
     <Compile Include="GMachine\Hlt.cs" />
