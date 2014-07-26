@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,12 +14,12 @@ namespace Lib.Game
 			man = new LManState(
 				0,
 				map.GetLocationsOf(MapCell.LManStartLoc).Single(),
-				Direction.Up,
+				Direction.Down,
 				3,
 				0);
 			ghosts =
 				map.GetLocationsOf(MapCell.GhostStartLoc)
-				.Select((p, i) => new GhostState(GhostVitality.Standard, p, Direction.Up, i % 4))
+				.Select((p, i) => new GhostState(GhostVitality.Standard, p, Direction.Down, i % 4))
 				.ToList();
 			fruitTicksRemaining = 0;
 		}		
@@ -175,6 +176,26 @@ namespace Lib.Game
 				lives,
 				score
 				);
+		}
+	}
+
+	public static class DirectionExtensions
+	{
+		public static Direction Back(this Direction direction)
+		{
+			switch (direction)
+			{
+				case Direction.Up:
+					return Direction.Down;
+				case Direction.Right:
+					return Direction.Left;
+				case Direction.Down:
+					return Direction.Up;
+				case Direction.Left:
+					return Direction.Right;
+				default:
+					throw new InvalidOperationException(string.Format("Invalid direction: {0}", direction));
+			}
 		}
 	}
 

@@ -21,7 +21,7 @@ namespace conPlayer
 			Console.WriteLine(LeftAi.code);
 			LMMain main = new InterpretedLambdaMan(LeftAi.code).Main;
 			//var randomGhostFactory = new RandomGhostFactory();
-			var p = File.ReadAllText(KnownPlace.GccSamples + "sample.mghc");
+			var p = File.ReadAllText(KnownPlace.GccSamples + "sample2.mghc");
 			var ghostFactory = new GMachineFactory(GParser.Parse(p).Program);
 
 			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostFactory);

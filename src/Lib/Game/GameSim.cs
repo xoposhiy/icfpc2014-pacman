@@ -201,10 +201,12 @@ namespace Lib.Game
 		{
 			world.man.lives--;
 			world.man.location = world.man.initialLocation;
+			world.man.direction = Direction.Down;
 			foreach (var ghost in world.ghosts)
 			{
 				ghost.vitality = GhostVitality.Standard;
 				ghost.location = ghost.initialLocation;
+				ghost.direction = Direction.Down;
 			}
 		}
 
@@ -279,12 +281,13 @@ namespace Lib.Game
 
 			Point newLocation = ghost.location;
 			Direction chosedDirection = ghost.direction;
+			Direction backDirection = ghost.direction.Back();
 			
 			//Пробуем переместиться в указанном направлении
 			//When a ghost chooses an illegal move (or no move at all) at a junction, 
 			// it is forced to continue in its previous direction if this is legal, and if not, 
 			// then the first legal direction out of up, right, down, and left, in that order.
-			foreach (var dir in new[] {direction, ghost.direction, Direction.Up, Direction.Right, Direction.Down, Direction.Left }.Where(x => x.HasValue).Select(x => x.Value))
+			foreach (var dir in new[] { direction, ghost.direction, Direction.Up, Direction.Right, Direction.Down, Direction.Left }.Where(x => x.HasValue && x.Value != backDirection).Select(x => x.Value).Concat(new[] { backDirection }))
 			{
 				chosedDirection = dir;
 				newLocation = TryMove(ghost.location, chosedDirection);
