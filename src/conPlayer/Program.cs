@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using Lib;
 using Lib.AI;
 using Lib.Game;
 using Lib.LispLang;
@@ -8,19 +6,19 @@ using Lib.LMachine;
 
 namespace conPlayer
 {
-	class Program
+	internal class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
-//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
-//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
-//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
-//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
+			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
+			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
+			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
+			//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
 			Console.WriteLine(LeftAi.code);
 			LMMain main = new InterpretedLambdaMan(LeftAi.code).Main;
-			GMain[] ghostProgs = new GMain[] { new RandomGhost().Main };
-			
-			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostProgs);
+			var randomGhostFactory = new RandomGhostFactory();
+
+			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, randomGhostFactory);
 			var oldState = "";
 			while (!sim.finished)
 			{

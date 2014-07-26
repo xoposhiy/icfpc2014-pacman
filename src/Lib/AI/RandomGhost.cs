@@ -2,29 +2,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lib.AI
 {
-	public class RandomGhost : Ghost
+	public class RandomGhost : IGMachine
 	{
-		private static Random random = new Random(314);
+		private readonly IGhostInterruptService interruptService;
+		private static readonly Random random = new Random(314);
 
-		public GStep Main(int ghostId, World initialWorld)
+		public RandomGhost(IGhostInterruptService interruptService)
 		{
-			return new GStep((World) => Step(ghostId, World));
+			this.interruptService = interruptService;
 		}
 
-		public Direction Step(int ghostId, World currentWorldState)
+		public void Run()
 		{
-			var currState = currentWorldState.ghosts[ghostId];
+			var currState = interruptService.TryGetGhostState(interruptService.GetThisGhostIndex());
 			var curr = currState.location;
-			
 
-			var map = currentWorldState.map;
-			Func<Point, MapCell> getCell = (p) => map[p.Y, p.X];
-			Func<Point, bool> isCorrect = (p) => !(p.X < 0 || p.X >= map.GetLength(1) || p.Y < 0 || p.Y >= map.GetLength(0) || getCell(p) == MapCell.Wall);
+			Func<Point, MapCell> getCell = p => interruptService.GetMapState((byte)p.X, (byte)p.Y);
+			Func<Point, bool> isCorrect = p => getCell(p) != MapCell.Wall;
 			Func<Point, Point, Point> sum = (p1, p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
 			Func<Point, Point, bool> isReverseDirection = (p, p1) => sum(p, p1).Equals(new Point(0, 0));
 			var dirs = new List<Point>() { new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0) };
@@ -33,10 +30,8 @@ namespace Lib.AI
 			if (possibleDirs.Length > 0)
 			{
 				var rnd = random.Next(possibleDirs.Length);
-				return (Direction)possibleDirs[rnd];
+				interruptService.SetNewDirectionForThisGhost((Direction)possibleDirs[rnd]);
 			}
-			else
-				return currState.direction;
 		}
 	}
 }

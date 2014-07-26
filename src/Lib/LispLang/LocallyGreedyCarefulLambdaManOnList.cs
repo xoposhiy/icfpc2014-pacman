@@ -1,4 +1,6 @@
 ﻿using Lib.Game;
+using Lib.LMachine.Intructions;
+using Lib.Parsing;
 using Lib.Parsing.LParsing;
 using NUnit.Framework;
 using System;

@@ -50,15 +50,66 @@ namespace Lib.Game
 		private readonly LMStep lmstep;
 		private LValue lmstate;
 
-		private GStep[] ghstep;
+		private class Ghost
+		{
+			[NotNull]
+			public IGMachine GMachine { get; set; }
+
+			[NotNull]
+			public GhostInterruptService GhostInterruptService { get; set; }
+		}
+
+		private class GhostInterruptService : IGhostInterruptService
+		{
+			private readonly int ghostIndex;
+			private readonly World world;
+
+			public Direction? NewDirection { get; set; }
+
+			public GhostInterruptService(int ghostIndex, World world)
+			{
+				this.ghostIndex = ghostIndex;
+				this.world = world;
+			}
+
+			public void SetNewDirectionForThisGhost(Direction newDirection)
+			{
+				NewDirection = newDirection;
+			}
+
+			public Point GetLamdbaManCurrentLocation()
+			{
+				return world.man.location;
+			}
+
+			public byte GetThisGhostIndex()
+			{
+				return (byte)ghostIndex;
+			}
+
+			public GhostState TryGetGhostState(byte gi)
+			{
+				return gi >= world.ghosts.Count ? null : world.ghosts[gi];
+			}
+
+			public MapCell GetMapState(byte x, byte y)
+			{
+				return x >= world.map.GetLength(1) || y >= world.map.GetLength(0) ? MapCell.Wall : world.map[y, x];
+			}
+
+			public void DebugTrace(byte pc, byte[] registers)
+			{
+			}
+		}
+
+		private List<Ghost> ghstep = new List<Ghost>();
 
 		public readonly GameSettings settings = new GameSettings();
 		public int time;
 		public bool finished;
 		private int pillsCount;
 
-		//TODO add ghost AIs
-		public GameSim(MapCell[,] map, LMMain lmmain, GMain[] ghostsMain)
+		public GameSim(MapCell[,] map, LMMain lmmain, IGMachineFactory gMachineFactory)
 		{
 			this.map = map;
 			world = new World(map);
@@ -68,11 +119,16 @@ namespace Lib.Game
 			lmstate = res.Item1;
 			lmstep = res.Item2;
 
-			var nGhostProg = ghostsMain.Length;
-			ghstep = world.ghosts.Select((g, gi) => ghostsMain[gi % nGhostProg](gi, world)).ToArray();
+			for (int gi = 0; gi < world.ghosts.Count; gi++)
+			{
+				var interruptService = new GhostInterruptService(gi, world);
+				ghstep.Add(new Ghost
+				{
+					GMachine = gMachineFactory.Create(gi, interruptService),
+					GhostInterruptService = interruptService,
+				});
+			}
 			
-
-
 			time = 1;
 			pillsCount = GetLocationsOf(map, MapCell.Pill).Count();
 			updateQueue.Add(new UpdateInfo(time + settings.lambdaManPeriod, -1));
@@ -217,7 +273,9 @@ namespace Lib.Game
 		{
 			var ghost = world.ghosts[ghostIndex];
 			var step = ghstep[ghostIndex];
-			var direction = step(world);
+			step.GhostInterruptService.NewDirection = null;
+			step.GMachine.Run();
+			var direction = step.GhostInterruptService.NewDirection;
 
 			Point newLocation = ghost.location;
 			Direction chosedDirection = ghost.direction;
@@ -226,7 +284,7 @@ namespace Lib.Game
 			//When a ghost chooses an illegal move (or no move at all) at a junction, 
 			// it is forced to continue in its previous direction if this is legal, and if not, 
 			// then the first legal direction out of up, right, down, and left, in that order.
-			foreach (var dir in new Direction[] {direction, ghost.direction, Direction.Up, Direction.Right, Direction.Down, Direction.Left })
+			foreach (var dir in new[] {direction, ghost.direction, Direction.Up, Direction.Right, Direction.Down, Direction.Left }.Where(x => x.HasValue).Select(x => x.Value))
 			{
 				chosedDirection = dir;
 				newLocation = TryMove(ghost.location, chosedDirection);
@@ -271,7 +329,7 @@ namespace Lib.Game
 		public void Create()
 		{
 			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
-			var sim = new GameSim(map, LMMain, new GMain[]{GMain});
+			var sim = new GameSim(map, LMMain, new RandomGhostFactory());
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
@@ -284,11 +342,6 @@ namespace Lib.Game
 			return Tuple.Create<LValue, LMStep>(LValue.FromInt(42), Step);
 		}
 
-		private GStep GMain(int ghostId, World initialWorld)
-		{
-			return new RandomGhost().Main(ghostId, initialWorld);
-		}
-
 		[Test]
 		public void DoNotGoToWall()
 		{
@@ -296,8 +349,7 @@ namespace Lib.Game
 @"#####
 #.\.#
 #####");
-			var g = new RandomGhost();
-			var sim = new GameSim(map, LMMain, new GMain[] {GMain});
+			var sim = new GameSim(map, LMMain, new RandomGhostFactory());
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
@@ -313,7 +365,7 @@ namespace Lib.Game
 #.\.#
 #...#
 #####");
-			var sim = new GameSim(map, LMMain, new GMain[]{GMain});
+			var sim = new GameSim(map, LMMain, new RandomGhostFactory());
 			for(int i=0; i<128; i++)
 				sim.Tick();
 			Assert.AreEqual(129, sim.time);

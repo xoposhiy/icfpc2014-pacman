@@ -47,7 +47,10 @@
     <Compile Include="AI\GreedyLambdaMen_Lisp.cs" />
     <Compile Include="AI\Queue_Functional.cs" />
     <Compile Include="AI\RandomGhost.cs" />
+    <Compile Include="AI\RandomGhostFactory.cs" />
     <Compile Include="Annoattions.cs" />
+    <Compile Include="Game\IGMachine.cs" />
+    <Compile Include="Game\IGMachineFactory.cs" />
     <Compile Include="GMachine\Add.cs" />
     <Compile Include="GMachine\And.cs" />
     <Compile Include="GMachine\Dec.cs" />
@@ -67,7 +70,6 @@
     <Compile Include="GMachine\Jgt.cs" />
     <Compile Include="GMachine\Jlt.cs" />
     <Compile Include="GMachine\Mov.cs" />
-    <Compile Include="Game\Ghost.cs" />
     <Compile Include="GMachine\Mul.cs" />
     <Compile Include="GMachine\Or.cs" />
     <Compile Include="Parsing\GParsing\GParser.cs" />

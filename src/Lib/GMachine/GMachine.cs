@@ -3,7 +3,7 @@ using Lib.Game;
 
 namespace Lib.GMachine
 {
-	public class GMachine
+	public class GMachine : IGMachine
 	{
 		private readonly IGhostInterruptService interruptService;
 
