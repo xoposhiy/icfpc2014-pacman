@@ -77,6 +77,38 @@ namespace Lib.LispLang
 			m.RunUntilStop();
 			Assert.AreEqual("([3], 0)", m.State.DataStack.Pop().ToString());
 		}
+		
+		[Test]
+		public void Test_Peek_EmptyTail()
+		{
+			var macro = Compile(
+				Call("queue_peek", Call("sampleQueue"), 3),
+				Cmd("RTN", new SExpr()),
+				Def("sampleQueue", ArgNames(), Cons(List(1, 2), List())),
+				Transfer(), Peek());
+
+			Console.WriteLine(macro);
+			var parsed = LParser.Parse(macro);
+			var m = new LMachineInterpreter(parsed.Program);
+			m.RunUntilStop();
+			Assert.AreEqual("2", m.State.DataStack.Pop().ToString());
+		}
+
+		[Test]
+		public void Test_Peek_NonEmptyTail()
+		{
+			var macro = Compile(
+				Call("queue_peek", Call("sampleQueue"), 3),
+				Cmd("RTN", new SExpr()),
+				Def("sampleQueue", ArgNames(), Cons(List(1, 2), List(3, 4))),
+				Transfer(), Peek());
+
+			Console.WriteLine(macro);
+			var parsed = LParser.Parse(macro);
+			var m = new LMachineInterpreter(parsed.Program);
+			m.RunUntilStop();
+			Assert.AreEqual("3", m.State.DataStack.Pop().ToString());
+		}
 
 		[Test]
 		public void Test_DequeueSimple()
