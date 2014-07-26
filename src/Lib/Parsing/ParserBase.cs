@@ -50,11 +50,11 @@ namespace Lib.Parsing
 					var parameterInfos = constructor.GetParameters();
 					var parameters = new object[parameterInfos.Length];
 					if (split.Length != parameters.Length)
-						throw new InvalidOperationException(string.Format("Invalid parameter count of instruction '{0}'. Expected parameters: '{1}'. Line {2}: {3}", programItemType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
+						throw new InvalidOperationException(string.Format("Invalid parameter count of instruction '{0}'. Expected parameters: '{1}'. Line {2}: {3}", programItemType.Name, string.Join(", ", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 					for (var i = 0; i < parameterInfos.Length; i++)
 					{
 						if (!TryGetParameterValue(split[i], parameterInfos[i], programItemType, labels, sourceLineToAddress, constants, out parameters[i]))
-							throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], programItemType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
+							throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], programItemType.Name, string.Join(", ", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 					}
 					program.Add((TProgramItem)Activator.CreateInstance(programItemType, parameters));
 					sourceLines.Add(sourceLine + 1);
@@ -110,6 +110,8 @@ namespace Lib.Parsing
 					if (split.Length != 2)
 						throw new InvalidOperationException(string.Format("Invalid constant deinition. Expected '<name>=<value (Int32)>'. Line {0}: {1}", i, codeLines[i]));
 					var constantName = split[0];
+					if (!IsValidConstantName(constantName))
+						throw new InvalidOperationException(string.Format("Forbidden constant name '{0}' in deinition. Line {1}: {2}", constantName, i, codeLines[i]));
 					var constantValueString = split[1];
 					if (constants.ContainsKey(constantName))
 						throw new InvalidOperationException(string.Format("Duplicate definition of constant '{0}'. Line {1}: {2}", constantName, i, codeLines[i]));
@@ -120,6 +122,11 @@ namespace Lib.Parsing
 				}
 			}
 			return constants;
+		}
+
+		protected virtual bool IsValidConstantName([NotNull] string constantName)
+		{
+			return true;
 		}
 
 		[NotNull]

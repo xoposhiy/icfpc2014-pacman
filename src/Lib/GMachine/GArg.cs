@@ -2,8 +2,36 @@ using System;
 
 namespace Lib.GMachine
 {
-	public class GArg
+	public class GArg : IEquatable<GArg>
 	{
+		public bool Equals(GArg other)
+		{
+			if (ReferenceEquals(null, other))
+				return false;
+			if (ReferenceEquals(this, other))
+				return true;
+			return Type == other.Type && Value == other.Value;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+				return false;
+			if (ReferenceEquals(this, obj))
+				return true;
+			if (obj.GetType() != this.GetType())
+				return false;
+			return Equals((GArg)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return ((int)Type * 397) ^ Value.GetHashCode();
+			}
+		}
+
 		[NotNull]
 		public static GArg Const(byte value)
 		{
@@ -42,11 +70,21 @@ namespace Lib.GMachine
 
 		public byte Value { get; set; }
 
-		public byte GetConstValue()
+		public override string ToString()
 		{
-			if (Type != GArgType.Const)
-				throw new InvalidOperationException(string.Format("Invalid arg type: {0}", Type));
-			return Value;
+			switch (Type)
+			{
+				case GArgType.Const:
+					return Value.ToString();
+				case GArgType.Data:
+					return "[" + Value + "]";
+				case GArgType.Reg:
+					return ((char)Value + 'a').ToString().ToUpper();
+				case GArgType.IndirectReg:
+					return "[" + ((char)Value + 'a').ToString().ToUpper() + "]";
+				default:
+					throw new InvalidOperationException("TODO");
+			}
 		}
 	}
 }

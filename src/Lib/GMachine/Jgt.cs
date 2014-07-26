@@ -4,29 +4,28 @@ namespace Lib.GMachine
 {
 	public class Jgt : GCmd
 	{
-		public Jgt([NotNull] GArg tArg, [NotNull] GArg x, [NotNull] GArg y)
+		public Jgt(byte targetAddress, [NotNull] GArg x, [NotNull] GArg y)
 			: base(GCmdType.Jgt)
 		{
-			TArg = tArg;
+			TargetAddress = targetAddress;
 			X = x;
 			Y = y;
 		}
 
-		[NotNull]
-		public GArg TArg { get; set; }
+		public byte TargetAddress { get; private set; }
 
 		[NotNull]
-		public GArg X { get; set; }
+		public GArg X { get; private set; }
 
 		[NotNull]
-		public GArg Y { get; set; }
+		public GArg Y { get; private set; }
 
 		public override void Execute([NotNull] GMachineState state, IGhostInterruptService interruptService)
 		{
 			var x = state.ReadValue(X);
 			var y = state.ReadValue(Y);
 			if (x > y)
-				state.Pc = TArg.GetConstValue();
+				state.Pc = TargetAddress;
 		}
 	}
 }

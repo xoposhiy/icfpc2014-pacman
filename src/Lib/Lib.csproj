@@ -127,6 +127,7 @@
     <Compile Include="LMachine\LMachineState.cs" />
     <Compile Include="LMachine\LStack.cs" />
     <Compile Include="Parsing\CodeLine.cs" />
+    <Compile Include="Parsing\GParsing\GParser_Test.cs" />
     <Compile Include="Parsing\LParsing\LParser.cs" />
     <Compile Include="Parsing\ParserBase.cs" />
     <Compile Include="Parsing\ParseResult.cs" />

@@ -5,18 +5,17 @@ namespace Lib.GMachine
 {
 	public class Int : GCmd
 	{
-		public Int([NotNull] GArg intArg)
+		public Int(int intArg)
 			: base(GCmdType.Int)
 		{
 			I = intArg;
 		}
 
-		public GArg I { get; private set; }
+		public int I { get; private set; }
 
 		public override void Execute([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
-			var @int = I.GetConstValue();
-			switch (@int)
+			switch (I)
 			{
 				case 0:
 					Int0(state, interruptService);
@@ -46,7 +45,7 @@ namespace Lib.GMachine
 					Int8(state, interruptService);
 					break;
 				default:
-					throw new InvalidOperationException(string.Format("Invalid interrupt: {0}", @int));
+					throw new InvalidOperationException(string.Format("Invalid interrupt: {0}", I));
 			}
 		}
 

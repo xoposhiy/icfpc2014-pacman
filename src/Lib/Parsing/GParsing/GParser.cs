@@ -18,40 +18,75 @@ namespace Lib.Parsing.GParsing
 			return new GParser().DoParse(source);
 		}
 
+		protected override bool IsValidConstantName(string constantName)
+		{
+			return !IsRegisterName(constantName);
+		}
+
 		protected override bool TryGetParameterValue([NotNull] string argString, [NotNull] ParameterInfo parameterInfo, [NotNull] Type programItemType, [NotNull] Dictionary<string, int> labels, [NotNull] Dictionary<int, uint> sourceLineToAddress, [NotNull] Dictionary<string, int> constants, out object parameter)
 		{
-			if (parameterInfo.ParameterType != typeof(GArg))
-				throw new InvalidOperationException(string.Format("Invalid constructor parameter '{0}' type ({1}) of Instruction '{2}'", parameterInfo.Name, parameterInfo.ParameterType, programItemType));
-			parameter = null;
-			if (argString.StartsWith("["))
+			if (parameterInfo.ParameterType == typeof(byte))
 			{
-				if (!argString.EndsWith("]"))
-					return false;
-				argString = argString.Substring(1, argString.Length - 2).Trim();
+				parameter = null;
 				int address;
 				if (labels.TryGetValue(argString, out address) || int.TryParse(argString, out address))
 				{
-					parameter = GArg.Data((byte)address);
+					parameter = (byte)address;
+					return true;
+				}
+				return false;
+			}
+			if (parameterInfo.ParameterType == typeof(int))
+			{
+				parameter = null;
+				int value;
+				if (constants.TryGetValue(argString, out value) || int.TryParse(argString, out value))
+				{
+					parameter = (byte)value;
+					return true;
+				}
+				return false;
+			}
+			if (parameterInfo.ParameterType == typeof(GArg))
+			{
+				parameter = null;
+				if (argString.StartsWith("["))
+				{
+					if (!argString.EndsWith("]"))
+						return false;
+					argString = argString.Substring(1, argString.Length - 2).Trim();
+					int address;
+					if (constants.TryGetValue(argString, out address) || int.TryParse(argString, out address))
+					{
+						parameter = GArg.Data((byte)address);
+						return true;
+					}
+					if (IsRegisterName(argString))
+					{
+						parameter = GArg.IndirectReg((byte)(char.ToLower(argString[0]) - 'a'));
+						return true;
+					}
+					return false;
+				}
+				int value;
+				if (constants.TryGetValue(argString, out value) || labels.TryGetValue(argString, out value) || int.TryParse(argString, out value))
+				{
+					parameter = GArg.Const((byte)value);
 					return true;
 				}
 				if (argString.Length == 1 && char.ToLower(argString[0]) >= 'a' && char.ToLower(argString[0]) <= 'h')
 				{
-					parameter = GArg.IndirectReg((byte)(char.ToLower(argString[0]) - 'a'));
+					parameter = GArg.Reg((byte)(char.ToLower(argString[0]) - 'a'));
 					return true;
 				}
+				return false;
 			}
-			int value;
-			if (constants.TryGetValue(argString, out value) || int.TryParse(argString, out value))
-			{
-				parameter = GArg.Const((byte)value);
-				return true;
-			}
-			if (argString.Length == 1 && char.ToLower(argString[0]) >= 'a' && char.ToLower(argString[0]) <= 'h')
-			{
-				parameter = GArg.Reg((byte)(char.ToLower(argString[0]) - 'a'));
-				return true;
-			}
-			return false;
+			throw new InvalidOperationException(string.Format("Invalid constructor parameter '{0}' type ({1}) of Instruction '{2}'", parameterInfo.Name, parameterInfo.ParameterType, programItemType));
+		}
+
+		private static bool IsRegisterName([NotNull] string argString)
+		{
+			return argString.Length == 1 && char.ToLower(argString[0]) >= 'a' && char.ToLower(argString[0]) <= 'h';
 		}
 	}
 }
