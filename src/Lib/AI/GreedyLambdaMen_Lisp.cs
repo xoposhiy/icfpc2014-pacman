@@ -1,5 +1,6 @@
 ﻿using Lib.Game;
 using Lib.LispLang;
+using Lib.Parsing.LParsing;
 using NUnit.Framework;
 
 namespace Lib.AI
@@ -9,17 +10,20 @@ namespace Lib.AI
 		[Test]
 		public void Main()
 		{
-			var macro = Compile(
-				Def("GreedyStep", ArgNames("stateAndWorld"), 
-					Cons(Call("World", "stateAndWorld"),
-						Call("RecursiveFindGoal_2", 
-							Call("World", "stateAndWorld"),
+			var code = Compile(
+				Def("GreedyStep", ArgNames("stateAndWorld"),
+					Call("GreedyStepInternal", Car("stateAndWorld"), Cdr("stateAndWorld"))),
+
+				Def("GreedyStepInternal", ArgNames("state", "world"),
+					Cons("state",
+						Call("RecursiveFindGoal_2",
+							"world",
 							Call("InitQueueAndVisited", 
 								"world", 
 								Call("lmLoc", "world"),
 								Call("InitVisited",
-									Call("mapHeight", Call("map", Call("World", "stateAndWorld"))),
-									Call("mapWidth", Call("map", Call("World", "stateAndWorld")))))))),
+									Call("mapHeight", Call("map", "world")),
+									Call("mapWidth", Call("map", "world"))))))),
 
 				Def("RecursiveFindGoal", ArgNames("world", "queue", "visited"),
 					If(Call("IsGoodCell", Car(Call("queue_peek", "queue")), Call("map", "world")),
@@ -32,6 +36,7 @@ namespace Lib.AI
 								"world",
 								"visited")))),
 
+
 				Def("RecursiveFindGoal_2", ArgNames("world", "queueAndVisited"),
 					Call("RecursiveFindGoal",
 						"world",
@@ -39,10 +44,18 @@ namespace Lib.AI
 						Cdr("queueAndVisited"))),
 
 				Def("InitQueueAndVisited", ArgNames("world", "lmPoint", "visited"),
+					Call("CombineQueueAndVisited", 
+						Call("InitQueueAndVisitedFold", "world", "lmPoint", "visited"))),
+
+				Def("InitQueueAndVisitedFold", ArgNames("world", "lmPoint", "visited"),
 					Call("fold",
 						List(Cons(0, 0), "visited", "world"),
 						"AddPointsIntoQueue",
 						Call("NeighboursWithDirection", "lmPoint"))),
+
+				Def("CombineQueueAndVisited", ArgNames("queueAndVisitedAndWorld"),
+					Cons(Get(0, "queueAndVisitedAndWorld"), Get(1, "queueAndVisitedAndWorld"))),
+
 
 				Def("AddNeighbours", ArgNames("queue", "pointAndDirection", "world", "visited"),
 					Call("fold",
@@ -105,11 +118,9 @@ namespace Lib.AI
 						Cons("value", Call("Repeat", Call("Sub", "max", 1), "value")), 
 						Cons("value", 0))),
 
-				Def("World", ArgNames("stateAndWorld"), Cdr("stateAndWorld")),
-				Def("GetAIState", ArgNames("stateAndWorld"), Car("stateAndWorld")),
-
 				LambdaMenLogic
 				);
+			LParser.Parse(code);
 		}
 	}
 }
