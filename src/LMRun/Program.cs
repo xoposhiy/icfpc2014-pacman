@@ -21,12 +21,26 @@ namespace LMRun
 			var p = File.ReadAllText(KnownPlace.GccSamples + name + ".mgcc");
 			var prog = LParser.Parse(p);
 			var m = new LMachineInterpreter(prog.Program);
-			while (true)
+			bool runToEnd = false;
+			while (!m.State.Stopped)
 			{
 				ShowState(m, prog);
-				var cmd = Console.ReadLine();
-				if (cmd == "")
+				if (runToEnd)
 					m.Step();
+				else
+				{
+					var cmd = Console.ReadKey();
+					if (cmd.Key == ConsoleKey.F10)
+						m.Step();
+					else if (cmd.Key == ConsoleKey.F5)
+					{
+						runToEnd = true;
+					}
+				}
+			}
+			ShowState(m, prog);
+			while (Console.ReadKey().Key != ConsoleKey.Escape)
+			{
 			}
 		}
 
@@ -54,6 +68,13 @@ namespace LMRun
 			DumpDataStack(prog, m);
 			DumpFrames(prog, m);
 			DumpControlStack(prog, m);
+			if (m.State.Stopped)
+			{
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.BackgroundColor = ConsoleColor.Red;
+				Console.WriteLine("LMachine stopped. Press Escape to exit");
+				Console.ResetColor();
+			}
 			Console.SetCursorPosition(left, top);
 			Console.SetWindowPosition(windowLeft, windowTop);
 		}
