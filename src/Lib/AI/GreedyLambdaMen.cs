@@ -23,7 +23,7 @@ namespace Lib.AI
 			var map = currentWorldState.map;
 			var lmPosition = currentWorldState.man.location;
 			var stackInit = directions
-				.Select(d => LValue.FromPair(lmPosition.Add(SizeByDirection[d]), d))
+				.Select(d => LValue.FromPair(lmPosition.Add(SizeByDirection[d]), (int)d))
 				.Where(dp => map.Get(dp.Pair.Head) != MapCell.Wall)
 				.ToArray();
 			var queue = new Queue_Functional();
@@ -37,7 +37,7 @@ namespace Lib.AI
 			}
 
 			var founded = currentWorldState.man.direction;
-			while (queue.IsEmpty())
+			while (!queue.IsEmpty())
 			{
 				var p = queue.Dequeue();
 				var point = p.Pair.Head;
@@ -47,7 +47,7 @@ namespace Lib.AI
 					founded = (Direction) (p.Pair.Tail.Value .Value);
 					break;
 				}
-				foreach (var newPoint in GetNeighbours(point, map, visited))
+				foreach (var newPoint in GetNeighbours(point, currentWorldState, visited))
 				{
 					queue.Enqueue(LValue.FromPair(newPoint, p.Pair.Tail));
 					visited.Set(newPoint, true);
@@ -56,29 +56,23 @@ namespace Lib.AI
 			return Tuple.Create(currentAIState, founded);
 		}
 
-		private const int Up = 0;
-		private const int Left = 1;
-		private const int Right = 2;
-		private const int Down = 3;
+		private readonly static List<Direction> directions = new List<Direction> { Direction.Up, Direction.Left, Direction.Right, Direction.Down };
 
-		private readonly static List<int> directions = new List<int> { Up, Left, Right, Down };
-//		private readonly static LValue directions = LValue.FromList(new List<int> { Up, Left, Right, Down }, i => i);
-
-		public static Dictionary<int, Point> SizeByDirection =
-			new Dictionary<int, Point>
+		public static Dictionary<Direction, Point> SizeByDirection =
+			new Dictionary<Direction, Point>
 			{
-				{Up, new Point(0, -1)},
-				{Down, new Point(0, 1)},
-				{Left, new Point(-1, 0)},
-				{Right, new Point(1, 0)}
+				{Direction.Up, new Point(-1, 0)},
+				{Direction.Down, new Point(1, 0)},
+				{Direction.Left, new Point(0, -1)},
+				{Direction.Right, new Point(0, 1)}
 			};
 
-		public static IEnumerable<Point> GetNeighbours(LValue lValuePoint, MapCell[,] map, bool[,] visited)
+		public static IEnumerable<Point> GetNeighbours(LValue lValuePoint, World world, bool[,] visited)
 		{
 			return directions
 				.Select(d => SizeByDirection[d])
 				.Select(p => new Point(p.X + lValuePoint.Pair.Head.Value .Value, p.Y + lValuePoint.Pair.Tail.Value .Value))
-				.Where(p => !visited.Get(p) && (map.Get(p) != MapCell.Wall));
+				.Where(p => !visited.Get(p) && (world.map.Get(p) != MapCell.Wall) && world.ghosts.All(g => !p.Equals(g.location)));
 		}
 	}
 

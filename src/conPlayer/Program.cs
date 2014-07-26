@@ -12,11 +12,9 @@ namespace conPlayer
 		static void Main(string[] args)
 		{
 //			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
-//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
-			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
+			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
+//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
 //			LMMain main = new InterpretedLambdaMan(File.ReadAllText(KnownPlace.GccSamples + "stupidBot.mgcc")).Main;
-
-
 			GMain[] ghostProgs = new GMain[] { new RandomGhost().Main };
 			
 			var sim = new GameSim(MapUtils.LoadFromKnownLocation("world-classic.txt"), main, ghostProgs);
