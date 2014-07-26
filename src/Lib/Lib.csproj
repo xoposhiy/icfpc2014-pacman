@@ -51,6 +51,8 @@
     <Compile Include="AI\InterpretedLambdaMan.cs" />
     <Compile Include="KnownPlace.cs" />
     <Compile Include="Game\LambdaMan.cs" />
+    <Compile Include="LMachine\Intructions\InstructionExtensions.cs" />
+    <Compile Include="LMachine\Intructions\InstructionExtensions_Test.cs" />
     <Compile Include="LMachine\LConvertor.cs" />
     <Compile Include="LMachine\ControlStackItem.cs" />
     <Compile Include="LMachine\CTag.cs" />
