@@ -1,0 +1,46 @@
+
+LDF sampleList
+AP 0
+LDC 0
+
+;get(sampleList(),0)
+LDF get
+AP 2
+
+;get(sampleList(),1)
+LDF sampleList
+AP 0
+LDC 1
+
+LDF get
+AP 2
+
+; should be 2|1|
+RTN
+
+sampleList:
+	LDC 1
+	LDC 2
+	LDC 0
+	CONS
+	CONS
+	RTN
+
+
+get: ;(list, index)
+	LD 0 1
+	sel NonZeroIndex ZeroIndex
+	RTN
+	ZeroIndex:
+		LD 0 0
+		CAR
+		JOIN
+	NonZeroIndex:
+		LD 0 0
+		CDR
+		LD 0 1
+		LDC 1
+		SUB
+		LDF get
+		AP 2
+		JOIN

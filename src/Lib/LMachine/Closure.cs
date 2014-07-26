@@ -15,7 +15,9 @@ namespace Lib.LMachine
 
 		public override string ToString()
 		{
-			return string.Format("{{{0}: Frame_{1}}}", Address, Frame.Id);
+			return Frame ==null
+				? string.Format("{{{0}: no_frame}}", Address)
+				: string.Format("{{{0}: Frame_{1}}}", Address, Frame.Id);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lib.LMachine
 {
@@ -28,6 +29,11 @@ namespace Lib.LMachine
 			if (stack.Count == 0)
 				throw new InvalidOperationException("TODO");
 			return stack.Pop();
+		}
+
+		public override string ToString()
+		{
+			return string.Join("|", stack.Take(5).Select(i => i.ToString())) + (stack.Count <= 5 ? "|": "|...|");
 		}
 	}
 }

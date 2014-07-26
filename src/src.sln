@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib", "Lib\Lib.csproj", "{4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "conPlayer", "conPlayer\conPlayer.csproj", "{9ECF02C9-7DA8-46ED-8CFA-98D89E59240E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMRun", "LMRun\LMRun.csproj", "{F2928A0C-BBDB-458C-AA4A-FB0718120003}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9ECF02C9-7DA8-46ED-8CFA-98D89E59240E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ECF02C9-7DA8-46ED-8CFA-98D89E59240E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ECF02C9-7DA8-46ED-8CFA-98D89E59240E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2928A0C-BBDB-458C-AA4A-FB0718120003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2928A0C-BBDB-458C-AA4A-FB0718120003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2928A0C-BBDB-458C-AA4A-FB0718120003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2928A0C-BBDB-458C-AA4A-FB0718120003}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

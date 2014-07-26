@@ -37,7 +37,7 @@ namespace Lib.LMachine.Parsing
 						throw new InvalidOperationException(string.Format("Instruction '{0}' is not supported. Line {1}: {2}", split[0], sourceLine, originalLine));
 					split = split.Skip(1).ToArray();
 					var constructors = instructionType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
-					if (constructors.Length != 1)
+					if (constructors.Length != 1)	
 						throw new InvalidOperationException(string.Format("Instruction '{0}' has no single public constructor.", instructionType));
 					var constructor = constructors[0];
 					var parameterInfos = constructor.GetParameters();
@@ -74,6 +74,7 @@ namespace Lib.LMachine.Parsing
 			{
 				Program = program.ToArray(),
 				SourceLines = sourceLines.ToArray(),
+				CodeLines = lines
 			};
 		}
 

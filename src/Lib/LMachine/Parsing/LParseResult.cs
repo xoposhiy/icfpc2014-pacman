@@ -8,5 +8,7 @@ namespace Lib.LMachine.Parsing
 		public Instruction[] Program { get; set; }
 
 		public int[] SourceLines { get; set; }
+		
+		public string[] CodeLines { get; set; }
 	}
 }
