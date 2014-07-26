@@ -42,19 +42,6 @@ namespace Lib.LispLang
 						Ceq(Call("getCell", Args("map", "point")), (int)MapCell.Wall))),
 
 
-						
-				Def("activeGhostAtPoint", ArgNames("ghost", "point"),
-					And(
-						Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Standard),
-						Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point")))),
-				Def("frightGhostAtPoint", ArgNames("ghost", "point"),
-					And(
-						Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Fright),
-						Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point")))),
-
-				DefAny1("activeGhostAtPoint"),
-				DefAny1("frightGhostAtPoint"),
-
 				
 				Def("scoreOfCell", ArgNames("cell"),
 					If(Ceq("cell", (int)MapCell.Pill), 1,

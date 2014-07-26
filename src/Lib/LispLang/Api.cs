@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Lib.Game;
+using Lib.LMachine.Intructions;
 
 namespace Lib.LispLang
 {
@@ -136,6 +138,14 @@ namespace Lib.LispLang
 			get,
 			set,
 			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
+			
+			Def("fold", ArgNames("initElem", "func", "elemList"),
+				If(Atom("elemList"),
+					"initElem",
+					Call("fold", 
+						CallFunRef("func", "initElem", Car("elemList")),
+						"func",
+						Cdr("elemList")))),
 			any,
 			max,
 			min,
@@ -148,6 +158,22 @@ namespace Lib.LispLang
 		{
 			return Compile(loader.Concat(main).Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
 		}
+
+		public static SExpr[] LambdaMenLogic =
+		{
+			Def("activeGhostAtPoint", ArgNames("ghost", "point"),
+				And(
+					Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Standard),
+					Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+
+			Def("frightGhostAtPoint", ArgNames("ghost", "point"),
+				And(
+					Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Fright),
+					Call("pEq", Args(Call("ghLoc", Args("ghost")), "point")))),
+
+			DefAny1("activeGhostAtPoint"),
+			DefAny1("frightGhostAtPoint"),
+		};
 
 		public SExpr[] Math()
 		{

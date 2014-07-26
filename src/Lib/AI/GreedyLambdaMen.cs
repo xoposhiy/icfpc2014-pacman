@@ -25,13 +25,13 @@ namespace Lib.AI
 			var standardGhost = world.ghosts.Where(g => g.vitality == GhostVitality.Standard).ToArray();
 			var stackInit = directions
 				.Select(d => LValue.FromPair(lmPosition.Add(SizeByDirection[d]), (int)d))
+				.Where(dp => map.Get(dp.Pair.Head) != MapCell.Wall)
 				.Where(pts =>
 				{
 					var point = pts.Pair.Head;
 					var position = new Point(point.Pair.Head.Value.Value, point.Pair.Tail.Value.Value);
 					return standardGhost.All(g => !g.location.Equals(position) && GetFourNeighbours(g.location).All(gn => !position.Equals(gn)));
 				})
-				.Where(dp => map.Get(dp.Pair.Head) != MapCell.Wall)
 				.ToArray();
 			var queue = new Queue_Functional();
 
