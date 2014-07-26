@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace Lib.LispLang
 {
-	public class ListTests : Lisp
+	public class LispTests : Lisp
 	{
 		[Test]
 		public void CompileSample()
