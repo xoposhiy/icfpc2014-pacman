@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using Lib.Game;
+﻿using Lib.Game;
 using Lib.LispLang;
-using Lib.LMachine.Intructions;
 using NUnit.Framework;
 
 namespace Lib.AI
@@ -24,7 +22,7 @@ namespace Lib.AI
 									Call("mapWidth", Call("map", Call("World", "stateAndWorld")))))))),
 
 				Def("RecursiveFindGoal", ArgNames("world", "queue", "visited"),
-					If(Call("IsGoodCell", Call("queue_peek", "queue")),		//"IsGoodCell"
+					If(Call("IsGoodCell", Car(Call("queue_peek", "queue")), Call("map", "world")),
 						Cdr(Call("queue_peek", "queue")),
 						Call("RecursiveFindGoal_2", 
 							"world",
@@ -66,6 +64,11 @@ namespace Lib.AI
 							Call("setCell", Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection"), 1),
 							Get(2, "queueAndVisitedAndWorld")))),
 
+				Def("IsGoodCell", ArgNames("point", "map"),		//TODO: fruit time, fright ghosts
+					Or(Call("pointIsPill", "point", "map"),
+						Call("pointIsPowerPill", "point", "map"),
+						Call("pointIsFruit", "point", "map"))),
+
 				Def("NeighboursWithDirection", ArgNames("point"),
 					List(Cons(Call("sum", "point", Cons(0, -1)), 0),
 						Cons(Call("sum", "point", Cons(1, 0)), 1),
@@ -81,6 +84,18 @@ namespace Lib.AI
 				Def("pointIsWall", ArgNames("point", "map"), 
 					Ceq(Call("getCell", "map", "point"),
 						(int)(MapCell.Wall))),
+
+				Def("pointIsPill", ArgNames("point", "map"), 
+					Ceq(Call("getCell", "map", "point"),
+						(int)(MapCell.Pill))),
+
+				Def("pointIsPowerPill", ArgNames("point", "map"), 
+					Ceq(Call("getCell", "map", "point"),
+						(int)(MapCell.PowerPill))),
+
+				Def("pointIsFruit", ArgNames("point", "map"), 
+					Ceq(Call("getCell", "map", "point"),
+						(int)(MapCell.Fruit))),
 
 				Def("InitVisited", ArgNames("mapHeight", "mapWidth"), 
 					Call("Repeat", "mapHeight", Call("Repeat", "mapWidth", 0))),
