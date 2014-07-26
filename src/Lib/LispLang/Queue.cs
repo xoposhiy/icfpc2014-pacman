@@ -9,19 +9,19 @@ namespace Lib.LispLang
 	{
 		public SExpr Enqueue()
 		{
-			return Def("enqueue", ArgNames("queue", "value"),
-				Cons(Cons("value", Car("queue")), Cdr("queue")));
+			return Def("queue_enqueue", ArgNames("q", "value"),
+				Cons(Cons("value", Car("q")), Cdr("q")));
 		}
 
 		public SExpr Transfer()
 		{
-			return Def("transfer", ArgNames("queue"), 
-				If(Atom(Car("queue")),
-					"queue",
-					Call("transfer",
+			return Def("queue_transfer", ArgNames("q"), 
+				If(Atom(Car("q")),
+					"q",
+					Call("queue_transfer",
 						Cons(
-							Cdr(Car("queue")),
-							Cons(Car(Car("queue")), Cdr("queue"))
+							Cdr(Car("q")),
+							Cons(Car(Car("q")), Cdr("q"))
 						)
 					)
 				)
@@ -30,17 +30,24 @@ namespace Lib.LispLang
 
 		public SExpr Dequeue()
 		{
-			return Def("dequeue", ArgNames("queue"),
-				If(Atom(Cdr("queue")),
-					Call("dequeue", Call("transfer", "queue")),
+			return Def("queue_dequeue", ArgNames("q"),
+				If(Atom(Cdr("q")),
+					Call("queue_dequeue", Call("queue_transfer", "q")),
 					Cons(
-						Car(Cdr("queue")),
+						Car(Cdr("q")),
 						Cons(
-							Car("queue"),
-							Cdr(Cdr("queue"))
+							Car("q"),
+							Cdr(Cdr("q"))
 						)
 					)
 				)
+			);
+		}
+
+		public SExpr IsEmpty()
+		{
+			return Def("queue_isempty", ArgNames("q"),
+				And(Atom(Car("q")), Atom(Cdr("q")))
 			);
 		}
 
@@ -48,7 +55,7 @@ namespace Lib.LispLang
 		public void Test_Enqueue_Empty()
 		{
 			var macro = Compile(
-				Call("enqueue", Call("sampleQueue"), 3),
+				Call("queue_enqueue", Call("sampleQueue"), 3),
 				Cmd("RTN", new SExpr()),
 				Def("sampleQueue", ArgNames(), Cons(List(), List())),
 				Enqueue());
@@ -64,7 +71,7 @@ namespace Lib.LispLang
 		public void Test_DequeueSimple()
 		{
 			var macro = Compile(
-				Call("dequeue", Call("sampleQueue")),
+				Call("queue_dequeue", Call("sampleQueue")),
 				Cmd("RTN", new SExpr()),
 				Def("sampleQueue", ArgNames(), Cons(List(1, 2, 3), List(4, 5, 6))),
 				Transfer(), Dequeue());
@@ -80,7 +87,7 @@ namespace Lib.LispLang
 		public void Test_DequeueEmptyTail()
 		{
 			var macro = Compile(
-				Call("dequeue", Call("sampleQueue")),
+				Call("queue_dequeue", Call("sampleQueue")),
 				Cmd("RTN", new SExpr()),
 				Def("sampleQueue", ArgNames(), Cons(List(3, 2, 1), List())),
 				Transfer(), Dequeue());
@@ -89,7 +96,55 @@ namespace Lib.LispLang
 			var parsed = LParser.Parse(macro);
 			var m = new LMachineInterpreter(parsed.Program);
 			m.RunUntilStop();
-			Assert.AreEqual("(1, (0, [2, 3]))", m.State.DataStack.Pop().ToString());
+			Assert.AreEqual("[1, 0, 2, 3]", m.State.DataStack.Pop().ToString());
+		}
+		
+		[Test]
+		public void Test_IsEmpty_ForEmpty()
+		{
+			var macro = Compile(
+				Call("queue_isempty", Call("sampleQueue")),
+				Cmd("RTN", new SExpr()),
+				Def("sampleQueue", ArgNames(), Cons(List(), List())),
+				IsEmpty());
+
+			Console.WriteLine(macro);
+			var parsed = LParser.Parse(macro);
+			var m = new LMachineInterpreter(parsed.Program);
+			m.RunUntilStop();
+			Assert.AreEqual("1", m.State.DataStack.Pop().ToString());
+		}
+		
+		[Test]
+		public void Test_IsEmpty_ForNotEmpty_Head()
+		{
+			var macro = Compile(
+				Call("queue_isempty", Call("sampleQueue")),
+				Cmd("RTN", new SExpr()),
+				Def("sampleQueue", ArgNames(), Cons(List(1), List())),
+				IsEmpty());
+
+			Console.WriteLine(macro);
+			var parsed = LParser.Parse(macro);
+			var m = new LMachineInterpreter(parsed.Program);
+			m.RunUntilStop();
+			Assert.AreEqual("0", m.State.DataStack.Pop().ToString());
+		}
+
+		[Test]
+		public void Test_IsEmpty_ForNotEmpty_Tail()
+		{
+			var macro = Compile(
+				Call("queue_isempty", Call("sampleQueue")),
+				Cmd("RTN", new SExpr()),
+				Def("sampleQueue", ArgNames(), Cons(List(), List(2))),
+				IsEmpty());
+
+			Console.WriteLine(macro);
+			var parsed = LParser.Parse(macro);
+			var m = new LMachineInterpreter(parsed.Program);
+			m.RunUntilStop();
+			Assert.AreEqual("0", m.State.DataStack.Pop().ToString());
 		}
 	}
 }
