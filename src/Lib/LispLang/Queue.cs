@@ -7,13 +7,13 @@ namespace Lib.LispLang
 {
 	public class Queue : Lisp
 	{
-		public SExpr Enqueue()
+		public static SExpr Enqueue()
 		{
 			return Def("queue_enqueue", ArgNames("q", "value"),
 				Cons(Cons("value", Car("q")), Cdr("q")));
 		}
 
-		public SExpr Transfer()
+		public static SExpr Transfer()
 		{
 			return Def("queue_transfer", ArgNames("q"), 
 				If(Atom(Car("q")),
@@ -28,7 +28,7 @@ namespace Lib.LispLang
 			);
 		}
 
-		public SExpr Dequeue()
+		public static SExpr Dequeue()
 		{
 			return Def("queue_dequeue", ArgNames("q"),
 				If(Atom(Cdr("q")),
@@ -44,7 +44,7 @@ namespace Lib.LispLang
 			);
 		}
 
-		public SExpr IsEmpty()
+		public static SExpr IsEmpty()
 		{
 			return Def("queue_isempty", ArgNames("q"),
 				And(Atom(Car("q")), Atom(Cdr("q")))

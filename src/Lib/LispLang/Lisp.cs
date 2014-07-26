@@ -5,18 +5,19 @@ namespace Lib.LispLang
 {
 	public class Lisp
 	{
-		public string Compile(params SExpr[] statements)
+		public static string Compile(params SExpr[] statements)
 		{
 			var e = new Env();
 			var macroAsm = string.Join("\r\n", statements.SelectMany(lst => lst.ToCode(e)));
 			return macroAsm;
 		}
-		public SExpr[] Args(params SExpr[] items)
+
+		public static SExpr[] Args(params SExpr[] items)
 		{
 			return items;
 		}
 
-		public SExpr Def(string name, string[] args, SExpr body)
+		public static SExpr Def(string name, string[] args, SExpr body)
 		{
 			return new SExpr(env => DefToCode(name, args, body, env));
 		}
@@ -33,22 +34,22 @@ namespace Lib.LispLang
 			yield return "";
 		}
 
-		public SExpr Tuple(params SExpr[] items)
+		public static SExpr Tuple(params SExpr[] items)
 		{
 			return new SExpr(env => SExpr.TupleToCode(env, items));
 		}
 
-		public SExpr List(params SExpr[] items)
+		public static SExpr List(params SExpr[] items)
 		{
 			return new SExpr(env => SExpr.ListToCode(env, items));
 		}
 
-		public string[] ArgNames(params string[] args)
+		public static string[] ArgNames(params string[] args)
 		{
 			return args;
 		}
 
-		public SExpr If(SExpr cond, SExpr nonZero, SExpr zero)
+		public static SExpr If(SExpr cond, SExpr nonZero, SExpr zero)
 		{
 			var zeroLabel = NextLabel("zero");
 			var nonZeroLabel = NextLabel("nonzero");
@@ -70,28 +71,28 @@ namespace Lib.LispLang
 
 		}
 
-		private int lastLabelId ;
-		public string NextLabel(string prefix = "label")
+		private static int lastLabelId;
+		public static string NextLabel(string prefix = "label")
 		{
 			return prefix + "_" + (++lastLabelId);
 		}
 
-		public SExpr Cdr(SExpr list)
+		public static SExpr Cdr(SExpr list)
 		{
 			return Cmd("CDR", list);
 		}
 
-		public SExpr Atom(SExpr expr)
+		public static SExpr Atom(SExpr expr)
 		{
 			return Cmd("ATOM", expr);
 		}
 
-		public SExpr Cons(SExpr head, SExpr tail)
+		public static SExpr Cons(SExpr head, SExpr tail)
 		{
 			return Cmd("CONS", new[] { head, tail });
 		}
 
-		public SExpr Ceq(SExpr head, SExpr tail)
+		public static SExpr Ceq(SExpr head, SExpr tail)
 		{
 			return Cmd("CEQ", new[] { head, tail });
 		}
@@ -107,22 +108,42 @@ namespace Lib.LispLang
 			return new SExpr(env => a.ToCode(env).Concat(new[] { "LDF " + name, "AP " + args.Length }));
 		}
 
-		public SExpr Car(SExpr list)
+		public static SExpr Car(SExpr list)
 		{
 			return Cmd("CAR", list);
 		}
 
-		public SExpr Sub(SExpr a, SExpr b)
+		public static SExpr X(SExpr point)
+		{
+			return Car(point);
+		}
+
+		public static SExpr Y(SExpr point)
+		{
+			return Car(Cdr(point));
+		}
+
+		public static SExpr Get(int index, SExpr list)
+		{
+			while (index != 0)
+			{
+				list = Cdr(list);
+				index--;
+			}
+			return Car(list);
+		}
+
+		public static SExpr Sub(SExpr a, SExpr b)
 		{
 			return Cmd("SUB", new[] { a, b });
 		}
 
-		public SExpr Add(SExpr a, SExpr b)
+		public static SExpr Add(SExpr a, SExpr b)
 		{
 			return Cmd("ADD", new[] { a, b });
 		}
 		
-		public SExpr And(params SExpr[] expr)
+		public static SExpr And(params SExpr[] expr)
 		{
 			if (expr.Length == 0)
 				return 1;
