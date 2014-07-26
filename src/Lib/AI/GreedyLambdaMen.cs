@@ -66,6 +66,50 @@ namespace Lib.AI
 		}
 	}
 
+	public class Queue_Functional
+	{
+		private LValue twoStacks;
+
+		public Queue_Functional()
+		{
+			twoStacks = LValue.FromPair(null, null);
+		}
+
+		public void Enqueue(int value)
+		{
+			twoStacks = LValue.FromPair(
+				LValue.FromPair(LValue.FromInt(value), twoStacks.Pair.Head),
+				twoStacks.Pair.Tail);
+		}
+
+		public int? Dequeue()
+		{
+			if (twoStacks.Pair.Tail.Tag != LTag.Pair)
+				throwLeftStackToRight();
+			if (twoStacks.Pair.Tail.Tag != LTag.Pair)
+				return null;
+			var result = twoStacks.Pair.Tail .Pair.Head;
+			twoStacks = LValue.FromPair(
+				twoStacks.Pair.Head,
+				twoStacks.Pair.Tail .Pair.Head);
+			return result.Value;
+		}
+
+		private void throwLeftStackToRight()
+		{
+			LValue rightStack = null;
+			while (twoStacks.Pair.Head.Tag == LTag.Pair)
+			{
+				var curr = twoStacks.Pair.Head.Pair.Head;
+				rightStack = LValue.FromPair(curr, rightStack);
+				twoStacks = LValue.FromPair(
+					twoStacks.Pair.Head.Pair.Tail,
+					twoStacks.Pair.Tail);
+			}
+			twoStacks = LValue.FromPair(null, rightStack);
+		}
+	}
+
 	public static class Extensions
 	{
 		public static T Get<T>(this T[,] map, Point point)
