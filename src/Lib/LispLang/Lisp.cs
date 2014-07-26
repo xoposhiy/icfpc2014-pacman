@@ -91,14 +91,12 @@ namespace Lib.LispLang
 			return Cmd("CONS", new[] { head, tail });
 		}
 
-		public static SExpr Cmd(string name, params SExpr[] args)
-
 		public SExpr Ceq(SExpr head, SExpr tail)
 		{
 			return Cmd("CEQ", new[] { head, tail });
 		}
 
-		public static SExpr Cmd(string name, SExpr args)
+		public static SExpr Cmd(string name, params SExpr[] args)
 		{
 			return new SExpr(env => ((SExpr)args).		ToCode(env).Concat(new[] { name }));
 		}
