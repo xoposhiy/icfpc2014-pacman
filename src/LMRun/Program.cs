@@ -29,22 +29,41 @@ namespace LMRun
 			m.State.DataStack.Push(42);
 			m.State.DataStack.Push(LValue.FromClosure(0, null));
 			new Tap(2).Execute(m.State);
-			while (!m.State.Stopped)
+			Exception exception = null;
+			while (!m.State.Stopped && exception == null)
 			{
-				ShowState(m, prog);
+				ShowState(m, prog, exception);
 				var cmd = Console.ReadKey();
 				if (cmd.Key == ConsoleKey.F10)
-					m.Step();
+				{
+					try
+					{
+						m.Step();
+					}
+					catch (Exception e)
+					{
+						exception = e;
+					}
+				}
 				else if (cmd.Key == ConsoleKey.F5)
-					m.RunUntilStop();
+				{
+					try
+					{
+						m.RunUntilStop();
+					}
+					catch (Exception e)
+					{
+						exception = e;
+					}
+				}
 			}
-			ShowState(m, prog);
+			ShowState(m, prog, exception);
 			while (Console.ReadKey().Key != ConsoleKey.Escape)
 			{
 			}
 		}
 
-		private static void ShowState(LMachineInterpreter m, ParseResult<Instruction> prog)
+		private static void ShowState(LMachineInterpreter m, ParseResult<Instruction> prog, [CanBeNull] Exception exception)
 		{
 			var left = Console.CursorLeft;
 			var top = Console.CursorTop;
@@ -73,6 +92,14 @@ namespace LMRun
 				Console.ForegroundColor = ConsoleColor.White;
 				Console.BackgroundColor = ConsoleColor.Red;
 				Console.WriteLine("LMachine stopped. Press Escape to exit");
+				Console.ResetColor();
+			}
+			else if (exception != null)
+			{
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.BackgroundColor = ConsoleColor.Red;
+				Console.WriteLine("LMachine failed: " + exception);
+				Console.WriteLine("Press Escape to exit");
 				Console.ResetColor();
 			}
 			Console.SetCursorPosition(left, top);
