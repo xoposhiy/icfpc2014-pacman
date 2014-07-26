@@ -34,6 +34,10 @@ namespace conPlayer
 			}
 			Console.WriteLine("Game over");
 			Console.WriteLine("Score " + sim.world.man.score);
+			Console.WriteLine("Press any key to continue...");
+			var key = Console.ReadKey();
+			while (key.Key != ConsoleKey.Enter)
+				key = Console.ReadKey();
 		}
 
 		private static Tuple<LValue, Direction> ConsoleStep(LValue currentaistate, World currentworldstate)
