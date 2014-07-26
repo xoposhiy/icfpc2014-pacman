@@ -122,9 +122,25 @@ namespace Lib.LispLang
 			return Cmd("ADD", new[] { a, b });
 		}
 		
-		public SExpr And(SExpr a, SExpr b)
+		public SExpr And(params SExpr[] expr)
 		{
-			return If(a, If(b, 1, 0), 0);
+			if (expr.Length == 0)
+				return 1;
+			else
+				return If(expr[0], And(expr.Skip(1).ToArray()), 0);
+		}
+
+		public SExpr Or(params SExpr[] expr)
+		{
+			if (expr.Length == 0)
+				return 0;
+			else
+				return If(expr[0], 1, Or(expr.Skip(1).ToArray()));
+		}
+
+		public SExpr IsGreater(SExpr a, SExpr b)
+		{
+			return Cmd("CGT", new[] { a, b });
 		}
 	}
 }
