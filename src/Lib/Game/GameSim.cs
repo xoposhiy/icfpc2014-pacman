@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Lib.LMachine;
 using NUnit.Framework;
+using Lib.AI;
 
 namespace Lib.Game
 {
@@ -45,21 +46,33 @@ namespace Lib.Game
 		private readonly List<UpdateInfo> updateQueue = new List<UpdateInfo>();
 		public readonly World world;
 		private readonly MapCell[,] map;
-		private readonly LMStep step;
-		private LValue state;
+		// Lambda mans
+		private readonly LMStep lmstep;
+		private LValue lmstate;
+
+		private GStep[] ghstep;
+
 		public readonly GameSettings settings = new GameSettings();
 		public int time;
 		public bool finished;
 		private int pillsCount;
 
 		//TODO add ghost AIs
-		public GameSim(MapCell[,] map, LMMain main)
+		public GameSim(MapCell[,] map, LMMain lmmain, GMain[] ghostsMain)
 		{
 			this.map = map;
 			world = new World(map);
-			var res = main(world);
-			state = res.Item1;
-			step = res.Item2;
+
+			//initialization lm
+			var res = lmmain(world);
+			lmstate = res.Item1;
+			lmstep = res.Item2;
+
+			var nGhostProg = ghostsMain.Length;
+			ghstep = world.ghosts.Select((g, gi) => ghostsMain[gi % nGhostProg](gi, world)).ToArray();
+			
+
+
 			time = 1;
 			pillsCount = GetLocationsOf(map, MapCell.Pill).Count();
 			updateQueue.Add(new UpdateInfo(time + settings.lambdaManPeriod, -1));
@@ -203,7 +216,26 @@ namespace Lib.Game
 		private void MoveGhost(int ghostIndex)
 		{
 			var ghost = world.ghosts[ghostIndex];
-			ghost.location = TryMove(ghost.location, ghost.direction);
+			var step = ghstep[ghostIndex];
+			var direction = step(world);
+
+			Point newLocation = ghost.location;
+			Direction chosedDirection = ghost.direction;
+			
+			//Пробуем переместиться в указанном направлении
+			//When a ghost chooses an illegal move (or no move at all) at a junction, 
+			// it is forced to continue in its previous direction if this is legal, and if not, 
+			// then the first legal direction out of up, right, down, and left, in that order.
+			foreach (var dir in new Direction[] {direction, ghost.direction, Direction.Up, Direction.Right, Direction.Down, Direction.Left })
+			{
+				chosedDirection = dir;
+				newLocation = TryMove(ghost.location, chosedDirection);
+				if (!newLocation.Equals(ghost.location))
+					break;
+			}
+
+			ghost.location = newLocation;
+			ghost.direction = chosedDirection;
 			var period = settings.ghostPeriod[ghost.ghostIndex];
 			updateQueue.Add(new UpdateInfo(time + period, ghostIndex));
 		}
@@ -216,8 +248,8 @@ namespace Lib.Game
 		private void MoveLMan()
 		{
 			var man = world.man;
-			var res = step(state, world);
-			state = res.Item1;
+			var res = lmstep(lmstate, world);
+			lmstate = res.Item1;
 			man.direction = res.Item2;
 			man.location = TryMove(man.location, man.direction);
 			var eat = IsEatable(world.map[man.location.Y, man.location.X]);
@@ -239,7 +271,7 @@ namespace Lib.Game
 		public void Create()
 		{
 			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
-			var sim = new GameSim(map, Main);
+			var sim = new GameSim(map, LMMain, new GMain[]{GMain});
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
@@ -247,9 +279,14 @@ namespace Lib.Game
 
 		}
 
-		private Tuple<LValue, LMStep> Main(World initialworld)
+		private Tuple<LValue, LMStep> LMMain(World initialworld)
 		{
 			return Tuple.Create<LValue, LMStep>(LValue.FromInt(42), Step);
+		}
+
+		private GStep GMain(int ghostId, World initialWorld)
+		{
+			return new RandomGhost().Main(ghostId, initialWorld);
 		}
 
 		[Test]
@@ -259,7 +296,8 @@ namespace Lib.Game
 @"#####
 #.\.#
 #####");
-			var sim = new GameSim(map, Main);
+			var g = new RandomGhost();
+			var sim = new GameSim(map, LMMain, new GMain[] {GMain});
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
@@ -275,7 +313,7 @@ namespace Lib.Game
 #.\.#
 #...#
 #####");
-			var sim = new GameSim(map, Main);
+			var sim = new GameSim(map, LMMain, new GMain[]{GMain});
 			for(int i=0; i<128; i++)
 				sim.Tick();
 			Assert.AreEqual(129, sim.time);

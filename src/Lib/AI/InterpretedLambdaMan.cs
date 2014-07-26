@@ -7,7 +7,7 @@ using Lib.LMachine.Parsing;
 
 namespace Lib.AI
 {
-	public class InterpretedLambdaMan :ILambdaMan
+	public class InterpretedLambdaMan :LambdaMan
 	{
 		private readonly LParseResult parsedProg;
 		private LValue step;

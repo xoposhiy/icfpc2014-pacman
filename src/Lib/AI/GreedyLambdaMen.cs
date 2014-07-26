@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Lib.AI
 {
-	public class GreedyLambdaMen : ILambdaMan
+	public class GreedyLambdaMen : LambdaMan
 	{
 		public Tuple<LValue, LMStep> Main(World initialWorld)
 		{
