@@ -181,8 +181,8 @@ namespace Lib.Game
 	public enum Direction
 	{
 		Up = 0,
-		Right,
-		Down,
-		Left
+		Right = 1,
+		Down = 2,
+		Left = 3
 	}
 }
