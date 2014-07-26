@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Lib.Game;
 using Lib.LMachine;
+using NUnit.Framework;
 
 namespace Lib.AI
 {
@@ -107,6 +108,55 @@ namespace Lib.AI
 					twoStacks.Pair.Tail);
 			}
 			twoStacks = LValue.FromPair(null, rightStack);
+		}
+	}
+
+
+	public class TestQueueFunctional
+	{
+		private Queue_Functional func;
+		private Queue<int> coll;
+			
+		[Test]
+		public void TestQueue()
+		{
+			func = new Queue_Functional();
+			coll = new Queue<int>();
+
+			Push(1);
+			Push(2);
+			Push(3);
+			Pop();
+			Pop();
+			Pop();
+			Pop();
+			Push(4);
+			Push(5);
+			Push(6);
+			Pop();
+			Pop();
+			Push(7);
+			Pop();
+			Pop();
+			Pop();
+		}
+
+		private void Push(int val)
+		{
+			func.Enqueue(val);
+			coll.Enqueue(val);
+		}
+
+		private void Pop()
+		{
+			Assert.That(coll.Count == 0, Is.EqualTo(func.IsEmpty()));
+			if (coll.Count > 0)
+			{
+				int val1 = coll.Dequeue();
+				int? val2 = func.Dequeue();
+				Assert.That(val2.HasValue);
+				Assert.That(val1, Is.EqualTo(val2.Value));
+			}
 		}
 	}
 
