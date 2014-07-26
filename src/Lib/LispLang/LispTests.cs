@@ -25,6 +25,5 @@ namespace Lib.LispLang
 			m.RunUntilStop();
 			Assert.AreEqual(4, m.State.DataStack.Pop().GetValue());
 		}
-
 	}
 }

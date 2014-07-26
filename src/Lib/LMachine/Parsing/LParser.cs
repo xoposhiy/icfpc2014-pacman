@@ -19,7 +19,7 @@ namespace Lib.LMachine.Parsing
 		[NotNull]
 		public static LParseResult Parse([NotNull] string source)
 		{
-			var lines = source.Split(new[] { "\r\n" }, StringSplitOptions.None);
+			var lines = source.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 			var codeLines = GetCodeLines(lines);
 			var program = new List<Instruction>();
 			var sourceLines = new List<int>();

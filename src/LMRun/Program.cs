@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace LMRun
 	{
 		static void Main(string[] args)
 		{
-			Run("get2");
+			Run("generated");
 		}
 
 		static void Run(string name)
@@ -21,22 +20,14 @@ namespace LMRun
 			var p = File.ReadAllText(KnownPlace.GccSamples + name + ".mgcc");
 			var prog = LParser.Parse(p);
 			var m = new LMachineInterpreter(prog.Program);
-			bool runToEnd = false;
 			while (!m.State.Stopped)
 			{
 				ShowState(m, prog);
-				if (runToEnd)
+				var cmd = Console.ReadKey();
+				if (cmd.Key == ConsoleKey.F10)
 					m.Step();
-				else
-				{
-					var cmd = Console.ReadKey();
-					if (cmd.Key == ConsoleKey.F10)
-						m.Step();
-					else if (cmd.Key == ConsoleKey.F5)
-					{
-						runToEnd = true;
-					}
-				}
+				else if (cmd.Key == ConsoleKey.F5)
+					m.RunUntilStop();
 			}
 			ShowState(m, prog);
 			while (Console.ReadKey().Key != ConsoleKey.Escape)
