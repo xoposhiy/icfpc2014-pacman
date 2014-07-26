@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,6 +64,7 @@
     <Compile Include="Intructions\Ldc.cs" />
     <Compile Include="Intructions\Ldf.cs" />
     <Compile Include="LMachineInterpreter.cs" />
+    <Compile Include="LMachineInterpreter_Test.cs" />
     <Compile Include="LMachineState.cs" />
     <Compile Include="LStack.cs" />
     <Compile Include="Intructions\Mul.cs" />
@@ -78,6 +83,9 @@
       <Project>{4741F5BB-F868-4411-B2E0-A107760D3A56}</Project>
       <Name>Lib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

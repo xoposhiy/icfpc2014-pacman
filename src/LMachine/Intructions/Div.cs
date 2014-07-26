@@ -16,10 +16,24 @@ namespace LMachine.Intructions
 			var y = state.DataStack.Pop().GetValue();
 			var x = state.DataStack.Pop().GetValue();
 			if (y == 0)
-				throw new InvalidOperationException("TODO");
-			var z = unchecked(x / y); // todo !!! -3 / 2 = -2
+				throw new InvalidOperationException("Division by zero");
+			var z = floor_div2(x, y);
 			state.DataStack.Push(LValue.FromInt(z));
 			state.CurrentAddress++;
+		}
+
+		private static int floor_div2(int a, int b)
+		{
+			unchecked
+			{
+				var rem = a % b;
+				var div = a / b;
+				if (rem == 0)
+					a = b;
+				var sub = a ^ b;
+				sub >>= 31;
+				return div + sub;
+			}
 		}
 	}
 }
