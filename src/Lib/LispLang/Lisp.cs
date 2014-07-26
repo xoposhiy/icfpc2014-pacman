@@ -18,13 +18,13 @@ namespace Lib.LispLang
 
 		public SExpr Def(string name, string[] args, SExpr body)
 		{
-			return new SExpr(env => DefToCode(name, args, body));
+			return new SExpr(env => DefToCode(name, args, body, env));
 		}
 
-		private static IEnumerable<string> DefToCode(string name, string[] args, SExpr body)
+		private static IEnumerable<string> DefToCode(string name, string[] args, SExpr body, Env env)
 		{
 			yield return name + ": " + "; fun(" + string.Join(", ", args) + ")";
-			foreach (var line in body.ToCode(new Env(args)))
+			foreach (var line in body.ToCode(env.MakeChild(args)))
 			{
 				yield return "  " + line;
 			}
@@ -91,9 +91,9 @@ namespace Lib.LispLang
 			return Cmd("CONS", new[] { head, tail });
 		}
 
-		public static SExpr Cmd(string name, SExpr args)
+		public static SExpr Cmd(string name, params SExpr[] args)
 		{
-			return new SExpr(env => args.ToCode(env).Concat(new[] { name }));
+			return new SExpr(env => ((SExpr)args).		ToCode(env).Concat(new[] { name }));
 		}
 
 		public static SExpr Call(string name, params SExpr[] args)

@@ -29,13 +29,13 @@ namespace Lib.LMachine.Intructions
 			for (var i = 0; i < frameIndex; i++)
 			{
 				if (fp == null)
-					throw new InvalidOperationException("TODO");
+					throw new InvalidOperationException("fp is null");
 				fp = fp.Parent;
 			}
 			if (fp == null)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException("fp is null");
 			if (fp.IsDum)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException("Is Dummy");
 			return fp;
 		}
 	}

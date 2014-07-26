@@ -59,10 +59,8 @@ namespace Lib.LispLang
 
 		private static IEnumerable<string> ReferenceToCode(Env env, string reference)
 		{
-			var index = Array.IndexOf(env.names, reference);
-			if (index < 0)
-				throw new Exception(reference);
-			yield return "LD 0 " + index + "  ; " + reference;
+			var addr = env.GetVariableAddr(reference);
+			yield return "LD " + addr.Item1 + " " + addr.Item2 + "  ; " + reference;
 		}
 	}
 }

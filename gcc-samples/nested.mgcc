@@ -1,0 +1,19 @@
+LDC 42
+LDF main
+AP 1
+RTN
+main: ; fun(x)
+  LDC 1
+  LDF f
+  AP 1
+  LDF f
+  AP 1
+  f: ; fun(y)
+    LD 1 0  ; x
+    LD 0 0  ; y
+    Add
+    RTN
+  ;end f
+  
+  RTN
+;end main
