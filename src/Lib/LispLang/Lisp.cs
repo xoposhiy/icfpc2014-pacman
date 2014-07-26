@@ -100,9 +100,15 @@ namespace Lib.LispLang
 		{
 			return Cmd("CAR", list);
 		}
+		
 		public SExpr Sub(SExpr a, SExpr b)
 		{
 			return Cmd("SUB", new[] { a, b });
+		}
+
+		public SExpr Add(SExpr a, SExpr b)
+		{
+			return Cmd("ADD", new[] { a, b });
 		}
 	}
 }
