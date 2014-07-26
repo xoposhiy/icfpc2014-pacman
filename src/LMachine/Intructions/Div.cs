@@ -17,22 +17,20 @@ namespace LMachine.Intructions
 			var x = state.DataStack.Pop().GetValue();
 			if (y == 0)
 				throw new InvalidOperationException("Division by zero");
-			var z = floor_div2(x, y);
+			var z = div(x, y);
 			state.DataStack.Push(LValue.FromInt(z));
 			state.CurrentAddress++;
 		}
 
-		public static int floor_div2(int a, int b)
+		public static int div(int a, int b)
 		{
 			unchecked
 			{
-				var rem = a % b;
 				var div = a / b;
-				if (rem == 0)
-					a = b;
-				var sub = a ^ b;
-				sub >>= 31;
-				return div + sub;
+				var rem = a % b;
+				if (rem != 0 && (a ^ b) < 0)
+					return div - 1;
+				return div;
 			}
 		}
 	}
