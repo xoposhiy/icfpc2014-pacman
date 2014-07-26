@@ -48,6 +48,13 @@
     <Compile Include="AI\Queue_Functional.cs" />
     <Compile Include="AI\RandomGhost.cs" />
     <Compile Include="Annoattions.cs" />
+    <Compile Include="GMachine\GArg.cs" />
+    <Compile Include="GMachine\GCmd.cs" />
+    <Compile Include="GMachine\GMachine.cs" />
+    <Compile Include="GMachine\GMachineState.cs" />
+    <Compile Include="GMachine\GMachine_Test.cs" />
+    <Compile Include="GMachine\Hlt.cs" />
+    <Compile Include="GMachine\Mov.cs" />
     <Compile Include="Game\Ghost.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="LispLang\Api.cs" />
