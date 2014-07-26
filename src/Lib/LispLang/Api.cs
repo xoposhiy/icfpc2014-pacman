@@ -103,7 +103,8 @@ namespace Lib.LispLang
 			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
 			any,
 			max,
-			min
+			min,
+			argmax
 		};
 
 		public static string CompileWithLibs(params SExpr[] main)
