@@ -3,6 +3,7 @@ using System.IO;
 using Lib;
 using Lib.AI;
 using Lib.Game;
+using Lib.LispLang;
 using Lib.LMachine;
 
 namespace conPlayer
@@ -12,10 +13,11 @@ namespace conPlayer
 		static void Main(string[] args)
 		{
 //			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
-			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
 //			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
 //			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
-//			LMMain main = new InterpretedLambdaMan(File.ReadAllText(KnownPlace.GccSamples + "stupidBot.mgcc")).Main;
+			Console.WriteLine(LeftAi.code);
+			LMMain main = new InterpretedLambdaMan(LeftAi.code).Main;
 			GMain[] ghostProgs = new GMain[] { new RandomGhost().Main };
 			
 			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostProgs);

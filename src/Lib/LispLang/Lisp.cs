@@ -151,7 +151,7 @@ namespace Lib.LispLang
 				return If(expr[0], And(expr.Skip(1).ToArray()), 0);
 		}
 
-		public SExpr Or(params SExpr[] expr)
+		public static SExpr Or(params SExpr[] expr)
 		{
 			if (expr.Length == 0)
 				return 0;
@@ -159,9 +159,19 @@ namespace Lib.LispLang
 				return If(expr[0], 1, Or(expr.Skip(1).ToArray()));
 		}
 
-		public SExpr IsGreater(SExpr a, SExpr b)
+		public static SExpr IsGreater(SExpr a, SExpr b)
 		{
 			return Cmd("CGT", new[] { a, b });
+		}
+
+		public static SExpr Fun(string name)
+		{
+			return Cmd("LDF " + name);
+		}		
+		
+		public static SExpr Return()
+		{
+			return Cmd("RTN");
 		}
 	}
 }

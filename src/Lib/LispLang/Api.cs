@@ -1,55 +1,51 @@
-﻿namespace Lib.LispLang
+﻿using System.Collections.Generic;
+using System.Linq;
+using Lib.LMachine.Intructions;
+
+namespace Lib.LispLang
 {
-	class Api : Lisp
+	public class Api : Lisp
 	{
-		public SExpr[] WorldApi()
+		public static string CompileMain(params SExpr[] main)
 		{
-			return new[]
-			{
-				Def("map", ArgNames("world"), Get(0, "world")),
-				Def("lmState", ArgNames("world"), Get(1, "world")),
-				Def("ghStates", ArgNames("world"), Get(2, "world")),
-				Def("fruit", ArgNames("world"), Get(3, "world")),
-
-				Def("lmLoc", ArgNames("world"), Get(1, Call("lmState", "world"))),
-				Def("lmDir", ArgNames("world"), Get(2, Call("lmState", "world"))),
-
-				Def("ghState", ArgNames("world", "ghInd"),
-					Call("get",
-						Call("ghStates", "world"), "ghInd")),
-
-				Def("sum", ArgNames("p1", "p2"),
-					Cons(Add(X("p1"), X("p2")), Add(Y("p1"), Y("p2")))),
-
-				Def("point", ArgNames("x", "y"), Cons("x", "y")),
-				Def("pdirections", ArgNames(), List(Cons(0, -1), Cons(1, 0), Cons(0, 1), Cons(-1, 0))),
-
-				Def("getCell", ArgNames("map", "x", "y"), Call("get", Call("get", "map", "y"), "x")),
-
-				Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
-				Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("getListLength", "map"), Call("getListLength", Car("map"))))),
-
-	
-				Get(),
-
-				Queue.Enqueue(),
-				Queue.Dequeue(),
-				Queue.Transfer(),
-				Queue.IsEmpty()
-
-			};
+			return Compile(main.Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
 		}
 
-		public SExpr Get()
+		public static SExpr[] worldApi =
 		{
-			return 
-				Def("get", ArgNames("list", "index"),
-					If("index",
-						Call("get", Cdr("list"), Sub("index", 1)),
-						Car("list")));
+			Def("map", ArgNames("world"), Get(0, "world")),
+			Def("lmState", ArgNames("world"), Get(1, "world")),
+			Def("ghStates", ArgNames("world"), Get(2, "world")),
+			Def("fruit", ArgNames("world"), Get(3, "world")),
+			Def("lmLoc", ArgNames("world"), Get(1, Call("lmState", "world"))),
+			Def("lmDir", ArgNames("world"), Get(2, Call("lmState", "world"))),
+			Def("ghState", ArgNames("world", "ghInd"),
+				Call("get",
+					Call("ghStates", "world"), "ghInd")),
+			Def("sum", ArgNames("p1", "p2"),
+				Cons(Add(X("p1"), X("p2")), Add(Y("p1"), Y("p2")))),
+			Def("point", ArgNames("x", "y"), Cons("x", "y")),
+			Def("pdirections", ArgNames(), List(Cons(0, -1), Cons(1, 0), Cons(0, 1), Cons(-1, 0))),
+			Def("getCell", ArgNames("map", "x", "y"), Call("get", Call("get", "map", "y"), "x")),
+			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("getListLength", "map"), Call("getListLength", Car("map"))))),
+		};
 
-		}
+
+		public static SExpr[] queueApi =
+		{
+			Queue.Enqueue(),
+			Queue.Dequeue(),
+			Queue.Transfer(),
+			Queue.IsEmpty()
+		};
+
+		public static SExpr[] listApi =
+		{
+			Def("get", ArgNames("list", "index"),
+				If("index",
+					Call("get", Cdr("list"), Sub("index", 1)),
+					Car("list"))),
+			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
+		};
 	}
-
-	
 }

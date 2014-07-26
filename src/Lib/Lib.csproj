@@ -74,6 +74,7 @@
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="LispLang\Api.cs" />
     <Compile Include="LispLang\Env.cs" />
+    <Compile Include="LispLang\LeftAi.cs" />
     <Compile Include="LispLang\Lisp.cs" />
     <Compile Include="LispLang\LispTests.cs" />
     <Compile Include="LispLang\LocallyGreedyCarefulLambdaManOnList.cs" />
