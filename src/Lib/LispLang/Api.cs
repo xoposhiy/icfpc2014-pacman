@@ -20,6 +20,7 @@ namespace Lib.LispLang
 		{
 			Def("map", ArgNames("world"), Get(0, "world")),
 			Def("lmState", ArgNames("world"), Get(1, "world")),
+			Def("powerRemains", ArgNames("world"), Get(0, Get(1, "world"))),
 			Def("ghStates", ArgNames("world"), Get(2, "world")),
 			Def("fruit", ArgNames("world"), Get(3, "world")),
 			Def("lmLoc", ArgNames("world"), Get(1, Call("lmState", "world"))),
@@ -172,8 +173,12 @@ namespace Lib.LispLang
 					Ceq(Call("ghVitality", Args("ghost")), (int)GhostVitality.Fright),
 					Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point")))),
 
+			Def("ghostAtPoint", ArgNames("ghost", "point"),
+				Call("pEquals", Args(Call("ghLoc", Args("ghost")), "point"))),
+
 			DefAny1("activeGhostAtPoint"),
 			DefAny1("frightGhostAtPoint"),
+			DefAny1("ghostAtPoint"),
 		};
 
 		public SExpr[] Math()

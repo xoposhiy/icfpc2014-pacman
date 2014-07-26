@@ -13,6 +13,7 @@ namespace Lib.LMachine.Intructions
 		{
 			var info = state.DataStack.Pop();
 			Console.WriteLine(info);
+//			Console.ReadKey();
 			state.DataStack.Push(info);
 			state.CurrentAddress++;
 		}

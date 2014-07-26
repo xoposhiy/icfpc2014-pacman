@@ -48,7 +48,7 @@ namespace conPlayer
 					Console.WriteLine(newState);
 					Console.WriteLine("Use Cursor keys to control Lambda Man. Time: {0}", sim.time);
 					oldState = newState;
-					Console.ReadKey();
+//					Console.ReadKey();
 				}
 			}
 			if (exception != null)
