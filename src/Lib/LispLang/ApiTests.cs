@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Lib.LispLang
 {
-	public class AppiTests : Api
+	public class ApiTests : Api
 	{
 		[Test]
 		public void TestMax()
@@ -19,6 +19,21 @@ namespace Lib.LispLang
 					Return(),
 					max),
 				6, 1, 1, 1, int.MinValue);
+		}
+
+		[Test]
+		public void TestMin()
+		{
+			Check(
+				Compile(
+					Call("min", List()),
+					Call("min", List(1)),
+					Call("min", List(0, 1)),
+					Call("min", List(5, 1, 5)),
+					Call("min", List(0, 5, 1, -6)),
+					Return(),
+					min),
+				-6, 1, 0, 1, int.MaxValue);
 		}
 
 		[Test]
@@ -49,6 +64,22 @@ namespace Lib.LispLang
 					Return(),
 					argmax),
 				3, 1, 1, 0, -1);
+		}
+
+		[Test]
+		public void TestArgMin()
+		{
+			Check(
+				Compile(
+					Call("argmin", List()),
+					Call("argmin", List(1)),
+					Call("argmin", List(1, 0)),
+					Call("argmin", List(0, 1)),
+					Call("argmin", List(6, 1, 0)),
+					Call("argmin", List(2, 5, 1, 6)),
+					Return(),
+					argmin),
+				2, 2, 0, 1, 0, -1);
 		}
 
 		private void Check(string code, params int[] expectedStack)

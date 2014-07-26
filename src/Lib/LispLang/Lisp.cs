@@ -123,6 +123,11 @@ namespace Lib.LispLang
 			return If(IsGreater(a, b), a, b);
 		}
 
+		public static SExpr Min(SExpr a, SExpr b)
+		{
+			return If(IsGreater(b, a), a, b);
+		}
+
 		public static SExpr X(SExpr point)
 		{
 			return Car(point);

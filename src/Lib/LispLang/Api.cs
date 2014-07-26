@@ -82,6 +82,19 @@ namespace Lib.LispLang
 							)))
 				);
 
+		public static SExpr argmin =
+			Def("argmin", ArgNames("list"),
+				Call("_argmin_iter", "list", -1, int.MaxValue, 0),
+				Return(),
+				Def("_argmin_iter", ArgNames("list", "minIndex", "minValue", "headIndex"),
+					If(Atom("list"),
+						"minIndex",
+						If(IsGreater("minValue", Car("list")),
+							Call("_argmin_iter", Cdr("list"), "headIndex", Car("list"), Add("headIndex", 1)),
+							Call("_argmin_iter", Cdr("list"), "minIndex", "minValue", Add("headIndex", 1))
+							)))
+				);
+
 		public static SExpr min =
 			Def("min", ArgNames("list"),
 				Call("_min_iter", "list", int.MaxValue),
@@ -89,7 +102,7 @@ namespace Lib.LispLang
 				Def("_min_iter", ArgNames("list", "minValue"),
 					If(Atom("list"),
 						"minValue",
-						Call("_min_iter", Cdr("list"), Max(Car("list"), "minValue"))
+						Call("_min_iter", Cdr("list"), Min(Car("list"), "minValue"))
 						)
 					)
 				);
@@ -104,7 +117,8 @@ namespace Lib.LispLang
 			any,
 			max,
 			min,
-			argmax
+			argmax,
+			argmin
 		};
 
 		public static string CompileWithLibs(params SExpr[] main)
