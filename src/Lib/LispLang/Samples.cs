@@ -1,4 +1,5 @@
-﻿using Lib.LMachine;
+﻿using System;
+using Lib.LMachine;
 using NUnit.Framework;
 
 namespace Lib.LispLang
