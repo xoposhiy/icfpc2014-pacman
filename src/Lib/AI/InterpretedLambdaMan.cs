@@ -18,7 +18,8 @@ namespace Lib.AI
 		public Tuple<LValue, LMStep> Main(World initialWorld)
 		{
 			var m = new LMachineInterpreter(parsedProg.Program);
-			m.State.CurrentFrame = Frame.ForFunctionCall(null, new[] { initialWorld.ToLValue(), 42 });
+			m.State.DataStack.Push(initialWorld.ToLValue());
+			m.State.DataStack.Push(42);
 			m.State.DataStack.Push(LValue.FromClosure(0, null));
 			new Tap(2).Execute(m.State);
 			m.RunUntilStop();
@@ -39,17 +40,5 @@ namespace Lib.AI
 			var res = m.State.DataStack.Pop().GetPair();
 			return Tuple.Create(res.Head, (Direction)res.Tail.GetValue());
 		}
-
-		/*
-		 LD 0 0
-		 LD 0 1
-		 LDF main
-		 TAP 2
-		
-		 main:
-		  
-		 step
-		 
-		*/
 	}
 }

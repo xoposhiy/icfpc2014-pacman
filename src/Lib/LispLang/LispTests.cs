@@ -10,7 +10,7 @@ namespace Lib.LispLang
 	{
 		public static string Compile()
 		{
-			return Api.CompileMain(
+			return Api.CompileWithLibs(
 				Def("main", ArgNames("world", "ghosts"),
 					Cons(42, Fun("step"))
 				),
