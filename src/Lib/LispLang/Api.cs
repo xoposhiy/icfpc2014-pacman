@@ -5,6 +5,15 @@ namespace Lib.LispLang
 {
 	public class Api : Lisp
 	{
+		public static SExpr setCellXY =
+			Def("setCellXY", ArgNames("map", "x", "y", "value"),
+				Call("set", "map", "y", Call("set", Call("get", "map", "y"), "x", "value"))
+			);
+
+		public static SExpr setCell =
+			Def("setCell", ArgNames("map", "point", "value"),
+				Call("set", "map", Y("point"), Call("set", Call("get", "map", Y("point")), X("point"), "value")));
+
 		public static SExpr[] worldApi =
 		{
 			Def("map", ArgNames("world"), Get(0, "world")),
@@ -25,6 +34,8 @@ namespace Lib.LispLang
 			Def("pEquals", ArgNames("p1", "p2"), And(Ceq(X("p1"), X("p2")), Ceq(Y("p1"), Y("p2")))),
 			Def("pdirections", ArgNames(), List(Cons(0, -1), Cons(1, 0), Cons(0, 1), Cons(-1, 0))),
 			Def("getCell", ArgNames("map", "point"), Call("get", Call("get", "map", Cdr("point")), Car("point"))),
+			setCell,
+			setCellXY,
 			Def("mapHeight", ArgNames("map"), Call("getListLength", "map")),
 			Def("mapWidth", ArgNames("map"), Call("getListLength", Car("map"))),
 			Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("mapHeight", "map"), Call("mapWidth", "map"))))
@@ -107,12 +118,23 @@ namespace Lib.LispLang
 					)
 				);
 
+		public static SExpr get =
+			Def("get", ArgNames("list", "index"),
+			If("index",
+				Call("get", Cdr("list"), Sub("index", 1)),
+				Car("list")));
+
+		public static SExpr set =
+			Def("set", ArgNames("list", "index", "value"),
+			If("index",
+				Cons(Car("list"), Call("set", Cdr("list"), Sub("index", 1), "value")),
+				Cons("value", Cdr("list"))));
+		
+
 		public static SExpr[] listApi =
 		{
-			Def("get", ArgNames("list", "index"),
-				If("index",
-					Call("get", Cdr("list"), Sub("index", 1)),
-					Car("list"))),
+			get,
+			set,
 			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
 			any,
 			max,
@@ -120,6 +142,7 @@ namespace Lib.LispLang
 			argmax,
 			argmin
 		};
+
 
 		public static string CompileWithLibs(params SExpr[] main)
 		{

@@ -1,11 +1,7 @@
 ﻿using Lib.Game;
-using Lib.LMachine.Parsing;
+using Lib.Parsing.LParsing;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lib.LispLang
 {
@@ -103,7 +99,7 @@ namespace Lib.LispLang
 
 		
 		Console.WriteLine(macro);
-		LParseResult result = 	LParser.Parse(macro);
+		var result = LParser.Parse(macro);
 		}
 	}
 }

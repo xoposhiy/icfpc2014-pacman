@@ -7,6 +7,41 @@ namespace Lib.LispLang
 	public class ApiTests : Api
 	{
 		[Test]
+		public void TestSet()
+		{
+			Check(
+				Compile(
+					Call("set", List(1, 1, 1), 0, 2),
+					Call("set", List(1, 1, 1), 1, 2),
+					Call("set", List(1, 1, 1), 2, 2),
+					Return(),
+					set),
+				"[1, 1, 2]",
+				"[1, 2, 1]",
+				"[2, 1, 1]"
+				);
+		}
+
+		[Test]
+		public void TestSetCell()
+		{
+			Check(
+				Compile(
+					Call("setCellXY", List(List(1, 2), List(3, 4)), 0, 0, 100),
+					Call("setCellXY", List(List(1, 2), List(3, 4)), 1, 1, 100),
+					Call("setCellXY", List(List(1, 2), List(3, 4)), 1, 0, 100),
+					Return(),
+					get,
+					set,
+					setCellXY),
+				"([1, 100], ([3, 4], 0))",
+				"([1, 2], ([3, 100], 0))",
+				"([100, 2], ([3, 4], 0))"
+				);
+		}
+
+
+		[Test]
 		public void TestMax()
 		{
 			Check(
@@ -87,7 +122,15 @@ namespace Lib.LispLang
 			Console.WriteLine(code);
 			var state = LMachineInterpreter.Run(code);
 			foreach (var expectedItem in expectedStack)
-				Assert.AreEqual(expectedItem, state.DataStack.Pop().GetValue());
+				Assert.AreEqual(expectedItem, state.DataStack.Pop().ToString());
+			Assert.IsTrue(state.DataStack.IsEmpty);
+		}
+		private void Check(string code, params string[] expectedStack)
+		{
+			Console.WriteLine(code);
+			var state = LMachineInterpreter.Run(code);
+			foreach (var expectedItem in expectedStack)
+				Assert.AreEqual(expectedItem.ToString(), state.DataStack.Pop().ToString());
 			Assert.IsTrue(state.DataStack.IsEmpty);
 		}
 	}
