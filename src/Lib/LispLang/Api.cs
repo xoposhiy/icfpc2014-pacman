@@ -26,6 +26,10 @@
 
 				Def("getCell", ArgNames("map", "x", "y"), Call("get", Call("get", "map", "y"), "x")),
 
+				Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
+				Def("initLMInternalState", ArgNames("map"), Cons(Cons(-1, -1), Cons(Call("getListLength", "map"), Call("getListLength", Car("map"))))),
+
+	
 				Get(),
 
 				Queue.Enqueue(),
