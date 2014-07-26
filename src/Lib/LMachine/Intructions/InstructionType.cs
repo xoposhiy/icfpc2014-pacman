@@ -1,0 +1,30 @@
+namespace Lib.LMachine.Intructions
+{
+	public enum InstructionType
+	{
+		Ldc,
+		Ld,
+		Add,
+		Sub,
+		Div,
+		Mul,
+		Ceq,
+		Cgt,
+		Cgte,
+		Atom,
+		Cons,
+		Car,
+		Cdr,
+		Sel,
+		Join,
+		Ldf,
+		Ap,
+		Rtn,
+		Dum,
+		Rap,
+		Tap,
+		Trap,
+		Tsel,
+		St,
+	}
+}

@@ -44,30 +44,68 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annoattions.cs" />
-    <Compile Include="Closure.cs" />
-    <Compile Include="Frame.cs" />
-    <Compile Include="GameSim.cs" />
-    <Compile Include="GreedyLambdaMen.cs" />
+    <Compile Include="LMachine\Closure.cs" />
+    <Compile Include="LMachine\Frame.cs" />
+    <Compile Include="Game\GameSim.cs" />
+    <Compile Include="AI\GreedyLambdaMen.cs" />
+    <Compile Include="AI\InterpretedLambdaMan.cs" />
     <Compile Include="KnownPlace.cs" />
-    <Compile Include="LambdaMan.cs" />
-    <Compile Include="LConvertor.cs" />
-    <Compile Include="LocallyGreedyCarefulLambdaMan.cs" />
-    <Compile Include="LTag.cs" />
-    <Compile Include="LValue.cs" />
-    <Compile Include="LValueExtensions.cs" />
-    <Compile Include="MapGenerator.cs" />
-    <Compile Include="LValue_Tests.cs" />
-    <Compile Include="MapUtils.cs" />
-    <Compile Include="Pair.cs" />
+    <Compile Include="Game\LambdaMan.cs" />
+    <Compile Include="LMachine\LConvertor.cs" />
+    <Compile Include="LMachine\ControlStackItem.cs" />
+    <Compile Include="LMachine\CTag.cs" />
+    <Compile Include="LMachine\Intructions\Add.cs" />
+    <Compile Include="LMachine\Intructions\Ap.cs" />
+    <Compile Include="LMachine\Intructions\Atom.cs" />
+    <Compile Include="LMachine\Intructions\Car.cs" />
+    <Compile Include="LMachine\Intructions\Cdr.cs" />
+    <Compile Include="LMachine\Intructions\Ceq.cs" />
+    <Compile Include="LMachine\Intructions\Cgt.cs" />
+    <Compile Include="LMachine\Intructions\Cgte.cs" />
+    <Compile Include="LMachine\Intructions\Cons.cs" />
+    <Compile Include="LMachine\Intructions\Div.cs" />
+    <Compile Include="LMachine\Intructions\DivTests.cs" />
+    <Compile Include="LMachine\Intructions\Dum.cs" />
+    <Compile Include="LMachine\Intructions\Instruction.cs" />
+    <Compile Include="LMachine\Intructions\InstructionType.cs" />
+    <Compile Include="LMachine\Intructions\Join.cs" />
+    <Compile Include="LMachine\Intructions\Ld.cs" />
+    <Compile Include="LMachine\Intructions\Ldc.cs" />
+    <Compile Include="LMachine\Intructions\Ldf.cs" />
+    <Compile Include="LMachine\Intructions\Mul.cs" />
+    <Compile Include="LMachine\Intructions\Rap.cs" />
+    <Compile Include="LMachine\Intructions\Rtn.cs" />
+    <Compile Include="LMachine\Intructions\Sel.cs" />
+    <Compile Include="LMachine\Intructions\St.cs" />
+    <Compile Include="LMachine\Intructions\Sub.cs" />
+    <Compile Include="LMachine\Intructions\Tap.cs" />
+    <Compile Include="LMachine\Intructions\Trap.cs" />
+    <Compile Include="LMachine\Intructions\Tsel.cs" />
+    <Compile Include="LMachine\LMachineInterpreter.cs" />
+    <Compile Include="LMachine\LMachineInterpreter_Test.cs" />
+    <Compile Include="LMachine\LMachineState.cs" />
+    <Compile Include="LMachine\LStack.cs" />
+    <Compile Include="LMachine\Parsing\LParser.cs" />
+    <Compile Include="LMachine\Parsing\LParseResult.cs" />
+    <Compile Include="LMachine\Parsing\LParser_Test.cs" />
+    <Compile Include="AI\LocallyGreedyCarefulLambdaMan.cs" />
+    <Compile Include="LMachine\LTag.cs" />
+    <Compile Include="LMachine\LValue.cs" />
+    <Compile Include="LMachine\LValueExtensions.cs" />
+    <Compile Include="MapGen\MapGenerator.cs" />
+    <Compile Include="LMachine\LValue_Tests.cs" />
+    <Compile Include="Game\MapUtils.cs" />
+    <Compile Include="LMachine\Pair.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Visualizer.cs" />
-    <Compile Include="World.cs" />
-    <Compile Include="WorldTests.cs" />
+    <Compile Include="Game\Visualizer.cs" />
+    <Compile Include="Game\World.cs" />
+    <Compile Include="Game\WorldTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

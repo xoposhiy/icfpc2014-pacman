@@ -1,5 +1,7 @@
 ﻿using System;
 using Lib;
+using Lib.Game;
+using Lib.LMachine;
 
 namespace conPlayer
 {
