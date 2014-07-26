@@ -42,5 +42,10 @@ namespace Lib.LMachine
 
 		[CanBeNull]
 		public Frame Frame { get; private set; }
+
+		public override string ToString()
+		{
+			return Tag.ToString();
+		}
 	}
 }

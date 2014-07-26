@@ -1,27 +1,35 @@
-
-LDF sampleList
-AP 0
-LDC 0
-
-;get(sampleList(),0)
-LDF get
-AP 2
-
 ;get(sampleList(),1)
 LDF sampleList
 AP 0
 LDC 1
-
 LDF get
 AP 2
 
-; should be 2|1|
-RTN
+;get(sampleList(),0)
+LDF sampleList
+AP 0
+LDC 0
+LDF get
+AP 2
+
+;get(sampleList(),3)
+LDF sampleList
+AP 0
+LDC 3
+LDF get
+AP 2
+
+
+RTN ; Data stack should be 4|1|2|
 
 sampleList:
 	LDC 1
 	LDC 2
+	LDC 3
+	LDC 4
 	LDC 0
+	CONS
+	CONS
 	CONS
 	CONS
 	RTN
@@ -29,12 +37,11 @@ sampleList:
 
 get: ;(list, index)
 	LD 0 1
-	sel NonZeroIndex ZeroIndex
-	RTN
+	TSEL NonZeroIndex ZeroIndex
 	ZeroIndex:
 		LD 0 0
 		CAR
-		JOIN
+		RTN
 	NonZeroIndex:
 		LD 0 0
 		CDR
@@ -42,5 +49,5 @@ get: ;(list, index)
 		LDC 1
 		SUB
 		LDF get
-		AP 2
-		JOIN
+		TAP 2
+		RTN

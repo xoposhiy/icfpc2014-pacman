@@ -37,6 +37,16 @@ namespace LMRun
 			Console.WriteLine("Next Instruction: (Line " + sourceLineIndex + ") " + prog.CodeLines[sourceLineIndex-1]);
 			Console.WriteLine("Data stack:");
 			Console.WriteLine(m.State.DataStack.ToString());
+			ShowFrame(m);
+			if (!m.State.ControlStack.IsEmpty)
+			{
+				Console.WriteLine("Control Stack:");
+				Console.WriteLine(m.State.ControlStack.ToString());
+			}
+		}
+
+		private static void ShowFrame(LMachineInterpreter m)
+		{
 			if (m.State.CurrentFrame == null)
 				Console.WriteLine("No frame");
 			else if (m.State.CurrentFrame.IsDum)
