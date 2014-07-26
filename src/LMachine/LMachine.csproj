@@ -66,8 +66,11 @@
     <Compile Include="LMachineInterpreter.cs" />
     <Compile Include="LMachineInterpreter_Test.cs" />
     <Compile Include="LMachineState.cs" />
+    <Compile Include="Parsing\LParser.cs" />
+    <Compile Include="Parsing\LParser_Test.cs" />
     <Compile Include="LStack.cs" />
     <Compile Include="Intructions\Mul.cs" />
+    <Compile Include="Parsing\LParseResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Intructions\Rap.cs" />
     <Compile Include="Intructions\Rtn.cs" />
