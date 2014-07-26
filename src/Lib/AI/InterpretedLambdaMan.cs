@@ -2,13 +2,14 @@
 using Lib.Game;
 using Lib.LMachine;
 using Lib.LMachine.Intructions;
-using Lib.LMachine.Parsing;
+using Lib.Parsing;
+using Lib.Parsing.LParsing;
 
 namespace Lib.AI
 {
 	public class InterpretedLambdaMan :LambdaMan
 	{
-		private readonly LParseResult parsedProg;
+		private readonly ParseResult<Instruction> parsedProg;
 
 		public InterpretedLambdaMan(string prog)
 		{

@@ -1,11 +1,9 @@
-using Lib.LMachine.Intructions;
-
-namespace Lib.LMachine.Parsing
+namespace Lib.Parsing
 {
-	public class LParseResult
+	public class ParseResult<TProgramItem>
 	{
 		[NotNull]
-		public Instruction[] Program { get; set; }
+		public TProgramItem[] Program { get; set; }
 
 		public int[] SourceLines { get; set; }
 

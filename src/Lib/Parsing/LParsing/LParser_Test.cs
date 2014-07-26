@@ -1,10 +1,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using Lib.LMachine;
 using Lib.LMachine.Intructions;
 using NUnit.Framework;
 
-namespace Lib.LMachine.Parsing
+namespace Lib.Parsing.LParsing
 {
 	[TestFixture]
 	public class LParser_Test

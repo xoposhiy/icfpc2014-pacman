@@ -1,7 +1,7 @@
 ﻿using System;
 using Lib.LMachine;
 using Lib.LMachine.Intructions;
-using Lib.LMachine.Parsing;
+using Lib.Parsing.LParsing;
 using NUnit.Framework;
 
 namespace Lib.LispLang

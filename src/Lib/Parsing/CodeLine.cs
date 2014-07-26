@@ -1,4 +1,4 @@
-namespace Lib.LMachine.Parsing
+namespace Lib.Parsing
 {
 	public class CodeLine
 	{

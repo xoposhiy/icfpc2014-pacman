@@ -70,6 +70,7 @@
     <Compile Include="Game\Ghost.cs" />
     <Compile Include="GMachine\Mul.cs" />
     <Compile Include="GMachine\Or.cs" />
+    <Compile Include="Parsing\GParsing\GParser.cs" />
     <Compile Include="GMachine\Sub.cs" />
     <Compile Include="GMachine\Xor.cs" />
     <Compile Include="EnumerableExtensions.cs" />
@@ -125,10 +126,11 @@
     <Compile Include="LMachine\LMachineInterpreter_Test.cs" />
     <Compile Include="LMachine\LMachineState.cs" />
     <Compile Include="LMachine\LStack.cs" />
-    <Compile Include="LMachine\Parsing\CodeLine.cs" />
-    <Compile Include="LMachine\Parsing\LParser.cs" />
-    <Compile Include="LMachine\Parsing\LParseResult.cs" />
-    <Compile Include="LMachine\Parsing\LParser_Test.cs" />
+    <Compile Include="Parsing\CodeLine.cs" />
+    <Compile Include="Parsing\LParsing\LParser.cs" />
+    <Compile Include="Parsing\ParserBase.cs" />
+    <Compile Include="Parsing\ParseResult.cs" />
+    <Compile Include="Parsing\LParsing\LParser_Test.cs" />
     <Compile Include="AI\LocallyGreedyCarefulLambdaMan.cs" />
     <Compile Include="LMachine\LTag.cs" />
     <Compile Include="LMachine\LValue.cs" />

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Lib.LMachine;
-using Lib.LMachine.Intructions;
-using Lib.LMachine.Parsing;
+﻿using Lib.LMachine;
 using NUnit.Framework;
 
 namespace Lib.LispLang

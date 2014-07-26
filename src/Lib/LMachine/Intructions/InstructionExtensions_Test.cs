@@ -1,4 +1,4 @@
-﻿using Lib.LMachine.Parsing;
+﻿using Lib.Parsing.LParsing;
 using NUnit.Framework;
 
 namespace Lib.LMachine.Intructions

@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Lib;
 using Lib.LispLang;
 using Lib.LMachine;
-using Lib.LMachine.Parsing;
+using Lib.LMachine.Intructions;
+using Lib.Parsing;
+using Lib.Parsing.LParsing;
 
 namespace LMRun
 {
-	class Program
+	internal class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			Run("generated");
 		}
 
-		static void Run(string name)
+		private static void Run(string name)
 		{
 //			var p = File.ReadAllText(KnownPlace.GccSamples + name + ".mgcc");
 			var p = Samples.max;
@@ -37,14 +38,14 @@ namespace LMRun
 			}
 		}
 
-		private static void ShowState(LMachineInterpreter m, LParseResult prog)
+		private static void ShowState(LMachineInterpreter m, ParseResult<Instruction> prog)
 		{
 			var left = Console.CursorLeft;
 			var top = Console.CursorTop;
 			var windowLeft = Console.WindowLeft;
 			var windowTop = Console.WindowTop;
 			Console.Clear();
-			for (int i = 0; i < prog.CodeLines.Length; i++)
+			for (var i = 0; i < prog.CodeLines.Length; i++)
 			{
 				Console.ForegroundColor = ConsoleColor.Green;
 				Console.Write("{0,3} ", i + 1);
@@ -96,7 +97,7 @@ namespace LMRun
 			}
 		}
 
-		private static void DumpControlStack([NotNull] LParseResult prog, [NotNull] LMachineInterpreter m)
+		private static void DumpControlStack([NotNull] ParseResult<Instruction> prog, [NotNull] LMachineInterpreter m)
 		{
 			if (!m.State.ControlStack.IsEmpty)
 			{
@@ -128,7 +129,7 @@ namespace LMRun
 			}
 		}
 
-		private static void DumpDataStack([NotNull] LParseResult prog, [NotNull] LMachineInterpreter m)
+		private static void DumpDataStack([NotNull] ParseResult<Instruction> prog, [NotNull] LMachineInterpreter m)
 		{
 			Console.WriteLine();
 			Console.ForegroundColor = ConsoleColor.Cyan;
@@ -141,7 +142,7 @@ namespace LMRun
 			}
 		}
 
-		private static void WriteValue([NotNull] LParseResult prog, [NotNull] LValue value)
+		private static void WriteValue([NotNull] ParseResult<Instruction> prog, [NotNull] LValue value)
 		{
 			switch (value.Tag)
 			{
@@ -159,7 +160,7 @@ namespace LMRun
 			}
 		}
 
-		private static void WritePair([NotNull] LParseResult prog, [NotNull] Pair pair)
+		private static void WritePair([NotNull] ParseResult<Instruction> prog, [NotNull] Pair pair)
 		{
 			Console.Write("(");
 			WriteValue(prog, pair.Head);
@@ -168,7 +169,7 @@ namespace LMRun
 			Console.Write(")");
 		}
 
-		private static void WriteClosure([NotNull] LParseResult prog, [NotNull] Closure closure)
+		private static void WriteClosure([NotNull] ParseResult<Instruction> prog, [NotNull] Closure closure)
 		{
 			Console.Write("{");
 			WriteAddress(prog, closure.Address);
@@ -177,7 +178,7 @@ namespace LMRun
 			Console.Write("}");
 		}
 
-		private static void WriteAddress([NotNull] LParseResult prog, uint address)
+		private static void WriteAddress([NotNull] ParseResult<Instruction> prog, uint address)
 		{
 			Console.ForegroundColor = ConsoleColor.Green;
 			Console.Write(prog.SourceLines[address]);
@@ -189,7 +190,7 @@ namespace LMRun
 			Console.ResetColor();
 		}
 
-		private static void DumpFrames([NotNull] LParseResult prog, [NotNull] LMachineInterpreter m)
+		private static void DumpFrames([NotNull] ParseResult<Instruction> prog, [NotNull] LMachineInterpreter m)
 		{
 			Console.WriteLine();
 			Console.ForegroundColor = ConsoleColor.Cyan;
@@ -209,7 +210,7 @@ namespace LMRun
 			Console.Write("All frames: ");
 			Console.ResetColor();
 			Console.WriteLine();
-			bool first = true;
+			var first = true;
 			foreach (var frame in GetFrames(m))
 			{
 				if (first)
@@ -225,7 +226,7 @@ namespace LMRun
 			}
 		}
 
-		private static void WriteFrameValues([NotNull] LParseResult prog, [NotNull] LMachineInterpreter m, [CanBeNull] Frame frame)
+		private static void WriteFrameValues([NotNull] ParseResult<Instruction> prog, [NotNull] LMachineInterpreter m, [CanBeNull] Frame frame)
 		{
 			if (frame != null && !frame.IsDum)
 			{

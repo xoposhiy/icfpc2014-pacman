@@ -2,26 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Lib.LMachine.Intructions;
 
-namespace Lib.LMachine.Parsing
+namespace Lib.Parsing
 {
-	public static class LParser
+	public abstract class ParserBase<TProgramItem>
 	{
-		private static readonly char[] whitespaces = { ' ', '\t' };
-		private static readonly Dictionary<string, Type> instructionTypes;
+		private readonly char[] argsSeparators;
+		private readonly char[] whitespaces = { ' ', '\t' };
+		private readonly Dictionary<string, Type> programItemTypes;
 
-		static LParser()
+		protected ParserBase([NotNull] char[] argsSeparators)
 		{
-			instructionTypes = typeof(Instruction).Assembly.GetTypes().Where(x => typeof(Instruction).IsAssignableFrom(x) && x != typeof(Instruction)).ToDictionary(x => x.Name, StringComparer.OrdinalIgnoreCase);
+			this.argsSeparators = argsSeparators;
+			programItemTypes = typeof(TProgramItem).Assembly.GetTypes().Where(x => typeof(TProgramItem).IsAssignableFrom(x) && x != typeof(TProgramItem)).ToDictionary(x => x.Name, StringComparer.OrdinalIgnoreCase);
 		}
 
 		[NotNull]
-		public static LParseResult Parse([NotNull] string source)
+		protected ParseResult<TProgramItem> DoParse([NotNull] string source)
 		{
 			var lines = source.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 			var codeLines = GetCodeLines(lines);
-			var program = new List<Instruction>();
+			var program = new List<TProgramItem>();
 			var sourceLines = new List<int>();
 			Dictionary<string, int> labels = ExtractLabels(codeLines);
 			var constants = ExtractConstants(codeLines);
@@ -35,51 +36,34 @@ namespace Lib.LMachine.Parsing
 			for (var sourceLine = 0; sourceLine < codeLines.Length; sourceLine++)
 			{
 				var codeLine = codeLines[sourceLine];
-				var split = codeLine.Command.Split(whitespaces, StringSplitOptions.RemoveEmptyEntries);
+				var split = codeLine.Command.Split(whitespaces, 2, StringSplitOptions.RemoveEmptyEntries);
 				if (split.Length > 0)
 				{
-					Type instructionType;
-					if (!instructionTypes.TryGetValue(split[0], out instructionType))
+					Type programItemType;
+					if (!programItemTypes.TryGetValue(split[0], out programItemType))
 						throw new InvalidOperationException(string.Format("Instruction '{0}' is not supported. Line {1}: {2}", split[0], sourceLine, codeLine));
-					split = split.Skip(1).ToArray();
-					var constructors = instructionType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
-					if (constructors.Length != 1)	
-						throw new InvalidOperationException(string.Format("Instruction '{0}' has no single public constructor.", instructionType));
+					split = (split.Skip(1).SingleOrDefault() ?? "").Split(argsSeparators, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+					var constructors = programItemType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+					if (constructors.Length != 1)
+						throw new InvalidOperationException(string.Format("Instruction '{0}' has no single public constructor.", programItemType));
 					var constructor = constructors[0];
 					var parameterInfos = constructor.GetParameters();
 					var parameters = new object[parameterInfos.Length];
 					if (split.Length != parameters.Length)
-						throw new InvalidOperationException(string.Format("Invalid parameter count of instruction '{0}'. Expected parameters: '{1}'. Line {2}: {3}", instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
+						throw new InvalidOperationException(string.Format("Invalid parameter count of instruction '{0}'. Expected parameters: '{1}'. Line {2}: {3}", programItemType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 					for (var i = 0; i < parameterInfos.Length; i++)
 					{
-						if (parameterInfos[i].ParameterType == typeof(int))
-						{
-							int value;
-							if (!constants.TryGetValue(split[i], out value) && !int.TryParse(split[i], out value))
-								throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
-							parameters[i] = value;
-						}
-						else if (parameterInfos[i].ParameterType == typeof(uint))
-						{
-							uint value;
-							int labelSourceLine;
-							if (labels.TryGetValue(split[i], out labelSourceLine))
-								value = sourceLineToAddress[labelSourceLine];
-							else if (!uint.TryParse(split[i], out value))
-								throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], instructionType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
-							parameters[i] = value;
-						}
-						else
-							throw new InvalidOperationException(string.Format("Invalid constructor parameter '{0}' type ({1}) of Instruction '{2}'", parameterInfos[i].Name, parameterInfos[i].ParameterType, instructionType));
+						if (!TryGetParameterValue(split[i], parameterInfos[i], programItemType, labels, sourceLineToAddress, constants, out parameters[i]))
+							throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], programItemType.Name, string.Join(",", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 					}
-					program.Add((Instruction)Activator.CreateInstance(instructionType, parameters));
+					program.Add((TProgramItem)Activator.CreateInstance(programItemType, parameters));
 					sourceLines.Add(sourceLine + 1);
 					string addressName;
 					addressToName.TryGetValue((uint)addressNames.Count, out addressName);
 					addressNames.Add(addressName);
 				}
 			}
-			return new LParseResult
+			return new ParseResult<TProgramItem>
 			{
 				Program = program.ToArray(),
 				SourceLines = sourceLines.ToArray(),
@@ -87,6 +71,8 @@ namespace Lib.LMachine.Parsing
 				AddressNames = addressNames.ToArray(),
 			};
 		}
+
+		protected abstract bool TryGetParameterValue([NotNull] string argString, [NotNull] ParameterInfo parameterInfo, [NotNull] Type programItemType, [NotNull] Dictionary<string, int> labels, [NotNull] Dictionary<int, uint> sourceLineToAddress, [NotNull] Dictionary<string, int> constants, out object parameter);
 
 		[NotNull]
 		private static Dictionary<int, uint> GetSourceLineToAddressMap([NotNull] CodeLine[] codeLines)
@@ -112,7 +98,7 @@ namespace Lib.LMachine.Parsing
 		}
 
 		[NotNull]
-		private static Dictionary<string, int> ExtractConstants([NotNull] CodeLine[] codeLines)
+		private Dictionary<string, int> ExtractConstants([NotNull] CodeLine[] codeLines)
 		{
 			var constants = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 			for (var i = 0; i < codeLines.Length; i++)
@@ -137,7 +123,7 @@ namespace Lib.LMachine.Parsing
 		}
 
 		[NotNull]
-		private static Dictionary<string, int> ExtractLabels([NotNull] CodeLine[] codeLines)
+		private Dictionary<string, int> ExtractLabels([NotNull] CodeLine[] codeLines)
 		{
 			var labels = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 			for (var i = 0; i < codeLines.Length; i++)
