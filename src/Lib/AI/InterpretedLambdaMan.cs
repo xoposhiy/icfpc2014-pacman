@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using Lib.Game;
 using Lib.LMachine;
 using Lib.LMachine.Intructions;
@@ -20,12 +19,11 @@ namespace Lib.AI
 		public Tuple<LValue, LMStep> Main(World initialWorld)
 		{
 			var m = new LMachineInterpreter(parsedProg.Program);
-			m.State.DataStack.Push(initialWorld.ToLValue());
-			m.State.DataStack.Push(LValue.FromInt(42)); //undocumented arg
+			m.State.CurrentFrame = Frame.ForFunctionCall(null, new[] { initialWorld.ToLValue(), 42 });
 			m.RunUntilStop();
 			var res = m.State.DataStack.Pop();
 			var pair = res.GetPair();
-			this.step = res.GetPair().Tail;
+			step = res.GetPair().Tail;
 			return Tuple.Create<LValue, LMStep>(pair.Head, MakeStep);
 		}
 

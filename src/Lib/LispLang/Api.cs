@@ -6,7 +6,7 @@ namespace Lib.LispLang
 {
 	public class Api : Lisp
 	{
-		public static string CompileMain(params SExpr[] main)
+		public static string CompileWithLibs(params SExpr[] main)
 		{
 			return Compile(main.Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
 		}

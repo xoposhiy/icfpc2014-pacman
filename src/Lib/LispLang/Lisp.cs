@@ -17,7 +17,7 @@ namespace Lib.LispLang
 			return items;
 		}
 
-		public static SExpr Def(string name, string[] args, SExpr body)
+		public static SExpr Def(string name, string[] args, params SExpr[] body)
 		{
 			return new SExpr(env => DefToCode(name, args, body, env));
 		}
