@@ -6,8 +6,16 @@ using Lib.LMachine;
 
 namespace Lib.AI
 {
-	public class GreedyLambdaMen
+	public class GreedyLambdaMen : ILambdaMan
 	{
+		public Tuple<LValue, LMStep> Main(World initialWorld)
+		{
+			return Tuple.Create(
+				LValue.FromInt(-1), // заглушка
+				(LMStep)LambdaMenGreedyStep
+				);
+		}
+
 		public static Tuple<LValue, Direction> LambdaMenGreedyStep(LValue currentAIState, World currentWorldState)
 		{
 			var map = currentWorldState.map;
@@ -32,7 +40,9 @@ namespace Lib.AI
 					break;
 				}
 				foreach (var newPoint in GetNeighbours(point, map, visited))
+				{
 					queue.Enqueue(Tuple.Create(newPoint, p.Item2));
+				}
 			}
 			return Tuple.Create(currentAIState, founded);
 		}
