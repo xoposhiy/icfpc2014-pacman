@@ -49,7 +49,12 @@
     <Compile Include="AI\RandomGhost.cs" />
     <Compile Include="AI\RandomGhostFactory.cs" />
     <Compile Include="Annoattions.cs" />
+    <Compile Include="Debugger\ConsoleApi.cs" />
     <Compile Include="Debugger\ConsoleDebugger.cs" />
+    <Compile Include="Debugger\ConsoleDebuggerStateView.cs" />
+    <Compile Include="Debugger\FastConsole.cs" />
+    <Compile Include="Debugger\FastConsoleRow.cs" />
+    <Compile Include="Debugger\FastConsoleRowSegment.cs" />
     <Compile Include="Game\IGMachine.cs" />
     <Compile Include="Game\IGMachineFactory.cs" />
     <Compile Include="GMachine\Add.cs" />
