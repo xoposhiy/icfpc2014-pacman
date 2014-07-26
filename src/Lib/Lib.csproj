@@ -74,6 +74,8 @@
     <Compile Include="GMachine\Mov.cs" />
     <Compile Include="GMachine\Mul.cs" />
     <Compile Include="GMachine\Or.cs" />
+    <Compile Include="LMachine\Intructions\DbgView.cs" />
+    <Compile Include="LMachine\Intructions\Dbug.cs" />
     <Compile Include="Parsing\GParsing\GParser.cs" />
     <Compile Include="GMachine\Sub.cs" />
     <Compile Include="GMachine\Xor.cs" />

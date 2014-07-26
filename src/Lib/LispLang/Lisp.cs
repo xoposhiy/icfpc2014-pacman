@@ -99,7 +99,12 @@ namespace Lib.LispLang
 
 		public static SExpr Cmd(string name, params SExpr[] args)
 		{
-			return new SExpr(env => ((SExpr)args).		ToCode(env).Concat(new[] { name }));
+			return new SExpr(env => ((SExpr)args).ToCode(env).Concat(new[] { name }));
+		}
+
+		public static SExpr DbgView(SExpr e)
+		{
+			return Cmd("DbgView", e);
 		}
 
 		public static SExpr Call(string name, params SExpr[] args)
@@ -163,15 +168,15 @@ namespace Lib.LispLang
 			return Cmd("ADD", a, b);
 		}
 
-		public static SExpr Add(params SExpr[] expr)
-		{
-			if (expr.Length == 0)
-				return 0;
-			else if (expr.Length == 1)
-				return expr[0];
-			else
-				return Add(expr[0], expr.Skip(1).ToArray());
-		}
+//		public static SExpr Add(params SExpr[] expr)
+//		{
+//			if (expr.Length == 0)
+//				return 0;
+//			else if (expr.Length == 1)
+//				return expr[0];
+//			else
+//				return Add(expr[0], expr.Skip(1).ToArray());
+//		}
 		
 		public static SExpr And(params SExpr[] expr)
 		{
@@ -187,6 +192,11 @@ namespace Lib.LispLang
 				return 0;
 			else
 				return If(expr[0], 1, Or(expr.Skip(1).ToArray()));
+		}
+
+		public static SExpr Not(SExpr expr)
+		{
+			return If(expr, 0, 1);
 		}
 
 		public static SExpr IsGreater(SExpr a, SExpr b)

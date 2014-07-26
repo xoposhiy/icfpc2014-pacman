@@ -26,5 +26,7 @@ namespace Lib.LMachine.Intructions
 		Trap,
 		Tsel,
 		St,
+		Dbug,
+		DbgView
 	}
 }

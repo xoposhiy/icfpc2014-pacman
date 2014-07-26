@@ -35,7 +35,7 @@ namespace Lib.LispLang
 			Def("point", ArgNames("x", "y"), Cons("x", "y")),
 			Def("pEquals", ArgNames("p1", "p2"), And(Ceq(X("p1"), X("p2")), Ceq(Y("p1"), Y("p2")))),
 			Def("pdirections", ArgNames(), List(Cons(0, -1), Cons(1, 0), Cons(0, 1), Cons(-1, 0))),
-			Def("getCell", ArgNames("map", "point"), Call("get", Call("get", "map", Cdr("point")), Car("point"))),
+			Def("getCell", ArgNames("map", "point"), Call("get", Call("get", "map", Y("point")), X("point"))),
 			setCell,
 			setCellXY,
 			Def("mapHeight", ArgNames("map"), Call("getListLength", "map")),
