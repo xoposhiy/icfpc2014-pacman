@@ -134,7 +134,6 @@
     <Compile Include="LMachine\LValue.cs" />
     <Compile Include="LMachine\LValueExtensions.cs" />
     <Compile Include="MapGen\MapGenerator.cs" />
-    <Compile Include="LMachine\LValue_Tests.cs" />
     <Compile Include="Game\MapUtils.cs" />
     <Compile Include="LMachine\Pair.cs" />
     <Compile Include="Point.cs" />

@@ -23,11 +23,15 @@ namespace Lib.LMachine.Parsing
 			var codeLines = GetCodeLines(lines);
 			var program = new List<Instruction>();
 			var sourceLines = new List<int>();
-			var labels = ExtractLabels(codeLines);
+			Dictionary<string, int> labels = ExtractLabels(codeLines);
 			var constants = ExtractConstants(codeLines);
 			var sourceLineToAddress = GetSourceLineToAddressMap(codeLines);
 			var addressNames = new List<string>();
-			var addressToName = labels.GroupBy(x => x.Value).ToDictionary(x => sourceLineToAddress[x.Key], x => x.Any() ? x.First().Key : null);
+			Dictionary<uint, string> addressToName = 
+				labels.GroupBy(x => sourceLineToAddress[x.Value])
+				.ToDictionary(
+					x => x.Key, 
+					x => x.Any() ? x.First().Key : null);
 			for (var sourceLine = 0; sourceLine < codeLines.Length; sourceLine++)
 			{
 				var codeLine = codeLines[sourceLine];

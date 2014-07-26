@@ -57,6 +57,39 @@ namespace Lib.LispLang
 			Queue.IsEmpty()
 		};
 
+		public static readonly SExpr any =
+			Def("any", ArgNames("list", "f"),
+				If(Atom("list"),
+					0,
+					If(CallFunRef("f", Car("list")), // CallFunRef дает понять, что f надо искать в Env
+						1,
+						Call("any", Cdr("list"), "f")
+						)));
+
+		public static SExpr max = 
+			Def("max", ArgNames("list"),
+				Call("_max_iter", "list", int.MinValue),
+				Return(),
+				Def("_max_iter", ArgNames("list", "maxValue"),
+					If(Atom("list"),
+						"maxValue",
+						Call("_max_iter", Cdr("list"), Max(Car("list"), "maxValue"))
+						)
+					)
+				);
+
+		public static SExpr min = 
+			Def("min", ArgNames("list"),
+				Call("_min_iter", "list", int.MaxValue),
+				Return(),
+				Def("_min_iter", ArgNames("list", "minValue"),
+					If(Atom("list"),
+						"minValue",
+						Call("_min_iter", Cdr("list"), Max(Car("list"), "minValue"))
+						)
+					)
+				);
+
 		public static SExpr[] listApi =
 		{
 			Def("get", ArgNames("list", "index"),
@@ -64,13 +97,9 @@ namespace Lib.LispLang
 					Call("get", Cdr("list"), Sub("index", 1)),
 					Car("list"))),
 			Def("getListLength", ArgNames("aList"), If("aList", 0, Add(1, Call("getListLength", Cdr("aList"))))),
-			Def("any", ArgNames("list", "f"),
-				If(Atom("list"),
-					0,
-					If(CallFunRef("f", Car("list")), // CallFunRef дает понять, что f надо искать в Env
-						1, 
-						Call("any", Cdr("list"), "f")
-					))),
+			any,
+//			max,
+			min
 		};
 
 		public SExpr[] Math()

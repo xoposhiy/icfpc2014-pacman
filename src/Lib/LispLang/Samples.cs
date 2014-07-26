@@ -30,10 +30,7 @@ namespace Lib.LispLang
 		[Test]
 		public void Any()
 		{
-			var dataStack = LMachineInterpreter.Run(anySample).DataStack;
-			Assert.AreEqual(0, dataStack.Pop().GetValue());
-			Assert.AreEqual(1, dataStack.Pop().GetValue());
-			Assert.AreEqual(1, dataStack.Pop().GetValue());
+			Check(anySample, 0, 1, 1);
 		}
 
 		[Test]
@@ -49,6 +46,38 @@ namespace Lib.LispLang
 					);
 			var dataStack = LMachineInterpreter.Run(code).DataStack;
 			Assert.AreEqual(43, dataStack.Pop().GetValue());
+		}
+
+		public static readonly string max = Compile(
+			Call("max", List(1)),
+			Call("max", List(1, 2, 3)),
+			Call("max", List(3, 2, 1)),
+			Return(),
+			Def("max", ArgNames("list"),
+				Call("_max_iter", "list", int.MinValue),
+				Return(),
+				Def("_max_iter", ArgNames("list", "maxValue"),
+					If(Atom("list"), 
+						"maxValue",
+						Call("_max_iter", Cdr("list"), Max(Car("list"), "maxValue"))
+						)
+				)
+			)
+			);
+
+		[Test]
+		public void TestMax()
+		{
+			Check(max, 3, 3, 1);
+		}
+
+		private void Check(string code, params int[] expectedStack)
+		{
+			Console.WriteLine(code);
+			var state = LMachineInterpreter.Run(code);
+			foreach (var expectedItem in expectedStack)
+				Assert.AreEqual(expectedItem, state.DataStack.Pop().GetValue());
+			Assert.IsTrue(state.DataStack.IsEmpty);
 		}
 	}
 }

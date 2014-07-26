@@ -19,7 +19,7 @@ namespace LMRun
 		static void Run(string name)
 		{
 //			var p = File.ReadAllText(KnownPlace.GccSamples + name + ".mgcc");
-			var p = Samples.anySample;
+			var p = Samples.max;
 			var prog = LParser.Parse(p);
 			var m = new LMachineInterpreter(prog.Program);
 			while (!m.State.Stopped)

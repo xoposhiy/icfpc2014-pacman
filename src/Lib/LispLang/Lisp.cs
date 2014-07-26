@@ -118,6 +118,10 @@ namespace Lib.LispLang
 		{
 			return Cmd("CAR", list);
 		}
+		public static SExpr Max(SExpr a, SExpr b)
+		{
+			return If(IsGreater(a, b), a, b);
+		}
 
 		public static SExpr X(SExpr point)
 		{
