@@ -5,11 +5,11 @@ using Lib.Parsing.LParsing;
 
 namespace Lib.AI
 {
-	public class CarefulGreedyLmbdaMen_lisp : GreedyLambdaMen_Lisp
+	public class CarefulGreedyLambdaMen_Lisp : GreedyLambdaMen_Lisp
 	{
 		public static readonly string code;
 
-		static CarefulGreedyLmbdaMen_lisp()
+		static CarefulGreedyLambdaMen_Lisp()
 		{
 			code = CompileWithLibs(
 				main,
