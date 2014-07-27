@@ -26,6 +26,7 @@
 	gStart = 6
 
 ; vars
+	
 	lx = 100
 	ly = 101
 	gx = 102
@@ -34,8 +35,6 @@
 	gdir = 105
 	gindex = 106
 	return = 255
-	return2 = 254
-	
 	gx_up = 110
 	gx_right = 111
 	gx_down = 112
@@ -48,6 +47,7 @@
 	map_g_right =119
 	map_g_down =120
 	map_g_left =121
+	isFright = 49
 	
 ; entry point
 	int getMyIndex
@@ -96,42 +96,58 @@
 	int getMap
 	mov [map_g_down], a
 
+	; [49] = isFright
+	mov [50], up
+	mov [51], right
+	mov [52], down
+	mov [53], left
+	mov [54], down
+	mov [55], left
+	mov [56], up
+	mov [57], right
+	
+; set isFright
+; it can be used to invert directionas follows: invertedDir = [50 + isFright + initialDirection]
+	mov [isFright], 4 ; frighten by default
+	jeq end_set_isFright, [gmode], fright;
+	mov [isFright], 0 	; not frighten
+	end_set_isFright:
+
 ; the strategy!
 
+	
 ; consider_dir(gx, lx, right, map_g_right)
-mov a, right
-mov b, [gx]
-mov c, [lx]
-mov d, [map_g_right]
-mov [return2], pc
-mov pc, consider_dir
+	mov a, right
+	mov b, [gx]
+	mov c, [lx]
+	mov d, [map_g_right]
+	mov [return], pc
+	mov pc, consider_dir
 
 ; consider_dir(lx, gx, left, map_g_left)
-mov a, left
-mov b, [lx]
-mov c, [gx]
-mov d, [map_g_left]
-mov [return2], pc
-mov pc, consider_dir
+	mov a, left
+	mov b, [lx]
+	mov c, [gx]
+	mov d, [map_g_left]
+	mov [return], pc
+	mov pc, consider_dir
 
 ; consider_dir(gy, ly, down, map_g_down)
-mov a, down
-mov b, [gy]
-mov c, [ly]
-mov d, [map_g_down]
-mov [return2], pc
-mov pc, consider_dir
+	mov a, down
+	mov b, [gy]
+	mov c, [ly]
+	mov d, [map_g_down]
+	mov [return], pc
+	mov pc, consider_dir
 
 ; consider_dir(ly, gy, up, map_g_up)
-mov a, up
-mov b, [ly]
-mov c, [gy]
-mov d, [map_g_up]
-mov [return2], pc
-mov pc, consider_dir
+	mov a, up
+	mov b, [ly]
+	mov c, [gy]
+	mov d, [map_g_up]
+	mov [return], pc
+	mov pc, consider_dir
 
-mov a, 42;
-int 8;
 hlt;
 
 consider_dir: ; (dir, c1, c2, map_g_dir)
@@ -141,11 +157,15 @@ consider_dir: ; (dir, c1, c2, map_g_dir)
 ;	d - mapcell of ghost destination
 ; 	[return2] - (return_addr-2)
 	JEQ end_consider_dir, d, wall
-	mov [return], [return2]
+	; invert direction if frighten
+	; a := [a + 50 + isFright]
+		add a, 50
+		add a, [isFright]
+		mov a, [a]
 	mov pc, set_dir_if_less
 end_consider_dir:
-	add [return2], 2
-	mov pc, [return2]
+	add [return], 2
+	mov pc, [return]
 	
 set_dir_if_less:
 ;In:
