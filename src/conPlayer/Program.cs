@@ -16,13 +16,20 @@ namespace conPlayer
 //			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
 //			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
 //			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
-			var interpretedLambdaMan = new InterpretedLambdaMan(GreedyLambdaMen_Lisp.code);
-//				, runUntilStopStep: x =>
-//			{
-//				var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
-//				if (ex != null)
-//					throw new DebuggerAbortedException(ex);
-//			});
+
+			bool enterDebugger = false;
+			var interpretedLambdaMan = new InterpretedLambdaMan(GreedyLambdaMen_Lisp.code, runUntilStopStep: x =>
+				{
+					if (enterDebugger)
+					{
+						var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
+						if (ex != null)
+							throw new DebuggerAbortedException(ex);
+						enterDebugger = false;
+					}
+					else
+						x.Interpreter.RunUntilStop();
+				});
 			LMMain main = interpretedLambdaMan.Main;
 			var ghostFactory = new RandomGhostFactory();
 			//var p = File.ReadAllText(KnownPlace.GccSamples + "sample2.mghc");
@@ -31,6 +38,7 @@ namespace conPlayer
 			var sim = new GameSim(MapUtils.LoadFromKnownLocation("world-classic.txt"), main, ghostFactory);
 			var oldState = "";
 			Exception exception = null;
+			var runStepByStep = true;
 			while (!sim.finished)
 			{
 				try
@@ -49,6 +57,17 @@ namespace conPlayer
 					Console.WriteLine(newState);
 					Console.WriteLine("Use Cursor keys to control Lambda Man. Time: {0}", sim.time);
 					oldState = newState;
+
+					if (runStepByStep || Console.KeyAvailable)
+					{
+						var pressed = Console.ReadKey();
+						if (pressed.Modifiers == 0 && pressed.Key == ConsoleKey.F5)
+							runStepByStep = false;
+						else if (pressed.Modifiers == 0 && pressed.Key == ConsoleKey.F6)
+							runStepByStep = true;
+						else if (pressed.Modifiers == 0 && pressed.Key == ConsoleKey.F2)
+							enterDebugger = true;
+					}
 					//Console.ReadKey();
 				}
 			}
