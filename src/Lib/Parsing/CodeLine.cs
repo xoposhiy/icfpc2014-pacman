@@ -8,6 +8,7 @@ namespace Lib.Parsing
 			Command = command;
 		}
 
+		public int? ProgramLine { get; set; }
 		public string Label { get; set; }
 		public string Command { get; set; }
 		public string Comment { get; set; }

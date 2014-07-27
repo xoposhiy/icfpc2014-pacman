@@ -1,14 +1,13 @@
 using System;
-using Lib.LMachine;
-using Lib.LMachine.Intructions;
+using Lib.GMachine;
 using Lib.Parsing;
 
 namespace Lib.Debugger
 {
-	public static class ConsoleDebugger
+	public static class GConsoleDebugger
 	{
 		[CanBeNull]
-		public static Exception Run([NotNull] LMachineInterpreter m, [NotNull] ParseResult<Instruction> prog, [CanBeNull] Exception exception = null)
+		public static Exception Run([NotNull] GMachine.GMachine m, [NotNull] ParseResult<GCmd> prog, [CanBeNull] Exception exception = null)
 		{
 			Console.Clear();
 			var console = new FastConsole();
@@ -18,40 +17,30 @@ namespace Lib.Debugger
 				var cmd = Console.ReadKey(true);
 				if (cmd.Key == ConsoleKey.Spacebar)
 					console.Refresh();
-				else if (cmd.Modifiers == ConsoleModifiers.Shift && cmd.Key == ConsoleKey.F11)
+				else if (cmd.Modifiers == 0 && (cmd.Key == ConsoleKey.F11 || cmd.Key == ConsoleKey.F10))
 				{
-					exception = StepSafe(m.StepOut);
-					ShowState(console, m, prog, exception);
-				}
-				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F11)
-				{
-					exception = StepSafe(m.Step);
+					exception = StepSafe1(m.Step);
 					ShowState(console, m, prog, exception);
 				}
 				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F12)
 				{
-					exception = StepSafe(m.StepBack);
-					ShowState(console, m, prog, exception);
-				}
-				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F10)
-				{
-					exception = StepSafe(m.StepOver);
+					exception = StepSafe2(m.StepBack);
 					ShowState(console, m, prog, exception);
 				}
 				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F5)
 				{
-					exception = StepSafe(m.RunUntilStop);
+					exception = StepSafe2(m.RunToEnd);
 					ShowState(console, m, prog, exception);
 				}
 				else if (cmd.Modifiers == ConsoleModifiers.Control && cmd.Key == ConsoleKey.R)
 				{
-					m.Restart();
+					m.ResetState();
 					exception = null;
 					ShowState(console, m, prog, exception);
 				}
 				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.Escape)
 				{
-					if (!m.State.Stopped)
+					if (!m.State.Hlt)
 						return new DebuggerAbortedException(exception);
 					return null;
 				}
@@ -79,16 +68,30 @@ namespace Lib.Debugger
 			Console.WindowTop = newtop;
 		}
 
-		private static void ShowState([NotNull] FastConsole console, [NotNull] LMachineInterpreter m, [NotNull] ParseResult<Instruction> prog, [CanBeNull] Exception exception)
+		private static void ShowState([NotNull] FastConsole console, [NotNull] GMachine.GMachine m, [NotNull] ParseResult<GCmd> prog, [CanBeNull] Exception exception)
 		{
-			using (var view = new ConsoleDebuggerStateView(console, m, prog, exception))
+			using (var view = new GConsoleDebuggerStateView(console, m, prog, exception))
 			{
 				view.ShowState(true);
 			}
 		}
 
 		[CanBeNull]
-		private static Exception StepSafe([NotNull] Action step)
+		private static Exception StepSafe1([NotNull] Func<bool> step)
+		{
+			try
+			{
+				step();
+				return null;
+			}
+			catch (Exception e)
+			{
+				return e;
+			}
+		}
+
+		[CanBeNull]
+		private static Exception StepSafe2([NotNull] Action step)
 		{
 			try
 			{

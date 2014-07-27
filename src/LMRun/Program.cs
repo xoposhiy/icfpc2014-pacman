@@ -26,7 +26,7 @@ namespace LMRun
 			m.State.DataStack.Push(42);
 			m.State.DataStack.Push(LValue.FromClosure(0, null));
 			new Tap(2).Execute(m.State);
-			ConsoleDebugger.Run(m, prog);
+			LConsoleDebugger.Run(m, prog);
 		}
 	}
 }

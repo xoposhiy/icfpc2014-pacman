@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Lib.Parsing
 {
 	public class ParseResult<TProgramItem>
@@ -10,5 +12,7 @@ namespace Lib.Parsing
 		public string[] AddressNames { get; set; }
 
 		public CodeLine[] CodeLines { get; set; }
+
+		public Dictionary<int, List<string>> Constants { get; set; }
 	}
 }

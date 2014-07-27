@@ -56,6 +56,7 @@ namespace Lib.Parsing
 						if (!TryGetParameterValue(split[i], parameterInfos[i], programItemType, labels, sourceLineToAddress, constants, out parameters[i]))
 							throw new InvalidOperationException(string.Format("Invalid parameter #{0} ({1}) of instruction '{2}'. Expected parameters: '{3}'. Line {4}: {5}", i, split[i], programItemType.Name, string.Join(", ", parameterInfos.Select(x => x.Name + " (" + x.ParameterType.Name + ")")), sourceLine, codeLine));
 					}
+					codeLine.ProgramLine = program.Count;
 					program.Add((TProgramItem)Activator.CreateInstance(programItemType, parameters));
 					sourceLines.Add(sourceLine + 1);
 					string addressName;
@@ -69,7 +70,24 @@ namespace Lib.Parsing
 				SourceLines = sourceLines.ToArray(),
 				CodeLines = codeLines,
 				AddressNames = addressNames.ToArray(),
+				Constants = CollectConstants(constants)
 			};
+		}
+
+		private Dictionary<int, List<string>> CollectConstants(Dictionary<string, int> constants)
+		{
+			var result = new Dictionary<int, List<string>>();
+			foreach (var kvp in constants)
+			{
+				List<string> list;
+				if (!result.TryGetValue(kvp.Value, out list))
+				{
+					list = new List<string>();
+					result.Add(kvp.Value, list);
+				}
+				list.Add(kvp.Key);
+			}
+			return result;
 		}
 
 		protected abstract bool TryGetParameterValue([NotNull] string argString, [NotNull] ParameterInfo parameterInfo, [NotNull] Type programItemType, [NotNull] Dictionary<string, int> labels, [NotNull] Dictionary<int, uint> sourceLineToAddress, [NotNull] Dictionary<string, int> constants, out object parameter);

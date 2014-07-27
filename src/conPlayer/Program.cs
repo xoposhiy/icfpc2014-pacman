@@ -23,7 +23,7 @@ namespace conPlayer
 			{
 				if (enterDebugger)
 				{
-					var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
+						var ex = LConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
 					if (ex != null)
 						throw new DebuggerAbortedException(ex);
 					enterDebugger = false;
@@ -81,7 +81,7 @@ namespace conPlayer
 			if (exception != null)
 			{
 				if (!(exception is DebuggerAbortedException))
-					ConsoleDebugger.Run(interpretedLambdaMan.Interpreter, interpretedLambdaMan.ProgramParseResult, exception);
+					LConsoleDebugger.Run(interpretedLambdaMan.Interpreter, interpretedLambdaMan.ProgramParseResult, exception);
 			}
 			else
 			{

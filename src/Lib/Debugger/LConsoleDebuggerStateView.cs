@@ -7,14 +7,14 @@ using Lib.Parsing;
 
 namespace Lib.Debugger
 {
-	public class ConsoleDebuggerStateView : IDisposable
+	public class LConsoleDebuggerStateView : IDisposable
 	{
 		private readonly LMachineInterpreter m;
 		private readonly ParseResult<Instruction> prog;
 		private readonly Exception exception;
 		private readonly FastConsole.FastConsoleWriter console;
 
-		public ConsoleDebuggerStateView([NotNull] FastConsole console, [NotNull] LMachineInterpreter m, [NotNull] ParseResult<Instruction> prog, [CanBeNull] Exception exception)
+		public LConsoleDebuggerStateView([NotNull] FastConsole console, [NotNull] LMachineInterpreter m, [NotNull] ParseResult<Instruction> prog, [CanBeNull] Exception exception)
 		{
 			this.m = m;
 			this.prog = prog;
@@ -27,7 +27,7 @@ namespace Lib.Debugger
 			for (var i = 0; i < prog.CodeLines.Length; i++)
 			{
 				console.ForegroundColor = ConsoleColor.Green;
-				console.Write(string.Format("{0,3} ", i + 1));
+				console.Write(string.Format("{0,3} ", prog.CodeLines[i].ProgramLine));
 				if (i == prog.SourceLines[m.State.CurrentAddress] - 1)
 				{
 					console.ForegroundColor = ConsoleColor.Black;
@@ -178,7 +178,7 @@ namespace Lib.Debugger
 		private void WriteAddress(uint address)
 		{
 			console.ForegroundColor = ConsoleColor.Green;
-			console.Write(prog.SourceLines[address]);
+			console.Write(address);
 			if (prog.AddressNames[address] != null)
 			{
 				console.ForegroundColor = ConsoleColor.White;
