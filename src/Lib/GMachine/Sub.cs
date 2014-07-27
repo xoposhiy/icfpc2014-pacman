@@ -7,6 +7,7 @@ namespace Lib.GMachine
 		public Sub([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.Sub)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 			Src = src;
 		}

@@ -7,6 +7,7 @@ namespace Lib.GMachine
 		public Mul([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.Mul)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 			Src = src;
 		}

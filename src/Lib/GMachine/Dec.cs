@@ -7,6 +7,7 @@ namespace Lib.GMachine
 		public Dec([NotNull] GArg dst)
 			: base(GCmdType.Dec)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 		}
 

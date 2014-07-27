@@ -1,3 +1,4 @@
+using System;
 using Lib.Game;
 
 namespace Lib.GMachine
@@ -7,6 +8,8 @@ namespace Lib.GMachine
 		public Mov([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.Mov)
 		{
+			if (dst.Type == GArgType.Const)
+				throw new InvalidOperationException(string.Format("Dst arg is constant: {0}", dst));
 			Dst = dst;
 			Src = src;
 		}

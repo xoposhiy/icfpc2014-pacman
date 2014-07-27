@@ -47,7 +47,7 @@ namespace Lib.GMachine
 		[NotNull]
 		public static GArg Reg(byte value)
 		{
-			if (value > 8) //8 - pc
+			if (value > 8) // 8 - pc
 				throw new InvalidOperationException(value.ToString());
 			return new GArg(GArgType.Reg, value);
 		}
@@ -55,7 +55,7 @@ namespace Lib.GMachine
 		[NotNull]
 		public static GArg IndirectReg(byte value)
 		{
-			if (value > 7)
+			if (value > 7) // pc is not allowed here
 				throw new InvalidOperationException("TODO");
 			return new GArg(GArgType.IndirectReg, value);
 		}

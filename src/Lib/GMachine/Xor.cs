@@ -7,6 +7,7 @@ namespace Lib.GMachine
 		public Xor([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.Xor)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 			Src = src;
 		}

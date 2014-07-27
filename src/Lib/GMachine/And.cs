@@ -7,6 +7,7 @@ namespace Lib.GMachine
 		public And([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.And)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 			Src = src;
 		}

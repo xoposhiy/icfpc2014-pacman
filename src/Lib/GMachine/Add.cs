@@ -7,6 +7,7 @@ namespace Lib.GMachine
 		public Add([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.Add)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 			Src = src;
 		}

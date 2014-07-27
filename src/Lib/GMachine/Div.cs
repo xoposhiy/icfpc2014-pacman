@@ -1,3 +1,4 @@
+using System;
 using Lib.Game;
 
 namespace Lib.GMachine
@@ -7,6 +8,7 @@ namespace Lib.GMachine
 		public Div([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.Div)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 			Src = src;
 		}
@@ -21,6 +23,8 @@ namespace Lib.GMachine
 		{
 			var x = state.ReadValue(Dst);
 			var y = state.ReadValue(Src);
+			if (y == 0)
+				throw new InvalidOperationException("Division by zero");
 			state.WriteValue(Dst, (byte)(x / y));
 		}
 

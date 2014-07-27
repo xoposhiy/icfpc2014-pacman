@@ -7,6 +7,7 @@ namespace Lib.GMachine
 		public Or([NotNull] GArg dst, [NotNull] GArg src)
 			: base(GCmdType.Or)
 		{
+			ValidateDstArg(dst);
 			Dst = dst;
 			Src = src;
 		}
