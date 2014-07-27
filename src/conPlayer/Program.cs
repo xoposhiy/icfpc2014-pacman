@@ -20,7 +20,7 @@ namespace conPlayer
 
 			var enterLDebugger = false;
 //			var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyGreedyCarefulLM_Lisp().Code, runUntilStopStep: x =>
-			var interpretedLambdaMan = new InterpretedLambdaMan(CarefulGreedyLambdaMan_Lisp.code, runUntilStopStep: x =>
+			var interpretedLambdaMan = new InterpretedLambdaMan(GreedyLambdaMan_Lisp.code, runUntilStopStep: x =>
 			{
 				if (enterLDebugger)
 				{
