@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Lib.AI;
 using Lib.Game;
 using Lib.LMachine.Intructions;
 using Lib.Parsing.LParsing;
@@ -14,7 +15,7 @@ namespace Lib.LispLang
 	[TestFixture]
 	public class LocallyGreedyCarefulLM_Lisp : Api
 	{
-		public static int depth = 3;
+		public static int depth = 4;
 
 
 		public string Code
@@ -47,19 +48,84 @@ namespace Lib.LispLang
 
 					Def("calcDirection", ArgNames("lmSavedState", "world"),
 						Call("argmax",
-							DbgView(Score.ScoreOfDirections(
+							Score.ScoreOfDirections(
 								LmSavedState.LmLoc("lmSavedState"),
 								World.LmLoc("world"),
 								"world",
 								"lmSavedState",
 								CashedCalcs.Create("lmSavedState", "world"),
-								depth)))
+								depth))
+						),
+
+					LmSavedState.Definitions,
+					Score.Definitions,
+					GhostPredict.Definitions
+					);
+			}
+		}
+
+		public static string CodeDebug
+		{
+			get
+			{
+				var _code = codeDebug;
+				File.WriteAllText(KnownPlace.GccSamples + "ksenia.z.mgcc", _code);
+				var gcc = LParser.Parse(_code).Program.ToGcc();
+				File.WriteAllText(KnownPlace.GccSamples + "ksenia.z.gcc", gcc);
+				return _code;
+			}
+		}
+
+		internal static string codeDebug
+		{
+			get
+			{
+				var main = new[] {
+				
+					Def("main", ArgNames("world"),
+						Cons(
+							LmSavedState.Create(Call("map", "world")),
+							Fun("LMStep"))
+						//Call("LMStep", LmSavedState.Create(Call("map", "world")), "world")
+						),
+					Def("LMStep", ArgNames("lmSavedState", "world"),
+						Cons(LmSavedState.Create("lmSavedState", "world"),
+							Call("calcDirection", "lmSavedState", "world"))
+						),
+
+					Def("calcDirection", ArgNames("lmSavedState", "world"),
+						Call("argmax",
+							Score.ScoreOfDirections(
+								LmSavedState.LmLoc("lmSavedState"),
+								World.LmLoc("world"),
+								"world",
+								"lmSavedState",
+								CashedCalcs.Create("lmSavedState", "world"),
+								depth))
 						),
 					
 					LmSavedState.Definitions,
 					Score.Definitions,
 					GhostPredict.Definitions
-					);
+					};
+
+				var world = new Game.World(MapUtils.LoadFromKnownLocation("world-classic.txt"));
+				var loader = new[]
+				{
+					Call("runstep", World.Create(world)),
+					Return(),
+					Def("runstep", ArgNames("world"),
+						Call("LMStep",  Car(Call("main", "world")), "world")),
+
+				};
+				return Compile(loader
+					.Concat(main)
+					.Concat(worldApi)
+					.Concat(listApi)
+					.Concat(queueApi)
+					.Concat(LambdaMenLogic)
+					.Concat(World.Definitions)
+					.ToArray());
 
 			}
 		}
@@ -87,12 +153,13 @@ namespace Lib.LispLang
 									//Else
 									0),
 								If(Call("any_frightGhostAtPoint", Args(World.GhStates("world"), "point")), 10, 0))),
-					Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "lmstate", "world", "cashed", "depth"),
+
+					Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "visitedPoints", "world", "cashed", "depth"),
 							Add(Add(Add(
 								ScoreOfCell("nextLoc", "world"),
 								ScoreOfGhosts("nextLoc", CashedCalcs.PredictedGhostLocs("cashed"), "world")),
 								If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0)),
-								Sub(0, Call("countPointsAs", LmSavedState.GetVisitedPoints("lmstate"), "nextLoc")))
+								Sub(0, World.GetCell("visitedPoints", "nextLoc")))
 							),
 
 						Def("scoreOfDirection", ArgNames("prevLoc", "currLoc", "nextLoc", "world", "lmstate", "cashed", "depth"),
@@ -149,8 +216,13 @@ namespace Lib.LispLang
 
 		private class LmSavedState : Api
 		{
-			
-			private static Dictionary<string, SExpr> generated = new Dictionary<string, SExpr>(); 
+
+			private static Dictionary<string, SExpr> generated = new Dictionary<string, SExpr>()
+			{
+				{ "init", GreedyLambdaMan_Lisp.InitVisited },
+				{ "repeat", GreedyLambdaMan_Lisp.Repeat }
+
+			};
 			public static SExpr[] Definitions {get { return generated.Values.ToArray(); }}
 
 			private static SExpr Create(SExpr currentLoc, SExpr sizeOfMap, SExpr visitedPoints)
@@ -160,15 +232,18 @@ namespace Lib.LispLang
 
 			public static SExpr Create(SExpr map)
 			{
-				return LmSavedState.Create(Cons(-1, -1), Cons(Call("mapHeight", map), Call("mapWidth", map)), List());
+				return LmSavedState.Create(Cons(-1, -1), Cons(Call("mapHeight", map), Call("mapWidth", map)), 
+					Call("InitVisited", Call("mapHeight", World.Map("world")),Call("mapWidth", World.Map("world"))));
 			}
 
 			public static SExpr Create(SExpr lmSavedState, SExpr world)
 			{
+				var loc = World.LmLoc(world);
+				var visitedPoints = LmSavedState.GetVisitedPoints(lmSavedState);
 				return LmSavedState.Create(
-					World.LmLoc(world),
+					loc,
 					LmSavedState.GetMapSize(lmSavedState),
-					Cons(World.LmLoc(world), LmSavedState.GetVisitedPoints(lmSavedState)));
+					Call("setCell", visitedPoints, loc, Add(World.GetCell(visitedPoints, loc), 1)));
 			}
 
 			public static SExpr LmLoc(SExpr lmSavedState)

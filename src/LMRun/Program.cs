@@ -18,15 +18,15 @@ namespace LMRun
 		private static void Run(string programName, string worldName)
 		{
 			//var p = File.ReadAllText(KnownPlace.GccSamples + programName + ".mgcc");
-			//var p = LocallyGreedyCarefulLM_Lisp.code;
-			//var prog = LParser.Parse(p);
+			var p = LocallyGreedyCarefulLM_Lisp.CodeDebug;
+			var prog = LParser.Parse(p);
 			//var world = new World(MapUtils.LoadFromKnownLocation(worldName)).ToLValue();
-			//var m = new LMachineInterpreter(prog.Program);
+			var m = new LMachineInterpreter(prog.Program);
 			//m.State.DataStack.Push(world);
 			//m.State.DataStack.Push(42);
 			//m.State.DataStack.Push(LValue.FromClosure(0, null));
 			//new Tap(2).Execute(m.State);
-			//LConsoleDebugger.Run(m, prog);
+			LConsoleDebugger.Run(m, prog);
 		}
 	}
 }

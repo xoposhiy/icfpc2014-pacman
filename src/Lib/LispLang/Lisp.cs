@@ -102,10 +102,10 @@ namespace Lib.LispLang
 			return new SExpr(env => ((SExpr)args).ToCode(env).Concat(new[] { name }));
 		}
 
-		public static SExpr DbgView(SExpr e)
-		{
-			return Cmd("DbgView", e);
-		}
+		//public static SExpr DbgView(SExpr e)
+		//{
+		//	return Cmd("DbgView", e);
+		//}
 
 		public static SExpr Call(string name, params SExpr[] args)
 		{

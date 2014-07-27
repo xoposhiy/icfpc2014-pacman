@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using Lib.Game;
 using Lib.LMachine.Intructions;
@@ -208,6 +209,50 @@ namespace Lib.LispLang
 				Def("fruitExpired", ArgNames("world"), GetTuple4(3, "world")),
 				Def("getCell", ArgNames("map", "point"), Call("get", Call("get", "map", Y("point")), X("point")))
 			}; } }
+
+
+			public static SExpr Create(Game.World world)
+			{
+				SExpr map = Map(world.map);
+				SExpr lmstate = LMState(world.man);
+				SExpr ghStates = GhostStates(world.ghosts);
+				SExpr fruit = 0;
+
+				return Cons(map, Cons(lmstate, Cons(ghStates, fruit)));
+			}
+
+			public static SExpr Map(MapCell[,] map)
+			{
+				var mList = List();
+				for (int row = map.GetLength(0) - 1; row >= 0; --row)
+				{
+					var rlist = List();
+					for (int col = map.GetLength(1) - 1; col >= 0; --col)
+						rlist = Cons((int)map[row, col], rlist);
+					mList = Cons(rlist, mList);
+				}
+				return mList;
+			}
+
+			public static SExpr LMState(LManState lman)
+			{
+				return Tuple(lman.powerPillRemainingTicks, Cons(lman.initialLocation.X, lman.initialLocation.Y), (int)lman.direction, lman.lives, lman.score);
+
+			}
+
+			public static SExpr GhostStates(List<GhostState> ghosts )
+			{
+				var glist = List();
+				for (int i = ghosts.Count-1; i >= 0; --i)
+				{
+					var ghost = ghosts[i];
+					glist = Cons(Tuple((int)ghost.vitality, Cons(ghost.location.X, ghost.location.Y), (int)ghost.direction), glist);
+
+				}
+				return glist;
+			}
+
+
 
 
 			public static SExpr Map(SExpr world)

@@ -1,7 +1,1122 @@
-LD 0 0
-LD 0 1
-LDF main
-TAP 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 3
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 3
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 1
+LDC 0
+LDC 1
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+LDC 2
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 6
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+LDC 2
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 1
+LDC 0
+LDC 0
+LDC 0
+LDC 1
+LDC 0
+LDC 0
+LDC 0
+LDC 1
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 2
+LDC 1
+LDC 1
+LDC 0
+LDC 1
+LDC 6
+LDC 6
+LDC 6
+LDC 1
+LDC 0
+LDC 1
+LDC 1
+LDC 2
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 1
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 1
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+LDC 2
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 4
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+LDC 2
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 1
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 1
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 3
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 5
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 3
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 2
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 11
+LDC 16
+CONS
+LDC 2
+LDC 3
+LDC 0
+CONS
+CONS
+CONS
+CONS
+LDC 0
+LDC 11
+LDC 8
+CONS
+LDC 2
+CONS
+CONS
+LDC 0
+LDC 10
+LDC 10
+CONS
+LDC 2
+CONS
+CONS
+LDC 0
+LDC 11
+LDC 10
+CONS
+LDC 2
+CONS
+CONS
+LDC 0
+LDC 12
+LDC 10
+CONS
+LDC 2
+CONS
+CONS
+LDC 0
+CONS
+CONS
+CONS
+CONS
+LDC 0
+CONS
+CONS
+CONS
+LDF runstep
+AP 1
+RTN
+runstep: ; fun(world)
+  LD 0 0  ; world
+  LDF main
+  AP 1
+  CAR
+  LD 0 0  ; world
+  LDF LMStep
+  AP 2
+  RTN
+;end runstep
+
 main: ; fun(world)
   LDC -1
   LDC -1
@@ -17,7 +1132,18 @@ main: ; fun(world)
   LDF mapWidth
   AP 1
   CONS
-  LDC 0
+  LD 0 0  ; world
+  LDF map
+  AP 1
+  LDF mapHeight
+  AP 1
+  LD 0 0  ; world
+  LDF map
+  AP 1
+  LDF mapWidth
+  AP 1
+  LDF InitVisited
+  AP 2
   LDC 0
   CONS
   CONS
@@ -36,6 +1162,9 @@ LMStep: ; fun(lmSavedState, world)
   LD 0 0  ; lmSavedState
   LDF getMapSize
   AP 1
+  LD 0 0  ; lmSavedState
+  LDF lmSavedState.VisitedPoints
+  AP 1
   LD 0 1  ; world
   LDF lmState
   AP 1
@@ -44,7 +1173,17 @@ LMStep: ; fun(lmSavedState, world)
   LD 0 0  ; lmSavedState
   LDF lmSavedState.VisitedPoints
   AP 1
-  CONS
+  LD 0 1  ; world
+  LDF lmState
+  AP 1
+  CDR
+  CAR
+  LDF getCell
+  AP 2
+  LDC 1
+  ADD
+  LDF setCell
+  AP 3
   LDC 0
   CONS
   CONS
@@ -78,9 +1217,23 @@ calcDirection: ; fun(lmSavedState, world)
   AP 2
   LD 0 1  ; world
   LD 0 0  ; lmSavedState
-  LDC 3
+  LD 0 1  ; world
+  LDF ghStates
+  AP 1
+  LDF selectGhostLocs
+  AP 1
+  LDF duplicateGhostLocs
+  AP 1
+  LD 0 1  ; world
+  LDF map
+  AP 1
+  LDF getCorrectPoints
+  AP 2
+  LDC 0
+  CONS
+  LDC 4
   LDF scoreOfDirection
-  AP 6
+  AP 7
   LD 0 0  ; lmSavedState
   LDF lmSavedState.Loc
   AP 1
@@ -101,9 +1254,23 @@ calcDirection: ; fun(lmSavedState, world)
   AP 2
   LD 0 1  ; world
   LD 0 0  ; lmSavedState
-  LDC 3
+  LD 0 1  ; world
+  LDF ghStates
+  AP 1
+  LDF selectGhostLocs
+  AP 1
+  LDF duplicateGhostLocs
+  AP 1
+  LD 0 1  ; world
+  LDF map
+  AP 1
+  LDF getCorrectPoints
+  AP 2
+  LDC 0
+  CONS
+  LDC 4
   LDF scoreOfDirection
-  AP 6
+  AP 7
   LD 0 0  ; lmSavedState
   LDF lmSavedState.Loc
   AP 1
@@ -124,9 +1291,23 @@ calcDirection: ; fun(lmSavedState, world)
   AP 2
   LD 0 1  ; world
   LD 0 0  ; lmSavedState
-  LDC 3
+  LD 0 1  ; world
+  LDF ghStates
+  AP 1
+  LDF selectGhostLocs
+  AP 1
+  LDF duplicateGhostLocs
+  AP 1
+  LD 0 1  ; world
+  LDF map
+  AP 1
+  LDF getCorrectPoints
+  AP 2
+  LDC 0
+  CONS
+  LDC 4
   LDF scoreOfDirection
-  AP 6
+  AP 7
   LD 0 0  ; lmSavedState
   LDF lmSavedState.Loc
   AP 1
@@ -147,68 +1328,65 @@ calcDirection: ; fun(lmSavedState, world)
   AP 2
   LD 0 1  ; world
   LD 0 0  ; lmSavedState
-  LDC 3
+  LD 0 1  ; world
+  LDF ghStates
+  AP 1
+  LDF selectGhostLocs
+  AP 1
+  LDF duplicateGhostLocs
+  AP 1
+  LD 0 1  ; world
+  LDF map
+  AP 1
+  LDF getCorrectPoints
+  AP 2
+  LDC 0
+  CONS
+  LDC 4
   LDF scoreOfDirection
-  AP 6
+  AP 7
   LDC 0
   CONS
   CONS
   CONS
   CONS
-  DbgView
   LDF argmax
   AP 1
   RTN
 ;end calcDirection
 
-map: ; fun(world)
-  LD 0 0  ; world
-  CAR
-  RTN
-;end map
-
-lmState: ; fun(world)
-  LD 0 0  ; world
-  CDR
-  CAR
-  RTN
-;end lmState
-
-ghStates: ; fun(world)
-  LD 0 0  ; world
-  CDR
-  CDR
-  CAR
-  RTN
-;end ghStates
-
-fruitExpired: ; fun(world)
-  LD 0 0  ; world
-  CDR
-  CDR
-  CDR
-  RTN
-;end fruitExpired
-
-getCell: ; fun(map, point)
-  LD 0 0  ; map
-  LD 0 1  ; point
-  CDR
-  LDF get
+InitVisited: ; fun(mapHeight, mapWidth)
+  LD 0 0  ; mapHeight
+  LD 0 1  ; mapWidth
+  LDC 0
+  LDF Repeat
   AP 2
-  LD 0 1  ; point
-  CAR
-  LDF get
+  LDF Repeat
   AP 2
   RTN
-;end getCell
+;end InitVisited
 
-getMapSize: ; fun(lmstate)
-  LD 0 0  ; lmstate
-  CDR
-  CAR
+Repeat: ; fun(max, value)
+  LD 0 0  ; max
+  SEL nonzero_155 zero_154
+    LDC 0
+    TSEL endif_156 endif_156
+    nonzero_155:
+      LD 0 1  ; value
+      LD 0 0  ; max
+      LDC 1
+      SUB
+      LD 0 1  ; value
+      LDF Repeat
+      AP 2
+      CONS
+      JOIN
+    zero_154:
+      LDC 0
+      JOIN
+    endif_156:
   RTN
-;end getMapSize
+;end Repeat
 
 lmSavedState.VisitedPoints: ; fun(lmstate)
   LD 0 0  ; lmstate
@@ -217,6 +1395,13 @@ lmSavedState.VisitedPoints: ; fun(lmstate)
   CAR
   RTN
 ;end lmSavedState.VisitedPoints
+
+getMapSize: ; fun(lmstate)
+  LD 0 0  ; lmstate
+  CDR
+  CAR
+  RTN
+;end getMapSize
 
 lmSavedState.Loc: ; fun(lmSavedState)
   LD 0 0  ; lmSavedState
@@ -228,152 +1413,153 @@ scoreOfCell: ; fun(cell, world)
   LD 0 0  ; cell
   LDC 2
   CEQ
-  SEL nonzero_116 zero_115
+  SEL nonzero_173 zero_172
     LDC 0
-    TSEL endif_117 endif_117
-    nonzero_116:
+    TSEL endif_174 endif_174
+    nonzero_173:
       LDC 1
       JOIN
-    zero_115:
+    zero_172:
       LD 0 0  ; cell
       LDC 1
       CEQ
-      SEL nonzero_113 zero_112
+      SEL nonzero_170 zero_169
         LDC 0
-        TSEL endif_114 endif_114
-        nonzero_113:
+        TSEL endif_171 endif_171
+        nonzero_170:
           LDC -1
           JOIN
-        zero_112:
+        zero_169:
           LD 0 0  ; cell
           LDC 3
           CEQ
-          SEL nonzero_110 zero_109
+          SEL nonzero_167 zero_166
             LDC 0
-            TSEL endif_111 endif_111
-            nonzero_110:
+            TSEL endif_168 endif_168
+            nonzero_167:
               LDC 5
               JOIN
-            zero_109:
+            zero_166:
               LD 0 0  ; cell
               LDC 4
               CEQ
-              SEL nonzero_104 zero_103
+              SEL nonzero_161 zero_160
                 LDC 0
-                TSEL endif_105 endif_105
-                nonzero_104:
+                TSEL endif_162 endif_162
+                nonzero_161:
                   LD 0 1  ; world
                   LDF fruitExpired
                   AP 1
                   LDC 127
                   CGT
-                  SEL nonzero_101 zero_100
+                  SEL nonzero_158 zero_157
                     LDC 0
-                    TSEL endif_102 endif_102
-                    nonzero_101:
+                    TSEL endif_159 endif_159
+                    nonzero_158:
                       LDC 1
                       JOIN
-                    zero_100:
+                    zero_157:
                       LDC 0
                       JOIN
-                    endif_102:
+                    endif_159:
                   JOIN
-                zero_103:
+                zero_160:
                   LDC 0
                   JOIN
-                endif_105:
-              SEL nonzero_107 zero_106
+                endif_162:
+              SEL nonzero_164 zero_163
                 LDC 0
-                TSEL endif_108 endif_108
-                nonzero_107:
+                TSEL endif_165 endif_165
+                nonzero_164:
                   LDC 30
                   JOIN
-                zero_106:
+                zero_163:
                   LDC 0
                   JOIN
-                endif_108:
+                endif_165:
               JOIN
-            endif_111:
+            endif_168:
           JOIN
-        endif_114:
+        endif_171:
       JOIN
-    endif_117:
+    endif_174:
   RTN
 ;end scoreOfCell
 
-scoreOfGhosts: ; fun(ghosts, point, powerRemaining)
-  LDC 254
-  LD 0 2  ; powerRemaining
+scoreOfGhosts: ; fun(point, ghostLocs, world)
+  LDC 548
+  LD 0 2  ; world
+  LDF lmState
+  AP 1
+  CAR
   CGT
-  SEL nonzero_122 zero_121
+  SEL nonzero_179 zero_178
     LDC 0
-    TSEL endif_123 endif_123
-    nonzero_122:
-      LD 0 0  ; ghosts
-      LD 0 1  ; point
-      LDF any_ghostAtPoint
+    TSEL endif_180 endif_180
+    nonzero_179:
+      LD 0 1  ; ghostLocs
+      LD 0 0  ; point
+      LDF any_pEquals
       AP 2
-      SEL nonzero_119 zero_118
+      SEL nonzero_176 zero_175
         LDC 0
-        TSEL endif_120 endif_120
-        nonzero_119:
+        TSEL endif_177 endif_177
+        nonzero_176:
           LDC 1
           JOIN
-        zero_118:
+        zero_175:
           LDC 0
           JOIN
-        endif_120:
+        endif_177:
       JOIN
-    zero_121:
+    zero_178:
       LDC 0
       JOIN
-    endif_123:
-  SEL nonzero_125 zero_124
+    endif_180:
+  SEL nonzero_182 zero_181
     LDC 0
-    TSEL endif_126 endif_126
-    nonzero_125:
+    TSEL endif_183 endif_183
+    nonzero_182:
       LDC -100
       JOIN
-    zero_124:
+    zero_181:
       LDC 0
       JOIN
-    endif_126:
-  LD 0 0  ; ghosts
-  LD 0 1  ; point
+    endif_183:
+  LD 0 2  ; world
+  LDF ghStates
+  AP 1
+  LD 0 0  ; point
   LDF any_frightGhostAtPoint
   AP 2
-  SEL nonzero_128 zero_127
+  SEL nonzero_185 zero_184
     LDC 0
-    TSEL endif_129 endif_129
-    nonzero_128:
+    TSEL endif_186 endif_186
+    nonzero_185:
       LDC 10
       JOIN
-    zero_127:
+    zero_184:
       LDC 0
       JOIN
-    endif_129:
+    endif_186:
   ADD
   RTN
 ;end scoreOfGhosts
 
-scoreOfPoint: ; fun(prevLoc, nextLoc, world, visitedPoints, depth)
-  LD 0 2  ; world
+scoreOfPoint: ; fun(prevLoc, nextLoc, visitedPoints, world, cashed, depth)
+  LD 0 3  ; world
   LDF map
   AP 1
   LD 0 1  ; nextLoc
   LDF getCell
   AP 2
-  LD 0 2  ; world
+  LD 0 3  ; world
   LDF scoreOfCell
   AP 2
-  LD 0 2  ; world
-  LDF ghStates
-  AP 1
   LD 0 1  ; nextLoc
-  LD 0 2  ; world
-  LDF lmState
-  AP 1
+  LD 0 4  ; cashed
   CAR
+  LD 0 3  ; world
   LDF scoreOfGhosts
   AP 3
   ADD
@@ -381,32 +1567,32 @@ scoreOfPoint: ; fun(prevLoc, nextLoc, world, visitedPoints, depth)
   LD 0 1  ; nextLoc
   LDF pEquals
   AP 2
-  SEL nonzero_131 zero_130
+  SEL nonzero_188 zero_187
     LDC 0
-    TSEL endif_132 endif_132
-    nonzero_131:
+    TSEL endif_189 endif_189
+    nonzero_188:
       LDC 0
-      LD 0 4  ; depth
+      LD 0 5  ; depth
       SUB
       LDC 1
       SUB
       JOIN
-    zero_130:
+    zero_187:
       LDC 0
       JOIN
-    endif_132:
+    endif_189:
   ADD
   LDC 0
-  LD 0 3  ; visitedPoints
+  LD 0 2  ; visitedPoints
   LD 0 1  ; nextLoc
-  LDF countPointsAs
+  LDF getCell
   AP 2
   SUB
   ADD
   RTN
 ;end scoreOfPoint
 
-scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
+scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, cashed, depth)
   LD 0 3  ; world
   LDF map
   AP 1
@@ -415,40 +1601,41 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
   AP 2
   LDC 0
   CEQ
-  SEL nonzero_134 zero_133
+  SEL nonzero_191 zero_190
     LDC 0
-    TSEL endif_135 endif_135
-    nonzero_134:
+    TSEL endif_192 endif_192
+    nonzero_191:
       LDC 0
       JOIN
-    zero_133:
+    zero_190:
       LDC 1
       JOIN
-    endif_135:
-  SEL nonzero_140 zero_139
+    endif_192:
+  SEL nonzero_197 zero_196
     LDC 0
-    TSEL endif_141 endif_141
-    nonzero_140:
-      LD 0 5  ; depth
+    TSEL endif_198 endif_198
+    nonzero_197:
+      LD 0 6  ; depth
       LDC 1
       ADD
       LD 0 0  ; prevLoc
       LD 0 2  ; nextLoc
-      LD 0 3  ; world
       LD 0 4  ; lmstate
       LDF lmSavedState.VisitedPoints
       AP 1
-      LD 0 5  ; depth
+      LD 0 3  ; world
+      LD 0 5  ; cashed
+      LD 0 6  ; depth
       LDF scoreOfPoint
-      AP 5
+      AP 6
       MUL
-      LD 0 5  ; depth
+      LD 0 6  ; depth
       LDC 0
       CGT
-      SEL nonzero_137 zero_136
+      SEL nonzero_194 zero_193
         LDC 0
-        TSEL endif_138 endif_138
-        nonzero_137:
+        TSEL endif_195 endif_195
+        nonzero_194:
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -459,11 +1646,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
           AP 2
           LD 0 3  ; world
           LD 0 4  ; lmstate
-          LD 0 5  ; depth
+          LD 0 5  ; cashed
+          LD 0 6  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 6
+          AP 7
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -474,11 +1662,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
           AP 2
           LD 0 3  ; world
           LD 0 4  ; lmstate
-          LD 0 5  ; depth
+          LD 0 5  ; cashed
+          LD 0 6  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 6
+          AP 7
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -489,11 +1678,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
           AP 2
           LD 0 3  ; world
           LD 0 4  ; lmstate
-          LD 0 5  ; depth
+          LD 0 5  ; cashed
+          LD 0 6  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 6
+          AP 7
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -504,11 +1694,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
           AP 2
           LD 0 3  ; world
           LD 0 4  ; lmstate
-          LD 0 5  ; depth
+          LD 0 5  ; cashed
+          LD 0 6  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 6
+          AP 7
           LDC 0
           CONS
           CONS
@@ -517,18 +1708,183 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
           LDF max
           AP 1
           JOIN
-        zero_136:
+        zero_193:
           LDC 0
           JOIN
-        endif_138:
+        endif_195:
       ADD
       JOIN
-    zero_139:
+    zero_196:
       LDC -1000
       JOIN
-    endif_141:
+    endif_198:
   RTN
 ;end scoreOfDirection
+
+duplicateGhostLocs: ; fun(ghostLocs)
+  LD 0 0  ; ghostLocs
+  ATOM
+  SEL nonzero_101 zero_100
+    LDC 0
+    TSEL endif_102 endif_102
+    nonzero_101:
+      LDC 0
+      JOIN
+    zero_100:
+      LD 0 0  ; ghostLocs
+      CAR
+      LD 0 0  ; ghostLocs
+      CAR
+      LDC -1
+      LDC 0
+      CONS
+      LDF sum
+      AP 2
+      LD 0 0  ; ghostLocs
+      CAR
+      LDC 0
+      LDC 1
+      CONS
+      LDF sum
+      AP 2
+      LD 0 0  ; ghostLocs
+      CAR
+      LDC 1
+      LDC 0
+      CONS
+      LDF sum
+      AP 2
+      LD 0 0  ; ghostLocs
+      CAR
+      LDC 0
+      LDC -1
+      CONS
+      LDF sum
+      AP 2
+      LD 0 0  ; ghostLocs
+      CDR
+      LDF duplicateGhostLocs
+      AP 1
+      CONS
+      CONS
+      CONS
+      CONS
+      CONS
+      JOIN
+    endif_102:
+  RTN
+;end duplicateGhostLocs
+
+getCorrectPoints: ; fun(pList, map)
+  LD 0 0  ; pList
+  ATOM
+  SEL nonzero_110 zero_109
+    LDC 0
+    TSEL endif_111 endif_111
+    nonzero_110:
+      LDC 0
+      JOIN
+    zero_109:
+      LD 0 1  ; map
+      LD 0 0  ; pList
+      CAR
+      LDF getCell
+      AP 2
+      LDC 0
+      CEQ
+      SEL nonzero_104 zero_103
+        LDC 0
+        TSEL endif_105 endif_105
+        nonzero_104:
+          LDC 0
+          JOIN
+        zero_103:
+          LDC 1
+          JOIN
+        endif_105:
+      SEL nonzero_107 zero_106
+        LDC 0
+        TSEL endif_108 endif_108
+        nonzero_107:
+          LD 0 0  ; pList
+          CAR
+          LD 0 0  ; pList
+          CDR
+          LD 0 1  ; map
+          LDF getCorrectPoints
+          AP 2
+          CONS
+          JOIN
+        zero_106:
+          LD 0 0  ; pList
+          CDR
+          LD 0 1  ; map
+          LDF getCorrectPoints
+          AP 2
+          JOIN
+        endif_108:
+      JOIN
+    endif_111:
+  RTN
+;end getCorrectPoints
+
+selectGhostLocs: ; fun(ghosts)
+  LD 0 0  ; ghosts
+  ATOM
+  SEL nonzero_113 zero_112
+    LDC 0
+    TSEL endif_114 endif_114
+    nonzero_113:
+      LDC 0
+      JOIN
+    zero_112:
+      LD 0 0  ; ghosts
+      CAR
+      CDR
+      CAR
+      LD 0 0  ; ghosts
+      CDR
+      LDF selectGhostLocs
+      AP 1
+      CONS
+      JOIN
+    endif_114:
+  RTN
+;end selectGhostLocs
+
+any_pEquals: ; fun(aList, arg1)
+  LD 0 0  ; aList
+  ATOM
+  SEL nonzero_119 zero_118
+    LDC 0
+    TSEL endif_120 endif_120
+    nonzero_119:
+      LDC 0
+      JOIN
+    zero_118:
+      LD 0 0  ; aList
+      CAR
+      LD 0 1  ; arg1
+      LDF pEquals
+      AP 2
+      SEL nonzero_116 zero_115
+        LDC 0
+        TSEL endif_117 endif_117
+        nonzero_116:
+          LDC 1
+          JOIN
+        zero_115:
+          LD 0 0  ; aList
+          CDR
+          LD 0 1  ; arg1
+          LDF any_pEquals
+          AP 2
+          JOIN
+        endif_117:
+      JOIN
+    endif_120:
+  RTN
+;end any_pEquals
 
 sum: ; fun(p1, p2)
   LD 0 0  ; p1

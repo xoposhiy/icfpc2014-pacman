@@ -3,6 +3,7 @@ using Lib.AI;
 using Lib.Debugger;
 using Lib.Game;
 using Lib.GMachine;
+using Lib.LispLang;
 using Lib.LMachine;
 
 namespace conPlayer
@@ -18,8 +19,8 @@ namespace conPlayer
 //			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
 
 			var enterLDebugger = false;
-			//			var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyCarefulLM_Lisp().Code, runUntilStopStep: x =>
-			var interpretedLambdaMan = new InterpretedLambdaMan(CarefulGreedyLambdaMan_Lisp.code, runUntilStopStep: x =>
+						var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyGreedyCarefulLM_Lisp().Code, runUntilStopStep: x =>
+			//var interpretedLambdaMan = new InterpretedLambdaMan(CarefulGreedyLambdaMan_Lisp.code, runUntilStopStep: x =>
 			{
 				if (enterLDebugger)
 				{
