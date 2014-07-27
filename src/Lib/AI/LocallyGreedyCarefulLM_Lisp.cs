@@ -54,7 +54,7 @@ namespace Lib.LispLang
 								"lmSavedState",
 								depth)))
 						),
-					World.Definitions,
+					
 					LmSavedState.Definitions,
 					Score.Definitions);
 

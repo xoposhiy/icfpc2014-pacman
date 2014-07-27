@@ -180,7 +180,7 @@ namespace Lib.LispLang
 			DefAny1("ghostAtPoint"),
 		};
 
-
+		/// <summary>
 		/// НЕ УДАЛЯТЬ.
 		/// name - имя объявляемой функции
 		/// funcName - имя функции от нескольких аргументов,

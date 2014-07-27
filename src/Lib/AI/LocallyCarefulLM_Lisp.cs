@@ -52,7 +52,8 @@ namespace Lib.AI
 								depth)))
 						),
 						LmSavedState.Definitions,
-						Score.Definitions);
+						Score.Definitions,
+						GhostPredict.Definitions);
 				//Api.World.Definitions);
 				//LmSavedState.Definitions);
 				//Score.Definitions);
@@ -60,55 +61,6 @@ namespace Lib.AI
 			}
 		}
 
-
-		private class LmSavedState : Api
-		{
-
-			private static Dictionary<string, SExpr> generated = new Dictionary<string, SExpr>();
-			public static SExpr[] Definitions { get { return generated.Values.ToArray(); } }
-
-			private static SExpr Create(SExpr currentLoc, SExpr sizeOfMap, SExpr visitedPoints)
-			{
-				return List(currentLoc, sizeOfMap, visitedPoints);
-			}
-
-			public static SExpr Create(SExpr map)
-			{
-				return LmSavedState.Create(Cons(-1, -1), Cons(Call("mapHeight", map), Call("mapWidth", map)), List());
-			}
-
-			public static SExpr Create(SExpr lmSavedState, SExpr world)
-			{
-				return LmSavedState.Create(
-					World.LmLoc(world),
-					LmSavedState.GetMapSize(lmSavedState),
-					Cons(World.LmLoc(world), LmSavedState.GetVisitedPoints(lmSavedState)));
-			}
-
-			public static SExpr LmLoc(SExpr lmSavedState)
-			{
-				if (!generated.ContainsKey("LmLoc"))
-					generated.Add("LmLoc", Def("lmSavedState.Loc", ArgNames("lmSavedState"), Get(0, "lmSavedState")));
-
-				return Call("lmSavedState.Loc", lmSavedState);
-			}
-
-			public static SExpr GetMapSize(SExpr lmSavedState)
-			{
-				if (!generated.ContainsKey("GetMapSize"))
-					generated.Add("GetMapSize", Def("getMapSize", ArgNames("lmstate"), Get(1, "lmstate")));
-				return Call("getMapSize", lmSavedState);
-			}
-
-			public static SExpr GetVisitedPoints(SExpr lmSavedState)
-			{
-				if (!generated.ContainsKey("GetVisitedPoints"))
-					generated.Add("GetVisitedPoints", Def("lmSavedState.VisitedPoints", ArgNames("lmstate"), Get(2, "lmstate")));
-				return Call("lmSavedState.VisitedPoints", lmSavedState);
-			}
-
-
-		}
 
 		private class Score : Api
 		{
@@ -125,16 +77,16 @@ namespace Lib.AI
 										If(And(Ceq("cell", (int)MapCell.Fruit), Cgt(World.FruitExpired("world"), 137*depth)), 30,
 											0)))),
 
-						Def("scoreOfGhosts", ArgNames("ghosts", "point", "powerRemaining"),
+						Def("scoreOfGhosts", ArgNames("point", "world"),
 							Add(
 								If(And(
-									Cgt(137*depth, "powerRemaining"),
-									Call("any_ghostAtPoint", Args("ghosts", "point"))),
+									Cgt(137*depth, World.LmVitality("world")),
+									GhostPredict.AnyGhostAroundPoint("point", "world")),
 									//Then
 									-100,
 									//Else
 									0),
-								If(Call("any_frightGhostAtPoint", Args("ghosts", "point")), 10, 0))),
+								If(Call("any_frightGhostAtPoint", Args(World.GhStates("world"), "point")), 10, 0))),
 
 						Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "world", "depth"),
 							Add(Add(
@@ -154,7 +106,9 @@ namespace Lib.AI
 										Call("max", ScoreOfDirections("currLoc", "nextLoc", "world", Sub("depth", 1))),
 										0)),
 								// Else
-								-1000)),
+								-1000))
+
+								
 
 
 					};
@@ -171,7 +125,7 @@ namespace Lib.AI
 
 			public static SExpr ScoreOfGhosts(SExpr point, SExpr world)
 			{
-				return Call("scoreOfGhosts", Args(Api.World.GhStates(world), point, Api.World.LmVitality(world)));
+				return Call("scoreOfGhosts", point, world);
 			}
 
 			public static SExpr ScoreOfPoint(SExpr prevLoc, SExpr nextLoc, SExpr world, SExpr depth)
@@ -193,55 +147,87 @@ namespace Lib.AI
 					ScoreOfDirection(prevLoc, currLoc, Cons(-1, 0), world, depth)
 					);
 			}
+		}
 
+		private class LmSavedState : Api
+		{
 
-			private class LmSavedState : Api
+			private static Dictionary<string, SExpr> generated = new Dictionary<string, SExpr>();
+
+			public static SExpr[] Definitions
 			{
-
-				private static Dictionary<string, SExpr> generated = new Dictionary<string, SExpr>();
-
-				public static SExpr[] Definitions
-				{
-					get { return generated.Values.ToArray(); }
-				}
-
-
-				public static SExpr Create(SExpr map)
-				{
-					return Create(Cons(-1, -1), Cons(Call("mapHeight", map), Call("mapWidth", map)));
-				}
-
-				public static SExpr Create(SExpr lmSavedState, SExpr world)
-				{
-					return Cons(
-						World.LmLoc(world),
-						GetMapSize(lmSavedState)
-						);
-				}
-
-				public static SExpr LmLoc(SExpr lmSavedState)
-				{
-					if (!generated.ContainsKey("LmLoc"))
-						generated.Add("LmLoc", Def("lmSavedState.Loc", ArgNames("lmSavedState"), Car("lmSavedState")));
-					return Call("lmSavedState.Loc", lmSavedState);
-				}
-
-				public static SExpr GetMapSize(SExpr lmSavedState)
-				{
-					if (!generated.ContainsKey("GetMapSize"))
-						generated.Add("GetMapSize", Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")));
-					return Call("getMapSize", lmSavedState);
-				}
-
+				get { return generated.Values.ToArray(); }
 			}
 
 
-			private class GhostPredict : Api
+			public static SExpr Create(SExpr map)
 			{
-
-
-
+				return Cons(
+					Cons(-1, -1), 
+					Cons(Call("mapHeight", map), Call("mapWidth", map)));
 			}
+
+			public static SExpr Create(SExpr lmSavedState, SExpr world)
+			{
+				return Cons(
+					World.LmLoc(world),
+					GetMapSize(lmSavedState)
+					);
+			}
+
+			public static SExpr LmLoc(SExpr lmSavedState)
+			{
+				if (!generated.ContainsKey("LmLoc"))
+					generated.Add("LmLoc", Def("lmSavedState.Loc", ArgNames("lmSavedState"), Car("lmSavedState")));
+				return Call("lmSavedState.Loc", lmSavedState);
+			}
+
+			public static SExpr GetMapSize(SExpr lmSavedState)
+			{
+				if (!generated.ContainsKey("GetMapSize"))
+					generated.Add("GetMapSize", Def("getMapSize", ArgNames("lmstate"), Cdr("lmstate")));
+				return Call("getMapSize", lmSavedState);
+			}
+
+		}
+
+
+		private class GhostPredict : Api
+		{
+			public static SExpr[] Definitions = new SExpr[]
+				{
+					Def("duplicateGhostLocs", ArgNames("ghostLocs"), 
+						If(Atom("ghostLocs"), List(), 
+							Cons( Call("sum", Car("ghostLocs"), Cons(-1, 0)), 
+								Cons( Call("sum", Car("ghostLocs"), Cons(0, 1)), 
+									Cons( Call("sum", Car("ghostLocs"), Cons(1, 0)),
+										Cons( Call("sum", Car("ghostLocs"), Cons(0, -1)), Call("duplicateGhostLocs", Cdr("ghostLocs")))))))),
+
+					Def("getCorrectPoints", ArgNames("pList", "map"), 
+						If(Atom("pList"), 
+							List(),
+							If( World.IsCorrect(Car("pList"), "map"), 
+								Cons(Car("pList"), Call("getCorrectPoints", Cdr("pList"), "map")),
+								Call("getCorrectPoints", Cdr("pList"), "map")))),
+
+					Def("selectGhostLocs", ArgNames("ghosts"), 
+						If(Atom("ghosts"), 
+							List(),
+							Cons(World.GhLoc(Car("ghosts")), Call("selectGhostLocs", Cdr("ghosts"))))),
+
+					DefAny1("pEquals")
+
+				};
+
+			public static SExpr AnyGhostAroundPoint(SExpr point, SExpr world)
+			{
+				var ghLocs = Call("selectGhostLocs", World.GhStates("world"));
+				var extGhLocs = Call("duplicateGhostLocs", ghLocs);
+				var correct = Call("getCorrectPoints", extGhLocs, World.Map("world"));
+				return Call("any_pEquals", correct, point);
+			}
+
+
 		}
 	}
 }
