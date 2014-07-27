@@ -201,7 +201,7 @@ namespace Lib.LispLang
 //			else
 //				return Add(expr[0], expr.Skip(1).ToArray());
 //		}
-		
+
 		public static SExpr And(params SExpr[] expr)
 		{
 			if (expr.Length == 0)
@@ -217,6 +217,7 @@ namespace Lib.LispLang
 			else
 				return If(expr[0], 1, Or(expr.Skip(1).ToArray()));
 		}
+
 
 		public static SExpr Not(SExpr expr)
 		{

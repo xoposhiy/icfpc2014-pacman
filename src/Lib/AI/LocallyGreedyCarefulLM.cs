@@ -10,7 +10,7 @@ namespace Lib.AI
 	///     Очень простая реализация - на перекрестках идем преимущественно туда, где мы еще не были (где есть пилюли)
 	///     Если выбор не очевиден - идем в случайную сторону.
 	/// </summary>
-	public class LocallyGreedyCarefulLambdaMan : LambdaMan
+	public class LocallyGreedyCarefulLM : LambdaMan
 	{
 		public Tuple<LValue, LMStep> Main(World initialWorldState)
 		{
@@ -21,6 +21,7 @@ namespace Lib.AI
 		public Tuple<LValue, Direction> Step(LValue currentAiState, World currentWorldState)
 		{
 			// currentAIState содержит наши координаты на прошлом шаге
+			
 
 			var curr = currentWorldState.man.location;
 			var currentPair = currentAiState.GetPair();
@@ -34,6 +35,7 @@ namespace Lib.AI
 			Func<Point, MapCell> getCell = (p) => map[p.Y, p.X];
 			Func<Point, bool> isCorrect = (p) => !(p.X < 0 || p.X >= map.GetLength(1) || p.Y < 0 || p.Y >= map.GetLength(0) || getCell(p) == MapCell.Wall);
 
+			
 			Func<Point, Point, int, int> calculatePathScore = null;
 			calculatePathScore = (currLoc, prevLoc, maxdepth) =>
 				{

@@ -12,12 +12,12 @@ using NUnit.Framework.Constraints;
 namespace Lib.LispLang
 {
 	[TestFixture]
-	public class LocallyGreedyCarefulLambdaManOnList : Api
+	public class LocallyGreedyCarefulLM_Lisp : Api
 	{
-		public static int depth = 2;
+		public static int depth = 3;
 
 
-		public static string Code
+		public string Code
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Lib.LispLang
 			}
 		}
 
-		internal static string code
+		internal string code
 		{
 			get
 			{

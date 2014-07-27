@@ -48,6 +48,7 @@
     <Compile Include="AI\Ghost.cs" />
     <Compile Include="AI\GredySimple.cs" />
     <Compile Include="AI\GreedyLambdaMen_Lisp.cs" />
+    <Compile Include="AI\LocallyCarefulLM_Lisp.cs" />
     <Compile Include="AI\Queue_Functional.cs" />
     <Compile Include="AI\RandomGhost.cs" />
     <Compile Include="AI\RandomGhostFactory.cs" />
@@ -97,7 +98,7 @@
     <Compile Include="LispLang\LeftAi.cs" />
     <Compile Include="LispLang\Lisp.cs" />
     <Compile Include="LispLang\LispTests.cs" />
-    <Compile Include="LispLang\LocallyGreedyCarefulLambdaManOnList.cs" />
+    <Compile Include="AI\LocallyGreedyCarefulLM_Lisp.cs" />
     <Compile Include="LispLang\Queue.cs" />
     <Compile Include="LispLang\SExpr.cs" />
     <Compile Include="LMachine\Closure.cs" />
@@ -149,7 +150,7 @@
     <Compile Include="Parsing\ParserBase.cs" />
     <Compile Include="Parsing\ParseResult.cs" />
     <Compile Include="Parsing\LParsing\LParser_Test.cs" />
-    <Compile Include="AI\LocallyGreedyCarefulLambdaMan.cs" />
+    <Compile Include="AI\LocallyGreedyCarefulLM.cs" />
     <Compile Include="LMachine\LTag.cs" />
     <Compile Include="LMachine\LValue.cs" />
     <Compile Include="LMachine\LValueExtensions.cs" />

@@ -19,7 +19,7 @@ namespace conPlayer
 
 			var enterDebugger = false;
 //			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.Code, runUntilStopStep: x =>
-			var interpretedLambdaMan = new InterpretedLambdaMan(CarefulGreedyLmbdaMen_lisp.code, runUntilStopStep: x =>
+			var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyCarefulLM_Lisp().Code, runUntilStopStep: x =>
 			{
 				if (enterDebugger)
 				{
@@ -40,7 +40,7 @@ namespace conPlayer
 			);
 
 			LMMain main = interpretedLambdaMan.Main;
-			var sim = new GameSim(MapUtils.LoadFromKnownLocation("world-classic.txt"), main, ghostFactory);
+			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostFactory);
 			var oldState = "";
 			Exception exception = null;
 			var runStepByStep = true;
