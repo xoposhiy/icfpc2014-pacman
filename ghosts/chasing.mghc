@@ -25,9 +25,6 @@
 	lStart = 5
 	gStart = 6
 
-; program state consts
-	inited = 1
-
 ; vars
 	lx = 100
 	ly = 101
@@ -52,13 +49,13 @@
 	dirsX = 208 ; 4 items
 	dirsY = 212 ; 4 items
 
-; entry poit
-	jeq step, [255], inited
-	mov [255], inited
+; entry point
+	jeq step, [255], 1
+	mov [255], 1
 
 ; initialization
 	int getMyIndex
-		mov [gindex], a
+	mov [gindex], a
 	mov [dirUpX], 0
 	mov [dirUpY], -1
 	mov [dirDownX], 0
@@ -109,6 +106,8 @@ step:
 	add c, gdir
 	mov [gdirY], [c]
 
+	jeq frightmode, [gmode], fright
+
 
 checkUp_start:
 	jlt checkUp, [ly], [gy]
@@ -143,7 +142,7 @@ upOk:
 
 
 checkRight_start:
-	jlt checkRight, [lx], [gx]
+	jgt checkRight, [lx], [gx]
 	jeq checkDown_start, 0, 0
 
 checkRight:
@@ -175,7 +174,7 @@ rightOk:
 
 
 checkDown_start:
-	jlt checkDown, [ly], [gy]
+	jgt checkDown, [ly], [gy]
 	jeq checkLeft_start, 0, 0
 
 checkDown:
@@ -240,5 +239,134 @@ random:
 	add [254], 1
 	mov a, [254]
 	and a, 3
+	int setMyDir
+	hlt
+
+
+frightmode:
+
+fright_checkUp_start:
+	jgt fright_checkUp, [ly], [gy]
+	jeq fright_checkRight_start, 0, 0
+
+fright_checkUp:
+	mov e, [gdirX]
+	add e, [dirUpX]
+	jgt fright_upOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirUpY]
+	jgt fright_upOk, f, 0
+
+	jeq fright_checkRight_start, 0, 0
+
+fright_upOk:
+	mov e, [gx]
+	add e, [dirUpX]
+	mov f, [gy]
+	add f, [dirUpY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq fright_checkRight_start, a, wall
+
+	mov a, up
+	int setMyDir
+	hlt
+
+
+fright_checkRight_start:
+	jlt fright_checkRight, [lx], [gx]
+	jeq fright_checkDown_start, 0, 0
+
+fright_checkRight:
+	mov e, [gdirX]
+	add e, [dirRightX]
+	jgt fright_rightOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirRightY]
+	jgt fright_rightOk, f, 0
+
+	jeq fright_checkDown_start, 0, 0
+
+fright_rightOk:
+	mov e, [gx]
+	add e, [dirRightX]
+	mov f, [gy]
+	add f, [dirRightY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq fright_checkDown_start, a, wall
+
+	mov a, right
+	int setMyDir
+	hlt
+
+
+fright_checkDown_start:
+	jlt fright_checkDown, [ly], [gy]
+	jeq fright_checkLeft_start, 0, 0
+
+fright_checkDown:
+	mov e, [gdirX]
+	add e, [dirDownX]
+	jgt fright_downOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirDownY]
+	jgt fright_downOk, f, 0
+
+	jeq fright_checkLeft_start, 0, 0
+
+fright_downOk:
+	mov e, [gx]
+	add e, [dirDownX]
+	mov f, [gy]
+	add f, [dirDownY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq fright_checkLeft_start, a, wall
+
+	mov a, down
+	int setMyDir
+	hlt
+
+
+fright_checkLeft_start:
+	jgt fright_checkLeft, [lx], [gx]
+	jeq random, 0, 0
+
+fright_checkLeft:
+	mov e, [gdirX]
+	add e, [dirLeftX]
+	jgt fright_leftOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirLeftY]
+	jgt fright_leftOk, f, 0
+	jeq random, 0, 0
+
+fright_leftOk:
+	mov e, [gx]
+	add e, [dirLeftX]
+	mov f, [gy]
+	add f, [dirLeftY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq random, a, wall
+
+	mov a, left
 	int setMyDir
 	hlt
