@@ -23,7 +23,7 @@ namespace Lib.Parsing.LParsing
 		public void ParseCommandWithIntParameter()
 		{
 			var parseResult = LParser.Parse("ldc 1");
-			AssertInstructionEquals(new Ldc(1), parseResult.Program.Single());
+			AssertInstructionEquals(new Ldc(1){SourceLineNo = 1}, parseResult.Program.Single());
 			Assert.AreEqual(1, parseResult.SourceLines.Single());
 		}
 
@@ -31,7 +31,7 @@ namespace Lib.Parsing.LParsing
 		public void ParseCommandWithAddressParameter()
 		{
 			var parseResult = LParser.Parse("ldf 10");
-			AssertInstructionEquals(new Ldf(10), parseResult.Program.Single());
+			AssertInstructionEquals(new Ldf(10){SourceLineNo = 1}, parseResult.Program.Single());
 			Assert.AreEqual(1, parseResult.SourceLines.Single());
 		}
 
@@ -39,8 +39,8 @@ namespace Lib.Parsing.LParsing
 		public void ParseManyLines()
 		{
 			var parseResult = LParser.Parse("ldc 1 \r\n ldc 2");
-			AssertInstructionEquals(new Ldc(1), parseResult.Program[0]);
-			AssertInstructionEquals(new Ldc(2), parseResult.Program[1]);
+			AssertInstructionEquals(new Ldc(1) { SourceLineNo = 1 }, parseResult.Program[0]);
+			AssertInstructionEquals(new Ldc(2) { SourceLineNo = 2 }, parseResult.Program[1]);
 			Assert.AreEqual(1, parseResult.SourceLines[0]);
 			Assert.AreEqual(2, parseResult.SourceLines[1]);
 		}
@@ -49,7 +49,7 @@ namespace Lib.Parsing.LParsing
 		public void ParseConstants()
 		{
 			var parseResult = LParser.Parse("a = 1 \r\n ldc a");
-			AssertInstructionEquals(new Ldc(1), parseResult.Program.Single());
+			AssertInstructionEquals(new Ldc(1) { SourceLineNo = 2 }, parseResult.Program.Single());
 			Assert.AreEqual(2, parseResult.SourceLines.Single());
 		}
 
@@ -57,8 +57,8 @@ namespace Lib.Parsing.LParsing
 		public void ParseLabel()
 		{
 			var parseResult = LParser.Parse("ldf lalala \r\n  lalala: \r\n ldc 10");
-			AssertInstructionEquals(new Ldf(1), parseResult.Program[0]);
-			AssertInstructionEquals(new Ldc(10), parseResult.Program[1]);
+			AssertInstructionEquals(new Ldf(1) { SourceLineNo = 1 }, parseResult.Program[0]);
+			AssertInstructionEquals(new Ldc(10) { SourceLineNo = 3 }, parseResult.Program[1]);
 			Assert.AreEqual(1, parseResult.SourceLines[0]);
 			Assert.AreEqual(3, parseResult.SourceLines[1]);
 		}
@@ -67,8 +67,8 @@ namespace Lib.Parsing.LParsing
 		public void ParseLabelWithInstraction()
 		{
 			var parseResult = LParser.Parse("ldf lalala \r\n  lalala: ldc 10");
-			AssertInstructionEquals(new Ldf(1), parseResult.Program[0]);
-			AssertInstructionEquals(new Ldc(10), parseResult.Program[1]);
+			AssertInstructionEquals(new Ldf(1) { SourceLineNo = 1 }, parseResult.Program[0]);
+			AssertInstructionEquals(new Ldc(10) { SourceLineNo = 2 }, parseResult.Program[1]);
 			Assert.AreEqual(1, parseResult.SourceLines[0]);
 			Assert.AreEqual(2, parseResult.SourceLines[1]);
 		}
@@ -77,8 +77,8 @@ namespace Lib.Parsing.LParsing
 		public void ParseLabelWithInstractionAndComment()
 		{
 			var parseResult = LParser.Parse("ldf lalala \r\n  lalala: ldc 10; bububu");
-			AssertInstructionEquals(new Ldf(1), parseResult.Program[0]);
-			AssertInstructionEquals(new Ldc(10), parseResult.Program[1]);
+			AssertInstructionEquals(new Ldf(1) { SourceLineNo = 1 }, parseResult.Program[0]);
+			AssertInstructionEquals(new Ldc(10) { SourceLineNo = 2 }, parseResult.Program[1]);
 			Assert.AreEqual(1, parseResult.SourceLines[0]);
 			Assert.AreEqual(2, parseResult.SourceLines[1]);
 		}
@@ -93,7 +93,7 @@ namespace Lib.Parsing.LParsing
 		public void ParseCommentsAtEnd()
 		{
 			var parseResult = LParser.Parse("ldc 1 ;lalala");
-			AssertInstructionEquals(new Ldc(1), parseResult.Program.Single());
+			AssertInstructionEquals(new Ldc(1) { SourceLineNo = 1 }, parseResult.Program.Single());
 			Assert.AreEqual(1, parseResult.SourceLines.Single());
 		}
 

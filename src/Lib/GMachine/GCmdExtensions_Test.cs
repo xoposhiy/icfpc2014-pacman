@@ -11,9 +11,21 @@ namespace Lib.GMachine
 		[Test]
 		public void Chasing_ToGhc()
 		{
-			var ghc = Ghost.ByProgram("chasing.mghc").ParseResult.Program.ToGhc();
+			CompileAndSave("chasing");
+		}
+
+		[Test]
+		public void Chasing2_ToGhc()
+		{
+			CompileAndSave("chasing2");
+		}
+
+		private static void CompileAndSave(string prog)
+		{
+			var ghc = Ghost.ByProgram(prog + ".mghc").ParseResult.Program.ToGhc();
 			Console.Out.WriteLine(ghc);
-			File.WriteAllText(KnownPlace.Ghosts + "chasing.ghc", ghc);
+//			Clipboard.SetText(ghc);
+			File.WriteAllText(KnownPlace.Ghosts + prog + ".ghc", ghc);
 		}
 
 		[Test]

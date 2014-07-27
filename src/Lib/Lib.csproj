@@ -167,7 +167,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game\Visualizer.cs" />
     <Compile Include="Game\World.cs" />
-    <Compile Include="Game\WorldTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

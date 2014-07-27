@@ -1,0 +1,162 @@
+; interruts
+	setMyDir = 0
+	getLPos = 1
+	getMyIndex = 3
+	getGStartPos = 4
+	getGPos = 5
+	getGState = 6
+	getMap = 7
+
+; dir consts
+	up = 0
+	right = 1
+	down = 2
+	left = 3
+; ghost consts
+	std = 0
+	fright = 1
+	invisible = 2
+; map consts
+	wall = 0
+	empty = 1
+	pill = 2
+	ppill = 3
+	fruit = 4
+	lStart = 5
+	gStart = 6
+
+; vars
+	lx = 100
+	ly = 101
+	gx = 102
+	gy = 103
+	gmode = 104
+	gdir = 105
+	gindex = 106
+	return = 255
+	return2 = 254
+	
+	gx_up = 110
+	gx_right = 111
+	gx_down = 112
+	gx_left = 113
+	gy_up = 114
+	gy_right = 115
+	gy_down = 116
+	gy_left = 117
+	map_g_up =118
+	map_g_right =119
+	map_g_down =120
+	map_g_left =121
+	
+; entry point
+	int getMyIndex
+		mov [gindex], a
+	mov a, [gindex]
+	int getGPos
+		mov [gx], a
+		mov [gy], b
+	mov a, [gindex]
+	int getGState
+		mov [gmode], a
+		mov [gdir], b
+	int getLPos
+		mov [lx], a
+		mov [ly], b
+	mov [gx_left], 	[gx]
+	mov [gx_right], [gx]
+	mov [gx_up], 	[gx]
+	mov [gx_down], 	[gx]
+	mov [gy_left], 	[gy]
+	mov [gy_right], [gy]
+	mov [gy_up], 	[gy]
+	mov [gy_down], 	[gy]
+	add [gx_left], -1
+	add [gx_right], 1
+	add [gy_up], -1
+	add [gy_down], 1
+
+	mov a, [gx_left]
+	mov b, [gy_left]
+	int getMap
+	mov [map_g_left], a
+
+	mov a, [gx_right]
+	mov b, [gy_right]
+	int getMap
+	mov [map_g_right], a
+
+	mov a, [gx_up]
+	mov b, [gy_up]
+	int getMap
+	mov [map_g_up], a
+
+	mov a, [gx_down]
+	mov b, [gy_down]
+	int getMap
+	mov [map_g_down], a
+
+; the strategy!
+
+; consider_dir(gx, lx, right, map_g_right)
+mov a, right
+mov b, [gx]
+mov c, [lx]
+mov d, [map_g_right]
+mov [return2], pc
+mov pc, consider_dir
+
+; consider_dir(lx, gx, left, map_g_left)
+mov a, left
+mov b, [lx]
+mov c, [gx]
+mov d, [map_g_left]
+mov [return2], pc
+mov pc, consider_dir
+
+; consider_dir(gy, ly, down, map_g_down)
+mov a, down
+mov b, [gy]
+mov c, [ly]
+mov d, [map_g_down]
+mov [return2], pc
+mov pc, consider_dir
+
+; consider_dir(ly, gy, up, map_g_up)
+mov a, up
+mov b, [ly]
+mov c, [gy]
+mov d, [map_g_up]
+mov [return2], pc
+mov pc, consider_dir
+
+mov a, 42;
+int 8;
+hlt;
+
+consider_dir: ; (dir, c1, c2, map_g_dir)
+;In:
+;	a - direction to set
+;	b, c - ordinates to compare
+;	d - mapcell of ghost destination
+; 	[return2] - (return_addr-2)
+	JEQ end_consider_dir, d, wall
+	mov [return], [return2]
+	mov pc, set_dir_if_less
+end_consider_dir:
+	add [return2], 2
+	mov pc, [return2]
+	
+set_dir_if_less:
+;In:
+;	a - direction to set
+;	b, c - ordinates to compare
+;set new direction a if b < c
+;usage set_dir_if_less(gx, lx, right)
+	JGT set_dir_if_less_end, b, c
+	JEQ set_dir_if_less_end, b, c
+	int 8
+	int setMyDir
+set_dir_if_less_end:
+	add [return], 2
+	mov pc, [return]

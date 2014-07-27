@@ -21,8 +21,8 @@ namespace Lib.Parsing.GParsing
 		[Test]
 		public void ParseCommandWithIntParameter()
 		{
-			var parseResult = GParser.Parse("mov 1, [10]");
-			AssertInstructionEquals(new Mov(GArg.Const(1), GArg.Data(10)), parseResult.Program.Single());
+			var parseResult = GParser.Parse("mov [1], [10]");
+			AssertInstructionEquals(new Mov(GArg.Data(1), GArg.Data(10)), parseResult.Program.Single());
 			Assert.AreEqual(1, parseResult.SourceLines.Single());
 		}
 
