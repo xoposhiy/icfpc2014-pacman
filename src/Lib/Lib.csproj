@@ -70,6 +70,7 @@
     <Compile Include="GMachine\GArgType.cs" />
     <Compile Include="GMachine\GCmd.cs" />
     <Compile Include="GMachine\GCmdType.cs" />
+    <Compile Include="GMachine\GException.cs" />
     <Compile Include="GMachine\GMachine.cs" />
     <Compile Include="GMachine\GMachineState.cs" />
     <Compile Include="GMachine\GMachine_Test.cs" />

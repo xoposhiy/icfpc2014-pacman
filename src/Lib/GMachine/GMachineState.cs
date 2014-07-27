@@ -7,12 +7,14 @@ namespace Lib.GMachine
 		public GMachineState()
 		{
 			Pc = 0;
+			CyclesMade = 0;
 			Registers = new byte[8];
 			DataMemory = new byte[256];
 		}
 
-		// todo !!! is PC readable by commands?
 		public byte Pc { get; set; }
+
+		public int CyclesMade { get; set; }
 
 		public bool Hlt { get; set; }
 
@@ -55,6 +57,20 @@ namespace Lib.GMachine
 				default:
 					throw new InvalidOperationException(string.Format("Invalid dstArg type: {0}", dstArg.Type));
 			}
+		}
+
+		[NotNull]
+		public GMachineState Clone()
+		{
+			var clone = new GMachineState
+			{
+				CyclesMade = CyclesMade,
+				Pc = Pc,
+				Hlt = Hlt,
+			};
+			Array.Copy(Registers, clone.Registers, Registers.Length);
+			Array.Copy(DataMemory, clone.DataMemory, DataMemory.Length);
+			return clone;
 		}
 	}
 }

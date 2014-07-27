@@ -6,6 +6,7 @@ namespace Lib.GMachine
 	public class GMachine : IGMachine
 	{
 		private readonly IGhostInterruptService interruptService;
+		private GMachineState lastInitialState;
 
 		public GMachine([NotNull] GCmd[] program, [NotNull] IGhostInterruptService interruptService)
 		{
@@ -22,25 +23,56 @@ namespace Lib.GMachine
 
 		public void Run()
 		{
-			var cycles = 0;
+			Init();
+			RunToEnd();
+		}
+
+		public void Init()
+		{
 			State.Pc = 0;
+			State.CyclesMade = 0;
 			State.Hlt = false;
-			while (!State.Hlt && cycles++ < 1024)
+			lastInitialState = State.Clone();
+		}
+
+		public void ResetState()
+		{
+			State = lastInitialState.Clone();
+		}
+
+		public void RunToEnd()
+		{
+			while (Step())
 			{
-				var pc = State.Pc;
-				var cmd = Program[pc];
-				try
-				{
-					cmd.Execute(State, interruptService);
-				}
-				catch (Exception e)
-				{
-					Console.Error.WriteLine("GHC instruction failed: {0}", e);
-					break;
-				}
-				if (State.Pc == pc)
-					State.Pc++;
 			}
+		}
+
+		public bool StepBack()
+		{
+			var cyclesMade = State.CyclesMade;
+			ResetState();
+			for (var i = 0; i < cyclesMade - 1; i++)
+				Step();
+		}
+
+		public bool Step()
+		{
+			if (State.Hlt || State.CyclesMade >= 1024)
+				return false;
+			var pc = State.Pc;
+			try
+			{
+				var cmd = Program[pc];
+				cmd.Execute(State, interruptService);
+			}
+			catch (Exception e)
+			{
+				throw new GException(e);
+			}
+			if (State.Pc == pc)
+				State.Pc++;
+			State.CyclesMade++;
+			return true;
 		}
 	}
 }
