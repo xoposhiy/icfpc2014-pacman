@@ -63,7 +63,17 @@ namespace conPlayer
 				{
 					sim.Tick();
 				}
-				catch (Exception e)
+				catch (GException e)
+				{
+					exception = e;
+					break;
+				}
+				catch (LException e)
+				{
+					exception = e;
+					break;
+				}
+				catch (DebuggerAbortedException e)
 				{
 					exception = e;
 					break;
@@ -85,6 +95,8 @@ namespace conPlayer
 							runStepByStep = true;
 						else if (pressed.Modifiers == 0 && pressed.Key == ConsoleKey.F2)
 							enterLDebugger = true;
+						else if (pressed.Modifiers == 0 && pressed.Key == ConsoleKey.F3)
+							enterGDebugger = true;
 					}
 					//Console.ReadKey();
 				}

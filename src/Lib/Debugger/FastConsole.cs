@@ -50,6 +50,16 @@ namespace Lib.Debugger
 				WriteLine();
 			}
 
+			public int Position
+			{
+				get
+				{
+					while (rows.Count <= line)
+						rows.Add(new FastConsoleRow());
+					return rows[line].Length;
+				}
+			}
+
 			public ConsoleColor BackgroundColor { get; set; }
 			public ConsoleColor ForegroundColor { get; set; }
 

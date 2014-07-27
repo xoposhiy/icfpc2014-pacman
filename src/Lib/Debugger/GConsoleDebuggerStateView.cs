@@ -26,7 +26,7 @@ namespace Lib.Debugger
 			{
 				console.ForegroundColor = ConsoleColor.Green;
 				console.Write(string.Format("{0,3} ", prog.CodeLines[i].ProgramLine));
-				if (i == prog.SourceLines[m.State.Pc] - 1)
+				if (m.State.Pc < prog.SourceLines.Length && i == prog.SourceLines[m.State.Pc] - 1)
 				{
 					console.ForegroundColor = ConsoleColor.Black;
 					console.BackgroundColor = ConsoleColor.Cyan;
@@ -39,7 +39,7 @@ namespace Lib.Debugger
 				}
 				else
 					console.ResetColor();
-				WriteCodeLine(prog.CodeLines[i], i == prog.SourceLines[m.State.Pc] - 1);
+				WriteCodeLine(prog.CodeLines[i], m.State.Pc < prog.SourceLines.Length && i == prog.SourceLines[m.State.Pc] - 1);
 				console.ResetColor();
 			}
 
@@ -99,9 +99,20 @@ namespace Lib.Debugger
 			console.ForegroundColor = ConsoleColor.Cyan;
 			console.WriteLine("Data memory:");
 			console.ResetColor();
-			foreach (var value in m.State.DataMemory)
+			const int bucketCount = 3;
+			for (int i = 0; i < m.State.DataMemory.Length / bucketCount + m.State.DataMemory.Length % bucketCount; i++)
 			{
-				WriteValue(value);
+				for (int j = 0; j < bucketCount; j++)
+				{
+					console.Write(new string(' ', Console.WindowWidth * j / bucketCount - console.Position));
+					var index = (m.State.DataMemory.Length / bucketCount + m.State.DataMemory.Length % bucketCount) * j + i;
+					if (index < m.State.DataMemory.Length)
+					{
+						var value = m.State.DataMemory[index];
+						console.Write(string.Format("{0}: ", index));
+						WriteValue(value);
+					}
+				}
 				console.WriteLine();
 			}
 		}
@@ -109,7 +120,7 @@ namespace Lib.Debugger
 		private void WriteValue(byte value)
 		{
 			console.Write(value);
-			if (prog.AddressNames.Length >= value && !string.IsNullOrEmpty(prog.AddressNames[value]))
+			if (value < prog.AddressNames.Length && !string.IsNullOrEmpty(prog.AddressNames[value]))
 			{
 				console.Write(" (");
 				console.ForegroundColor = ConsoleColor.White;
@@ -142,6 +153,7 @@ namespace Lib.Debugger
 				console.ResetColor();
 				console.Write(" = ");
 				WriteValue(m.State.Registers[i]);
+				console.WriteLine();
 			}
 		}
 	}

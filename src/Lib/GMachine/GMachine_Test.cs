@@ -29,7 +29,7 @@ hlt
 ";
 			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
 			var interrupts = new GameSim.GhostInterruptService(0, new World(map));
-			var gm = new GMachine(GParser.Parse(code).Program, interrupts);
+			var gm = new GMachine(GParser.Parse(code), interrupts, null);
 			gm.Run();
 			Assert.AreEqual(Direction.Right, interrupts.NewDirection);
 			gm.Run();
@@ -61,7 +61,7 @@ double:
 
 			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
 			var interrupts = new GameSim.GhostInterruptService(0, new World(map));
-			var gm = new GMachine(GParser.Parse(code).Program, interrupts);
+			var gm = new GMachine(GParser.Parse(code), interrupts, null);
 			gm.Run();
 		}
 	}
