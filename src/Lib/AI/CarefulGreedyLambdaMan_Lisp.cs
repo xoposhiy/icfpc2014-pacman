@@ -5,11 +5,11 @@ using Lib.Parsing.LParsing;
 
 namespace Lib.AI
 {
-	public class CarefulGreedyLambdaMen_Lisp : GreedyLambdaMen_Lisp
+	public class CarefulGreedyLambdaMan_Lisp : GreedyLambdaMan_Lisp
 	{
 		public static readonly string code;
 
-		static CarefulGreedyLambdaMen_Lisp()
+		static CarefulGreedyLambdaMan_Lisp()
 		{
 			code = CompileWithLibs(
 				main,
@@ -29,7 +29,10 @@ namespace Lib.AI
 				pointIsFruit,
 				pointIsFruit_Time,
 				InitVisited,
-				Repeat
+				Repeat,
+
+				AddFirstPointIntoQueue,
+				IsBadFirstCell
 				);
 			File.WriteAllText(KnownPlace.GccSamples + "ExtremelyGreedyLM" + ".mgcc", code);
 
@@ -37,8 +40,26 @@ namespace Lib.AI
 			File.WriteAllText(KnownPlace.GccSamples + "ExtremelyGreedyLM" + ".gcc", gccCode);
 		}
 
-		public static SExpr IsBadCell =
-			Def("IsBadCell", ArgNames("point", "world", "visited"),
+		public static SExpr InitQueueAndVisited =
+			Def("InitQueueAndVisited", ArgNames("world", "lmPoint", "visited"),
+				Call("fold",
+					List(Cons(0, 0), "visited", "world"),
+					Fun("AddFirstPointIntoQueue"),
+					Call("NeighboursWithDirection", "lmPoint")));
+
+		public static SExpr AddFirstPointIntoQueue =
+			Def("AddFirstPointIntoQueue", ArgNames("queueAndVisitedAndWorld", "pointAndDirection"),
+				If(Call("IsBadFirstCell",
+						Car("pointAndDirection"),
+						Get(2, "queueAndVisitedAndWorld"),
+						Get(1, "queueAndVisitedAndWorld")),
+					"queueAndVisitedAndWorld",
+					List(Call("queue_enqueue", Get(0, "queueAndVisitedAndWorld"), "pointAndDirection"),
+						Call("setCell", Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection"), 1),
+						Get(2, "queueAndVisitedAndWorld"))));
+
+		public static SExpr IsBadFirstCell =
+			Def("IsBadFirstCell", ArgNames("point", "world", "visited"),
 				Or(Ceq(World.GetCell("visited", "point"), 1),
 					Call("pointIsWall", "point", World.Map("world")),
 					Call("any_activeGhostAtPoint", World.GhStates("world"), "point"),
@@ -48,5 +69,9 @@ namespace Lib.AI
 					Call("any_activeGhostAtPoint", World.GhStates("world"), Call("sum", "point", Cons(-1, 0)))
 					));
 
+		public static SExpr IsBadCell =
+			Def("IsBadCell", ArgNames("point", "world", "visited"),
+				Or(Ceq(World.GetCell("visited", "point"), 1),
+					Call("pointIsWall", "point", World.Map("world"))));
 	}
 }
