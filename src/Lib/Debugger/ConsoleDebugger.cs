@@ -12,7 +12,7 @@ namespace Lib.Debugger
 		{
 			Console.Clear();
 			var console = new FastConsole();
-			while (!m.State.Stopped && exception == null)
+			while (true)
 			{
 				ShowState(console, m, prog, exception);
 				var cmd = Console.ReadKey(true);
@@ -20,12 +20,19 @@ namespace Lib.Debugger
 					console.Refresh();
 				else if (cmd.Modifiers == ConsoleModifiers.Shift && cmd.Key == ConsoleKey.F11)
 					exception = StepSafe(m.StepOut);
-				else if (cmd.Key == ConsoleKey.F11)
+				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F11)
 					exception = StepSafe(m.Step);
-				else if (cmd.Key == ConsoleKey.F10)
+				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F10)
 					exception = StepSafe(m.StepOver);
-				else if (cmd.Key == ConsoleKey.F5)
+				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F5)
 					exception = StepSafe(m.RunUntilStop);
+				else if (cmd.Modifiers == ConsoleModifiers.Control && cmd.Key == ConsoleKey.R)
+				{
+					m.Restart();
+					exception = null;
+				}
+				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.Escape)
+					break;
 			}
 			ShowState(console, m, prog, exception);
 			return exception;

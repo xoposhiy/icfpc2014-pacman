@@ -33,11 +33,7 @@ namespace Lib.AI
 
 		public Tuple<LValue, LMStep> Main(World initialWorld)
 		{
-			interpreter = new LMachineInterpreter(programParseResult.Program);
-			interpreter.State.DataStack.Push(initialWorld.ToLValue());
-			interpreter.State.DataStack.Push(42);
-			interpreter.State.DataStack.Push(LValue.FromClosure(0, null));
-			new Tap(2).Execute(interpreter.State);
+			interpreter = new LMachineInterpreter(programParseResult.Program, LValue.FromClosure(0, null), initialWorld.ToLValue(), 42);
 			runUntilStopMain(this);
 			var res = interpreter.State.DataStack.Pop().GetPair();
 			var aiState = res.Head;
@@ -47,11 +43,7 @@ namespace Lib.AI
 
 		private Tuple<LValue, Direction> MakeStep(LValue ai, World world, LValue step)
 		{
-			interpreter = new LMachineInterpreter(programParseResult.Program);
-			interpreter.State.DataStack.Push(ai);
-			interpreter.State.DataStack.Push(world.ToLValue());
-			interpreter.State.DataStack.Push(step);
-			new Tap(2).Execute(interpreter.State);
+			interpreter = new LMachineInterpreter(programParseResult.Program, step, ai, world.ToLValue());
 			runUntilStopStep(this);
 			var res = interpreter.State.DataStack.Pop().GetPair();
 			return Tuple.Create(res.Head, (Direction)res.Tail.GetValue());

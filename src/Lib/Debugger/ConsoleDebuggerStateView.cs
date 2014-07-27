@@ -33,7 +33,11 @@ namespace Lib.Debugger
 					console.ForegroundColor = ConsoleColor.Black;
 					console.BackgroundColor = ConsoleColor.Cyan;
 					if (followCurrentAddress)
+					{
 						Console.SetCursorPosition(0, i);
+						if (Console.WindowHeight - (i - Console.WindowTop) < 10)
+							Console.WindowTop = 10 + i - Console.WindowHeight;
+					}
 				}
 				else
 					console.ResetColor();
@@ -56,6 +60,7 @@ namespace Lib.Debugger
 				console.BackgroundColor = ConsoleColor.Red;
 				console.WriteLine("LMachine failed: " + exception);
 				console.WriteLine("Press Escape to exit");
+				console.WriteLine("Press Ctrl+R to restart");
 				console.ResetColor();
 			}
 		}

@@ -1,5 +1,5 @@
 using System;
-using System.IO;
+using System.Linq;
 using Lib.LMachine.Intructions;
 using Lib.Parsing.LParsing;
 
@@ -7,11 +7,22 @@ namespace Lib.LMachine
 {
 	public class LMachineInterpreter
 	{
+		public LMachineInterpreter([NotNull] Instruction[] program, LValue entryPoint, params LValue[] entryPointArguments)
+			: this(program)
+		{
+			foreach (var argument in entryPointArguments)
+				State.DataStack.Push(argument);
+			State.DataStack.Push(entryPoint);
+			new Tap((uint)entryPointArguments.Length).Execute(State);
+		}
+
 		public LMachineInterpreter([NotNull] Instruction[] program)
 		{
 			Program = program;
 			State = new LMachineState();
 		}
+
+		private LMachineState startupState;
 
 		[NotNull]
 		public Instruction[] Program { get; private set; }
@@ -42,12 +53,29 @@ namespace Lib.LMachine
 //			File.AppendAllText("log.txt", s + "\r\n");
 		}
 
+		public void Restart()
+		{
+			if (startupState != null)
+				State = startupState;
+		}
+
 		public void Step()
 		{
+			if (startupState == null)
+			{
+				startupState = new LMachineState();
+				startupState.CurrentAddress = State.CurrentAddress;
+				foreach (var item in State.DataStack.Reverse())
+					startupState.DataStack.Push(item);
+				startupState.CurrentFrame = State.CurrentFrame;
+				foreach (var item in State.ControlStack.Reverse())
+					startupState.ControlStack.Push(item);
+				startupState.Stopped = State.Stopped;
+			}
 			if (State.Stopped)
-				throw new InvalidOperationException("TODO");
+				return;
 			if (State.CurrentAddress >= Program.Length)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException(string.Format("Invalid CurrentAddress: {0}", State.CurrentAddress));
 			var instruction = Program[State.CurrentAddress];
 			Log(instruction.SourceLineNo+ "\t" +instruction.ToString());
 			instruction.Execute(State);
