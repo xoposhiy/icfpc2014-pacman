@@ -59,7 +59,7 @@ namespace Lib.Game
 			public GhostInterruptService GhostInterruptService { get; set; }
 		}
 
-		private class GhostInterruptService : IGhostInterruptService
+		public class GhostInterruptService : IGhostInterruptService
 		{
 			private readonly int ghostIndex;
 			private readonly World world;
@@ -99,6 +99,13 @@ namespace Lib.Game
 
 			public void DebugTrace(byte pc, byte[] registers)
 			{
+				Console.WriteLine("PC = " +pc);
+				for (int index = 0; index < registers.Length; index++)
+				{
+					var r = registers[index];
+					if (r != 0)
+						Console.WriteLine((char)('A' + index) + " = "+ r);
+				}
 			}
 		}
 

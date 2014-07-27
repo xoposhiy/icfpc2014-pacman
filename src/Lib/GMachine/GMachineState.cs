@@ -6,13 +6,16 @@ namespace Lib.GMachine
 	{
 		public GMachineState()
 		{
-			Pc = 0;
 			CyclesMade = 0;
-			Registers = new byte[8];
+			Registers = new byte[9];
 			DataMemory = new byte[256];
 		}
 
-		public byte Pc { get; set; }
+		public byte Pc
+		{
+			get { return Registers[8]; }
+			set { Registers[8] = value; }
+		}
 
 		public int CyclesMade { get; set; }
 

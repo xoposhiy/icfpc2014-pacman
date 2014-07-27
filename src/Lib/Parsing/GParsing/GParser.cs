@@ -84,9 +84,9 @@ namespace Lib.Parsing.GParsing
 					parameter = GArg.Const((byte)sourceLineToAddress[value]);
 					return true;
 				}
-				if (argString.Length == 1 && char.ToLower(argString[0]) >= 'a' && char.ToLower(argString[0]) <= 'h')
+				if (IsRegisterName(argString))
 				{
-					parameter = GArg.Reg((byte)(char.ToLower(argString[0]) - 'a'));
+					parameter = GArg.Reg(GetRegisterIndex(argString));
 					return true;
 				}
 				return false;
@@ -94,9 +94,16 @@ namespace Lib.Parsing.GParsing
 			throw new InvalidOperationException(string.Format("Invalid constructor parameter '{0}' type ({1}) of Instruction '{2}'", parameterInfo.Name, parameterInfo.ParameterType, programItemType));
 		}
 
+		private static byte GetRegisterIndex(string argString)
+		{
+			if (argString.ToLower() == "pc")
+				return 8;
+			return (byte)(char.ToLower(argString[0]) - 'a');
+		}
+
 		private static bool IsRegisterName([NotNull] string argString)
 		{
-			return argString.Length == 1 && char.ToLower(argString[0]) >= 'a' && char.ToLower(argString[0]) <= 'h';
+			return (argString.ToLower() == "pc") || argString.Length == 1 && char.ToLower(argString[0]) >= 'a' && char.ToLower(argString[0]) <= 'h';
 		}
 	}
 }
