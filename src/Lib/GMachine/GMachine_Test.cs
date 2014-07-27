@@ -61,8 +61,11 @@ double:
 
 			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
 			var interrupts = new GameSim.GhostInterruptService(0, new World(map));
-			var gm = new GMachine(GParser.Parse(code), interrupts, null);
+			var parseResult = GParser.Parse(code);
+			var gm = new GMachine(parseResult, interrupts, null);
 			gm.Run();
+
+			Console.Out.WriteLine("program:\r\n" + parseResult.Program.ToGhc());
 		}
 	}
 }

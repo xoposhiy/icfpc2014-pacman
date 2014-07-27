@@ -96,7 +96,8 @@ namespace Lib.GMachine
 			"E",
 			"F",
 			"G",
-			"H"
+			"H",
+			"PC"
 		};
 	}
 }

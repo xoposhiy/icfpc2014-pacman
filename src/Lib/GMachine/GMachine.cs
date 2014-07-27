@@ -12,6 +12,8 @@ namespace Lib.GMachine
 
 		public GMachine([NotNull] ParseResult<GCmd> parseResult, [NotNull] IGhostInterruptService interruptService, Action<GMachine> runUntilStopStep)
 		{
+			if (parseResult.Program.Length > 256)
+				throw new InvalidOperationException("Too long program");
 			this.interruptService = interruptService;
 			this.runUntilStopStep = runUntilStopStep ?? (machine => machine.RunToEnd());
 			ParseResult = parseResult;
