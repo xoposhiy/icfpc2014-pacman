@@ -71,6 +71,7 @@
     <Compile Include="GMachine\GArg.cs" />
     <Compile Include="GMachine\GArgType.cs" />
     <Compile Include="GMachine\GCmd.cs" />
+    <Compile Include="GMachine\GCmdExtensions_Test.cs" />
     <Compile Include="GMachine\GCmdType.cs" />
     <Compile Include="GMachine\GException.cs" />
     <Compile Include="GMachine\GMachine.cs" />

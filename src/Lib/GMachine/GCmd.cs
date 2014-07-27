@@ -21,5 +21,10 @@ namespace Lib.GMachine
 
 		[NotNull]
 		protected abstract string ArgsToGhc();
+
+		public override string ToString()
+		{
+			return ToGhc();
+		}
 	}
 }

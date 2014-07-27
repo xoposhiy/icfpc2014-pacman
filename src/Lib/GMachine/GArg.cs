@@ -79,12 +79,24 @@ namespace Lib.GMachine
 				case GArgType.Data:
 					return "[" + Value + "]";
 				case GArgType.Reg:
-					return ((char)Value + 'a').ToString().ToUpper();
+					return regChars[Value];
 				case GArgType.IndirectReg:
-					return "[" + ((char)Value + 'a').ToString().ToUpper() + "]";
+					return "[" + regChars[Value] + "]";
 				default:
 					throw new InvalidOperationException("TODO");
 			}
 		}
+
+		private static readonly string[] regChars =
+		{
+			"A",
+			"B",
+			"C",
+			"D",
+			"E",
+			"F",
+			"G",
+			"H"
+		};
 	}
 }
