@@ -33,10 +33,12 @@ namespace conPlayer
 			});
 
 			var ghostFactory = new GhostFactory(
+/*
 				Ghost.ByProgram("flickle.ghc"),
 				Ghost.ByProgram("flipper.ghc"),
 				Ghost.ByType<ChaseGhost>(),
-				Ghost.ByProgram("sample.ghc")
+*/
+				Ghost.ByProgram("chasing.ghc")
 			);
 
 			LMMain main = interpretedLambdaMan.Main;

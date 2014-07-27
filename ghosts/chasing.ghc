@@ -40,14 +40,17 @@
 	gdirY = 108
 ; upx, upy, rgx, rgy, dwx, dwy, lfx, lfy (8)
 	dirs = 200
-	dirsUpX = 200
-	dirsUpY = 201
-	dirsRightX = 202
-	dirsRightY = 203
-	dirsDownX = 204
-	dirsDownY = 205
-	dirsLeftX = 206
-	dirsLeftY = 207
+	dirUpX = 200
+	dirUpY = 201
+	dirRightX = 202
+	dirRightY = 203
+	dirDownX = 204
+	dirDownY = 205
+	dirLeftX = 206
+	dirLeftY = 207
+; dirsX
+	dirsX = 208 ; 4 items
+	dirsY = 212 ; 4 items
 
 ; entry poit
 	jeq step, [255], inited
@@ -56,14 +59,30 @@
 ; initialization
 	int getMyIndex
 		mov [gindex], a
-	mov [dirsUpX], 0
-	mov [dirsUpY], -1
-	mov [dirsDownX], 0
-	mov [dirsDownY], 1
-	mov [dirsRightX], 1
-	mov [dirsRightY], 0
-	mov [dirsLeftX], -1
-	mov [dirsLeftY], 0
+	mov [dirUpX], 0
+	mov [dirUpY], -1
+	mov [dirDownX], 0
+	mov [dirDownY], 1
+	mov [dirRightX], 1
+	mov [dirRightY], 0
+	mov [dirLeftX], -1
+	mov [dirLeftY], 0
+	mov c, dirsX
+	mov [c], 0
+	inc c
+	mov [c], 1
+	inc c
+	mov [c], 0
+	inc c
+	mov [c], -1
+	mov c, dirsY
+	mov [c], -1
+	inc c
+	mov [c], 0
+	inc c
+	mov [c], 1
+	inc c
+	mov [c], 0
 
 ; h = gIndex
 ; (f, g) = (gx, gy)
@@ -81,12 +100,12 @@ step:
 		mov [lx], a
 		mov [ly], b
 
-	; [gdirX] = dirsx[gdir]
-	mov c, dirsx
+	; [gdirX] = dirsX[gdir]
+	mov c, dirsX
 	add c, gdir
 	mov [gdirX], [c]
-	; [gdirY] = dirsy[gdir]
-	mov c, dirsy
+	; [gdirY] = dirsY[gdir]
+	mov c, dirsY
 	add c, gdir
 	mov [gdirY], [c]
 

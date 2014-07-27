@@ -8,7 +8,7 @@ namespace Lib.GMachine
 		{
 			Pc = 0;
 			Registers = new byte[8];
-			DataMemory = new byte[byte.MaxValue];
+			DataMemory = new byte[256];
 		}
 
 		// todo !!! is PC readable by commands?
