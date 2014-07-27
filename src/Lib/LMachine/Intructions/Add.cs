@@ -9,8 +9,8 @@ namespace Lib.LMachine.Intructions
 
 		public override void Execute([NotNull] LMachineState state)
 		{
-			var y = state.DataStack.Pop().GetValue();
-			var x = state.DataStack.Pop().GetValue();
+			var y = state.DataStack.PopValue();
+			var x = state.DataStack.PopValue();
 			var z = unchecked (x + y);
 			state.DataStack.Push(LValue.FromInt(z));
 			state.CurrentAddress++;

@@ -24,6 +24,8 @@ namespace Lib.LMachine
 
 		private LMachineState startupState;
 
+		private int stepsCount;
+
 		[NotNull]
 		public Instruction[] Program { get; private set; }
 
@@ -79,6 +81,9 @@ namespace Lib.LMachine
 			var instruction = Program[State.CurrentAddress];
 			Log(instruction.SourceLineNo+ "\t" +instruction.ToString());
 			instruction.Execute(State);
+			stepsCount++;
+			if (stepsCount > 3000000)
+				throw new LMTimeoutException();
 		}
 
 		public void RunUntilStop()

@@ -1,20 +1,23 @@
 ﻿using System.IO;
 using Lib.Game;
 using Lib.LispLang;
+using Lib.LMachine.Intructions;
+using Lib.Parsing.LParsing;
 using NUnit.Framework;
 
 namespace Lib.AI
 {
 	public class GreedyLambdaMen_Lisp : Api
 	{
-		[Test]
-		public void Main()
-		{
-			var code = CompileWithLibs(
-				Def("GreedyStep", ArgNames("stateAndWorld"),
-					Call("GreedyStepInternal", Car("stateAndWorld"), Cdr("stateAndWorld"))),
+		public static readonly string code;
 
-				Def("GreedyStepInternal", ArgNames("state", "world"),
+		static GreedyLambdaMen_Lisp()
+		{
+			code = CompileWithLibs(
+				Def("main", ArgNames("world"),
+					Cons(0, Fun("GreedyStep"))),
+
+				Def("GreedyStep", ArgNames("state", "world"),
 					Cons("state",
 						Call("RecursiveFindGoal_2",
 							"world",
@@ -32,8 +35,8 @@ namespace Lib.AI
 						Call("RecursiveFindGoal_2", 
 							"world",
 							Call("AddNeighbours",
-								"queue", 
-								Call("queue_dequeue", "queue"),
+								Call("queue_dequeue", "queue"), 
+								Call("queue_peek", "queue"),
 								"world",
 								"visited")))),
 
@@ -47,15 +50,14 @@ namespace Lib.AI
 					Call("CombineQueueAndVisited", 
 						Call("InitQueueAndVisitedFold", "world", "lmPoint", "visited"))),
 
+				Def("CombineQueueAndVisited", ArgNames("queueAndVisitedAndWorld"),
+					Cons(Get(0, "queueAndVisitedAndWorld"), Get(1, "queueAndVisitedAndWorld"))),
+
 				Def("InitQueueAndVisitedFold", ArgNames("world", "lmPoint", "visited"),
 					Call("fold",
 						List(Cons(0, 0), "visited", "world"),
 						Fun("AddPointIntoQueue"),
 						Call("NeighboursWithDirection", "lmPoint"))),
-
-				Def("CombineQueueAndVisited", ArgNames("queueAndVisitedAndWorld"),
-					Cons(Get(0, "queueAndVisitedAndWorld"), Get(1, "queueAndVisitedAndWorld"))),
-
 
 				Def("AddNeighbours", ArgNames("queue", "pointAndDirection", "world", "visited"),
 					Call("fold",
@@ -70,14 +72,14 @@ namespace Lib.AI
 								Car("pointAndDirection"), 
 								Call("map", Get(2, "queueAndVisitedAndWorld"))),
 							Call("any_activeGhostAtPoint",
-								Call("ghStates", Get(2, "queueAndVisitedAndWorld"),
-								Car("pointAndDirection")))),
+								Call("ghStates", Get(2, "queueAndVisitedAndWorld")),
+								Car("pointAndDirection"))),
 						"queueAndVisitedAndWorld",
 						List(Call("queue_enqueue", Get(0, "queueAndVisitedAndWorld"), "pointAndDirection"),
 							Call("setCell", Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection"), 1),
 							Get(2, "queueAndVisitedAndWorld")))),
 
-				Def("IsGoodCell", ArgNames("point", "map"),		//TODO: fruit time, fright ghosts
+				Def("IsGoodCell", ArgNames("point", "map"),	//TODO: fruit time, fright ghosts
 					Or(Call("pointIsPill", "point", "map"),
 						Call("pointIsPowerPill", "point", "map"),
 						Call("pointIsFruit", "point", "map"))),
@@ -116,10 +118,13 @@ namespace Lib.AI
 				Def("Repeat", ArgNames("max", "value"),
 					If("max", 
 						Cons("value", Call("Repeat", Sub("max", 1), "value")), 
-						Cons("value", 0)))
+						0))
 				);
 
 			File.WriteAllText(KnownPlace.GccSamples + "GreedyLM" + ".mgcc", code);
+
+			var gccCode = LParser.Parse(code).Program.ToGcc();
+			File.WriteAllText(KnownPlace.GccSamples + "GreedyLM" + ".gcc", gccCode);
 		}
 	}
 }

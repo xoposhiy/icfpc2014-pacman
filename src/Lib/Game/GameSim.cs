@@ -309,9 +309,17 @@ namespace Lib.Game
 		private void MoveLMan()
 		{
 			var man = world.man;
-			var res = lmstep(lmstate, world);
-			lmstate = res.Item1;
-			man.direction = res.Item2;
+			Tuple<LValue, Direction> res;
+			try
+			{
+				res = lmstep(lmstate, world);
+				lmstate = res.Item1;
+				man.direction = res.Item2;
+			}
+			catch (LMTimeoutException)
+			{
+			}
+			
 			man.location = TryMove(man.location, man.direction);
 			var eat = IsEatable(world.map[man.location.Y, man.location.X]);
 			var period = (eat ? settings.lambdaManEatingPeriod : settings.lambdaManPeriod);

@@ -36,6 +36,14 @@ namespace Lib.LMachine
 				throw new InvalidOperationException("TODO");
 			return stack.Pop();
 		}
+		
+		[NotNull]
+		public T Peek()
+		{
+			if (stack.Count == 0)
+				throw new InvalidOperationException("TODO");
+			return stack.Peek();
+		}
 
 		[NotNull]
 		public IEnumerator<T> GetEnumerator()

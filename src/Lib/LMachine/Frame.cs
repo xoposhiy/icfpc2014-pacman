@@ -41,7 +41,7 @@ namespace Lib.LMachine
 		public LValue GetValue(uint valueIndex)
 		{
 			if (valueIndex >= Values.Length)
-				throw new InvalidOperationException("TODO");
+				throw new InvalidOperationException(string.Format("No value {0} in frame {1}", valueIndex, ToString()));
 			var value = Values[valueIndex];
 			if (value == null)
 				throw new InvalidOperationException("TODO");

@@ -45,11 +45,8 @@ namespace Lib.LispLang
 				If(Atom(Cdr("q")),
 					Call("queue_dequeue", Call("queue_transfer", "q")),
 					Cons(
-						Car(Cdr("q")),
-						Cons(
-							Car("q"),
-							Cdr(Cdr("q"))
-						)
+						Car("q"),
+						Cdr(Cdr("q"))
 					)
 				)
 			);
@@ -123,7 +120,7 @@ namespace Lib.LispLang
 			var parsed = LParser.Parse(macro);
 			var m = new LMachineInterpreter(parsed.Program);
 			m.RunUntilStop();
-			Assert.AreEqual("(4, ([1, 2, 3], [5, 6]))", m.State.DataStack.Pop().ToString());
+			Assert.AreEqual("([1, 2, 3], [5, 6])", m.State.DataStack.Pop().ToString());
 		}
 		
 		[Test]
@@ -139,7 +136,7 @@ namespace Lib.LispLang
 			var parsed = LParser.Parse(macro);
 			var m = new LMachineInterpreter(parsed.Program);
 			m.RunUntilStop();
-			Assert.AreEqual("[1, 0, 2, 3]", m.State.DataStack.Pop().ToString());
+			Assert.AreEqual("[0, 2, 3]", m.State.DataStack.Pop().ToString());
 		}
 		
 		[Test]

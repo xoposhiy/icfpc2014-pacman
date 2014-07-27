@@ -11,11 +11,12 @@ namespace conPlayer
 	{
 		private static void Main(string[] args)
 		{
-			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
-			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
-			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
-			//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
-			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
+//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
+//			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
+			var interpretedLambdaMan = new InterpretedLambdaMan(GreedyLambdaMen_Lisp.code);
 //				, runUntilStopStep: x =>
 //			{
 //				var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
