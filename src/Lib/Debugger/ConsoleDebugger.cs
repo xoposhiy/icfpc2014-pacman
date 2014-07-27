@@ -16,7 +16,9 @@ namespace Lib.Debugger
 			{
 				ShowState(console, m, prog, exception);
 				var cmd = Console.ReadKey(true);
-				if (cmd.Modifiers == ConsoleModifiers.Shift && cmd.Key == ConsoleKey.F11)
+				if (cmd.Key == ConsoleKey.Spacebar)
+					console.Refresh();
+				else if (cmd.Modifiers == ConsoleModifiers.Shift && cmd.Key == ConsoleKey.F11)
 					exception = StepSafe(m.StepOut);
 				else if (cmd.Key == ConsoleKey.F11)
 					exception = StepSafe(m.Step);

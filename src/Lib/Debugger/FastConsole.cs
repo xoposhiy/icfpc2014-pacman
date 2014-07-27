@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
 
 namespace Lib.Debugger
 {
@@ -9,19 +7,27 @@ namespace Lib.Debugger
 	{
 		private readonly List<FastConsoleRow> rows = new List<FastConsoleRow>();
 
+		public void Refresh()
+		{
+			var writer = new FastConsoleWriter(this, new List<FastConsoleRow>(rows));
+			rows.Clear();
+			writer.EndWrite();
+		}
+
 		public FastConsoleWriter BeginWrite()
 		{
-			return new FastConsoleWriter(this);
+			return new FastConsoleWriter(this, null);
 		}
 
 		public class FastConsoleWriter
 		{
 			private readonly FastConsole fastConsole;
-			private readonly List<FastConsoleRow> rows = new List<FastConsoleRow>();
+			private readonly List<FastConsoleRow> rows;
 			private int line = 0;
 
-			public FastConsoleWriter(FastConsole fastConsole)
+			public FastConsoleWriter(FastConsole fastConsole, List<FastConsoleRow> rows)
 			{
+				this.rows = rows ?? new List<FastConsoleRow>();
 				ResetColor();
 				this.fastConsole = fastConsole;
 			}
