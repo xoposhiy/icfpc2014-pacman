@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\ChaseGhost.cs" />
     <Compile Include="AI\GredySimple.cs" />
     <Compile Include="AI\GreedyLambdaMen_Lisp.cs" />
     <Compile Include="AI\Queue_Functional.cs" />
