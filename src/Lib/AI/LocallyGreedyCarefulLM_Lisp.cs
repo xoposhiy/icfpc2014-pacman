@@ -52,11 +52,14 @@ namespace Lib.LispLang
 								World.LmLoc("world"),
 								"world",
 								"lmSavedState",
+								CashedCalcs.Create("lmSavedState", "world"),
 								depth)))
 						),
 					
 					LmSavedState.Definitions,
-					Score.Definitions);
+					Score.Definitions,
+					GhostPredict.Definitions
+					);
 
 			}
 		}
@@ -74,37 +77,36 @@ namespace Lib.LispLang
 									If(And(Ceq("cell", (int)MapCell.Fruit), Cgt(World.FruitExpired("world"), 127)), 30,
 										0))))),
 
-						Def("scoreOfGhosts", ArgNames("ghosts", "point", "powerRemaining"),
-						Add(
-							If(And(
-								Cgt(254, "powerRemaining"),
-								Call("any_ghostAtPoint", Args("ghosts", "point"))),
-								//Then
-								-100,
-								//Else
-								0),
-							If(Call("any_frightGhostAtPoint", Args("ghosts", "point")), 10, 0))),
-
-						Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "world", "visitedPoints", "depth"),
+						Def("scoreOfGhosts", ArgNames("point", "ghostLocs", "world"),
+							Add(
+								If(And(
+									Cgt(137*depth, World.LmVitality("world")),
+									GhostPredict.AnyGhostAroundPoint("point", "ghostLocs")),
+									//Then
+									-100,
+									//Else
+									0),
+								If(Call("any_frightGhostAtPoint", Args(World.GhStates("world"), "point")), 10, 0))),
+					Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "lmstate", "world", "cashed", "depth"),
 							Add(Add(Add(
 								ScoreOfCell("nextLoc", "world"),
-								ScoreOfGhosts("nextLoc", "world")),
+								ScoreOfGhosts("nextLoc", CashedCalcs.PredictedGhostLocs("cashed"), "world")),
 								If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0)),
-								Sub(0, Call("countPointsAs", Args("visitedPoints", "nextLoc"))))
-						),
+								Sub(0, Call("countPointsAs", LmSavedState.GetVisitedPoints("lmstate"), "nextLoc")))
+							),
 
-						Def("scoreOfDirection", ArgNames("prevLoc", "currLoc", "nextLoc", "world", "lmstate", "depth"),
-						If(World.IsCorrect("nextLoc", Api.World.Map("world")),
-							//Then
-							Add(Mul(Add("depth", 1),
-								ScoreOfPoint("prevLoc", "nextLoc", "world", "lmstate",  "depth")
-								),
-								If(
-									Cgt("depth", 0),
-									Call("max", ScoreOfDirections("currLoc", "nextLoc", "world", "lmstate", Sub("depth", 1))),
-									0)),
-							// Else
-							-1000)),
+						Def("scoreOfDirection", ArgNames("prevLoc", "currLoc", "nextLoc", "world", "lmstate", "cashed", "depth"),
+							If(World.IsCorrect("nextLoc", Api.World.Map("world")),
+								//Then
+								Add(Mul(Add("depth", 1),
+									ScoreOfPoint("prevLoc", "nextLoc", "lmstate", "world", "cashed", "depth")
+									),
+									If(
+										Cgt("depth", 0),
+										Call("max", ScoreOfDirections("currLoc", "nextLoc", "world", "lmstate", "cashed", Sub("depth", 1))),
+										0)),
+								// Else
+								-1000))
 
 
 					};}}
@@ -117,28 +119,28 @@ namespace Lib.LispLang
 				return Call("scoreOfCell", cell, world);
 			}
 
-			public static SExpr ScoreOfGhosts(SExpr point, SExpr world)
+			public static SExpr ScoreOfGhosts(SExpr point, SExpr ghostLocs, SExpr world)
 			{
-				return Call("scoreOfGhosts", Args(Api.World.GhStates(world), point, Api.World.LmVitality(world)));
+				return Call("scoreOfGhosts", point, ghostLocs, world);
 			}
 
-			public static SExpr ScoreOfPoint(SExpr prevLoc, SExpr nextLoc, SExpr world, SExpr lmSavedState, SExpr depth)
+			public static SExpr ScoreOfPoint(SExpr prevLoc, SExpr nextLoc, SExpr lmSavedState, SExpr world, SExpr cashed, SExpr depth)
 			{
-				return Call("scoreOfPoint", Args(prevLoc, nextLoc, world, LmSavedState.GetVisitedPoints(lmSavedState), depth));
+				return Call("scoreOfPoint", Args(prevLoc, nextLoc, LmSavedState.GetVisitedPoints(lmSavedState), world, cashed, depth));
 			}
 
-			public static SExpr ScoreOfDirection(SExpr prevLoc, SExpr currLoc, SExpr direction, SExpr world, SExpr lmstate, SExpr depth)
+			public static SExpr ScoreOfDirection(SExpr prevLoc, SExpr currLoc, SExpr direction, SExpr world, SExpr lmstate, SExpr cashed, SExpr depth)
 			{
-				return Call("scoreOfDirection", prevLoc, currLoc, Call("sum", currLoc, direction), world, lmstate, depth);
+				return Call("scoreOfDirection", prevLoc, currLoc, Call("sum", currLoc, direction), world, lmstate, cashed, depth);
 			}
 
-			public static SExpr ScoreOfDirections(SExpr prevLoc, SExpr currLoc, SExpr world, SExpr lmstate, SExpr depth)
+			public static SExpr ScoreOfDirections(SExpr prevLoc, SExpr currLoc, SExpr world, SExpr lmstate, SExpr cashed, SExpr depth)
 			{
 				return List(
-					ScoreOfDirection(prevLoc, currLoc, Cons(0, -1), world, lmstate, depth),
-					ScoreOfDirection(prevLoc, currLoc, Cons(1, 0), world, lmstate, depth),
-					ScoreOfDirection(prevLoc, currLoc, Cons(0, 1), world, lmstate, depth),
-					ScoreOfDirection(prevLoc, currLoc, Cons(-1, 0), world, lmstate, depth)
+					ScoreOfDirection(prevLoc, currLoc, Cons(0, -1), world, lmstate, cashed, depth),
+					ScoreOfDirection(prevLoc, currLoc, Cons(1, 0), world, lmstate, cashed, depth),
+					ScoreOfDirection(prevLoc, currLoc, Cons(0, 1), world, lmstate, cashed, depth),
+					ScoreOfDirection(prevLoc, currLoc, Cons(-1, 0), world, lmstate, cashed, depth)
 					);
 			}
 
@@ -192,6 +194,74 @@ namespace Lib.LispLang
 			}
 
 			
+		}
+
+		private class GhostPredict : Api
+		{
+			public static SExpr[] Definitions = new SExpr[]
+				{
+					Def("duplicateGhostLocs", ArgNames("ghostLocs"), 
+						If(Atom("ghostLocs"), List(), 
+							Cons(Car("ghostLocs"),
+								Cons( Call("sum", Car("ghostLocs"), Cons(-1, 0)), 
+									Cons( Call("sum", Car("ghostLocs"), Cons(0, 1)), 
+										Cons( Call("sum", Car("ghostLocs"), Cons(1, 0)),
+											Cons( Call("sum", Car("ghostLocs"), Cons(0, -1)), Call("duplicateGhostLocs", Cdr("ghostLocs"))))))))),
+
+					Def("getCorrectPoints", ArgNames("pList", "map"), 
+						If(Atom("pList"), 
+							List(),
+							If( World.IsCorrect(Car("pList"), "map"), 
+								Cons(Car("pList"), Call("getCorrectPoints", Cdr("pList"), "map")),
+								Call("getCorrectPoints", Cdr("pList"), "map")))),
+
+					Def("selectGhostLocs", ArgNames("ghosts"), 
+						If(Atom("ghosts"), 
+							List(),
+							Cons(World.GhLoc(Car("ghosts")), Call("selectGhostLocs", Cdr("ghosts"))))),
+
+					DefAny1("pEquals"),
+
+				};
+
+
+			public static SExpr GetCorrectGhostLocAfter(SExpr world)
+			{
+
+				var ghLocs = Call("selectGhostLocs", World.GhStates("world"));
+				var extGhLocs = Call("duplicateGhostLocs", ghLocs);
+				var correct = Call("getCorrectPoints", extGhLocs, World.Map("world"));
+				return correct;
+
+			}
+
+			public static SExpr AnyGhostAroundPoint(SExpr point, SExpr ghostLocs)
+			{
+				/*
+				var ghLocs = Call("selectGhostLocs", World.GhStates("world"));
+				var extGhLocs = Call("duplicateGhostLocs", ghLocs);
+				var correct = Call("getCorrectPoints", extGhLocs, World.Map("world"));
+				 * */
+				return Call("any_pEquals", ghostLocs, point);
+			}
+
+
+		}
+
+
+
+		private class CashedCalcs
+		{
+			public static SExpr Create(SExpr lmSavedState, SExpr world)
+			{
+				return Cons(GhostPredict.GetCorrectGhostLocAfter(world), 0);
+			}
+
+			public static SExpr PredictedGhostLocs(SExpr cached)
+			{
+				return Car(cached);
+			}
+
 		}
 
 		[Test]
