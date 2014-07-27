@@ -97,7 +97,7 @@ InitQueueAndVisited: ; fun(world, lmPoint, visited)
   CONS
   CONS
   CONS
-  LDF AddPointIntoQueue
+  LDF AddNearestPointIntoQueue
   LD 0 1  ; lmPoint
   LDF NeighboursWithDirection
   AP 1
@@ -193,43 +193,28 @@ IsBadCell: ; fun(pointCell, world, visited, point)
   AP 2
   LDC 1
   CEQ
-  SEL nonzero_44 zero_43
+  SEL nonzero_29 zero_28
     LDC 0
-    TSEL endif_45 endif_45
-    nonzero_44:
+    TSEL endif_30 endif_30
+    nonzero_29:
       LDC 1
       JOIN
-    zero_43:
+    zero_28:
       LD 0 0  ; pointCell
       LDF pointIsWall
       AP 1
-      SEL nonzero_41 zero_40
+      SEL nonzero_26 zero_25
         LDC 0
-        TSEL endif_42 endif_42
-        nonzero_41:
+        TSEL endif_27 endif_27
+        nonzero_26:
           LDC 1
           JOIN
-        zero_40:
-          LD 0 1  ; world
-          LDF ghStates
-          AP 1
-          LD 0 3  ; point
-          LDF any_activeGhostAtPoint
-          AP 2
-          SEL nonzero_38 zero_37
-            LDC 0
-            TSEL endif_39 endif_39
-            nonzero_38:
-              LDC 1
-              JOIN
-            zero_37:
-              LDC 0
-              JOIN
-            endif_39:
+        zero_25:
+          LDC 0
           JOIN
-        endif_42:
+        endif_27:
       JOIN
-    endif_45:
+    endif_30:
   RTN
 ;end IsBadCell
 
@@ -477,6 +462,183 @@ Repeat: ; fun(max, value)
     endif_66:
   RTN
 ;end Repeat
+
+AddNearestPointIntoQueue: ; fun(queueAndVisitedAndWorld, pointAndDirection)
+  LD 0 1  ; pointAndDirection
+  CAR
+  LD 0 0  ; queueAndVisitedAndWorld
+  CDR
+  CDR
+  CAR
+  LD 0 0  ; queueAndVisitedAndWorld
+  CDR
+  CAR
+  LDF IsBadNearestPoint
+  AP 3
+  SEL nonzero_2 zero_1
+    LDC 0
+    TSEL endif_3 endif_3
+    nonzero_2:
+      LD 0 0  ; queueAndVisitedAndWorld
+      JOIN
+    zero_1:
+      LD 0 0  ; queueAndVisitedAndWorld
+      CAR
+      LD 0 1  ; pointAndDirection
+      LDF queue_enqueue
+      AP 2
+      LD 0 0  ; queueAndVisitedAndWorld
+      CDR
+      CAR
+      LD 0 1  ; pointAndDirection
+      CAR
+      LDC 1
+      LDF setCell
+      AP 3
+      LD 0 0  ; queueAndVisitedAndWorld
+      CDR
+      CDR
+      CAR
+      LDC 0
+      CONS
+      CONS
+      CONS
+      JOIN
+    endif_3:
+  RTN
+;end AddNearestPointIntoQueue
+
+IsBadNearestPoint: ; fun(point, world, visited)
+  LD 0 2  ; visited
+  LD 0 0  ; point
+  LDF getCell
+  AP 2
+  LDC 1
+  CEQ
+  SEL nonzero_23 zero_22
+    LDC 0
+    TSEL endif_24 endif_24
+    nonzero_23:
+      LDC 1
+      JOIN
+    zero_22:
+      LD 0 1  ; world
+      LDF map
+      AP 1
+      LD 0 0  ; point
+      LDF getCell
+      AP 2
+      LDF pointIsWall
+      AP 1
+      SEL nonzero_20 zero_19
+        LDC 0
+        TSEL endif_21 endif_21
+        nonzero_20:
+          LDC 1
+          JOIN
+        zero_19:
+          LD 0 1  ; world
+          LDF ghStates
+          AP 1
+          LD 0 0  ; point
+          LDF any_activeGhostAtPoint
+          AP 2
+          SEL nonzero_17 zero_16
+            LDC 0
+            TSEL endif_18 endif_18
+            nonzero_17:
+              LDC 1
+              JOIN
+            zero_16:
+              LD 0 1  ; world
+              LDF ghStates
+              AP 1
+              LD 0 0  ; point
+              LDC 0
+              LDC -1
+              CONS
+              LDF sum
+              AP 2
+              LDF any_activeGhostAtPoint
+              AP 2
+              SEL nonzero_14 zero_13
+                LDC 0
+                TSEL endif_15 endif_15
+                nonzero_14:
+                  LDC 1
+                  JOIN
+                zero_13:
+                  LD 0 1  ; world
+                  LDF ghStates
+                  AP 1
+                  LD 0 0  ; point
+                  LDC 1
+                  LDC 0
+                  CONS
+                  LDF sum
+                  AP 2
+                  LDF any_activeGhostAtPoint
+                  AP 2
+                  SEL nonzero_11 zero_10
+                    LDC 0
+                    TSEL endif_12 endif_12
+                    nonzero_11:
+                      LDC 1
+                      JOIN
+                    zero_10:
+                      LD 0 1  ; world
+                      LDF ghStates
+                      AP 1
+                      LD 0 0  ; point
+                      LDC 0
+                      LDC 1
+                      CONS
+                      LDF sum
+                      AP 2
+                      LDF any_activeGhostAtPoint
+                      AP 2
+                      SEL nonzero_8 zero_7
+                        LDC 0
+                        TSEL endif_9 endif_9
+                        nonzero_8:
+                          LDC 1
+                          JOIN
+                        zero_7:
+                          LD 0 1  ; world
+                          LDF ghStates
+                          AP 1
+                          LD 0 0  ; point
+                          LDC -1
+                          LDC 0
+                          CONS
+                          LDF sum
+                          AP 2
+                          LDF any_activeGhostAtPoint
+                          AP 2
+                          SEL nonzero_5 zero_4
+                            LDC 0
+                            TSEL endif_6 endif_6
+                            nonzero_5:
+                              LDC 1
+                              JOIN
+                            zero_4:
+                              LDC 0
+                              JOIN
+                            endif_6:
+                          JOIN
+                        endif_9:
+                      JOIN
+                    endif_12:
+                  JOIN
+                endif_15:
+              JOIN
+            endif_18:
+          JOIN
+        endif_21:
+      JOIN
+    endif_24:
+  RTN
+;end IsBadNearestPoint
 
 sum: ; fun(p1, p2)
   LD 0 0  ; p1

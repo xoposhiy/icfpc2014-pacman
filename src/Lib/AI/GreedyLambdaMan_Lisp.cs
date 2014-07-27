@@ -20,7 +20,9 @@ namespace Lib.AI
 				InitQueueAndVisited,
 				AddNeighbours,
 				AddPointIntoQueue,
+				IsBadPoint,
 				IsBadCell,
+				IsGoodPoint,
 				IsGoodCell,
 				NeighboursWithDirection,
 				Neighbours,
@@ -63,7 +65,7 @@ namespace Lib.AI
 
 		public static SExpr RecursiveFindGoal =
 			Def("RecursiveFindGoal", ArgNames("queue", "visited", "world"),
-				If(Call("IsGoodCell", Car(Call("queue_peek", "queue")), "world"),
+				If(Call("IsGoodPoint", Car(Call("queue_peek", "queue")), "world"),
 					Cdr(Call("queue_peek", "queue")),
 					Call("RecursiveFindGoal_2",
 						Call("AddNeighbours",
@@ -88,7 +90,7 @@ namespace Lib.AI
 
 		public static SExpr AddPointIntoQueue =
 			Def("AddPointIntoQueue", ArgNames("queueAndVisitedAndWorld", "pointAndDirection"),
-				If(Call("IsBadCell", 
+				If(Call("IsBadPoint", 
 						Car("pointAndDirection"),
 						Get(2, "queueAndVisitedAndWorld"),
 						Get(1, "queueAndVisitedAndWorld")),
@@ -97,17 +99,32 @@ namespace Lib.AI
 						Call("setCell", Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection"), 1),
 						Get(2, "queueAndVisitedAndWorld"))));
 
+		public static SExpr IsBadPoint =
+			Def("IsBadPoint", ArgNames("point", "world", "visited"),
+				Call("IsBadCell", 
+					World.GetCell(World.Map("world"), "point"),
+					"world",
+					"visited",
+					"point"));
+
 		public static SExpr IsBadCell =
-			Def("IsBadCell", ArgNames("point", "world", "visited"), 
+			Def("IsBadCell", ArgNames("pointCell", "world", "visited", "point"), 
 				Or(Ceq(World.GetCell("visited", "point"), 1),
-					Call("pointIsWall", "point", World.Map("world")),
+					Call("pointIsWall", "pointCell"),
 					Call("any_activeGhostAtPoint", World.GhStates("world"), "point")));
 
+		public static SExpr IsGoodPoint =
+			Def("IsGoodPoint", ArgNames("point", "world"),
+				Call("IsGoodCell",
+					World.GetCell(World.Map("world"), "point"),
+					"world",
+					"point"));
+
 		public static SExpr IsGoodCell =
-			Def("IsGoodCell", ArgNames("point", "world"),
-				Or(Call("pointIsPill", "point", World.Map("world")),
-					Call("pointIsPowerPill", "point", World.Map("world")),
-					Call("pointIsFruit_Time", "point", "world"),
+			Def("IsGoodCell", ArgNames("pointCell", "world", "point"),
+				Or(Call("pointIsPill", "pointCell"),
+					Call("pointIsPowerPill", "pointCell"),
+					Call("pointIsFruit_Time", "pointCell", "world"),
 					Call("any_frightGhostAtPoint", World.GhStates("world"), "point")));
 
 		public static SExpr NeighboursWithDirection =
@@ -125,31 +142,25 @@ namespace Lib.AI
 					Cons(Call("sum", "point", Cons(-1, 0)), "direction")));
 
 		public static SExpr pointIsWall =
-			Def("pointIsWall", ArgNames("point", "map"),
-				Ceq(World.GetCell("map", "point"),
-					(int)(MapCell.Wall)));
+			Def("pointIsWall", ArgNames("pointCell"),
+				Ceq("pointCell", (int)(MapCell.Wall)));
 
 		public static SExpr pointIsPill =
-			Def("pointIsPill", ArgNames("point", "map"),
-				Ceq(World.GetCell("map", "point"),
-					(int)(MapCell.Pill)));
+			Def("pointIsPill", ArgNames("pointCell"),
+				Ceq("pointCell", (int)(MapCell.Pill)));
 
 		public static SExpr pointIsPowerPill =
-			Def("pointIsPowerPill", ArgNames("point", "map"),
-				Ceq(World.GetCell("map", "point"),
-					(int)(MapCell.PowerPill)));
+			Def("pointIsPowerPill", ArgNames("pointCell"),
+				Ceq("pointCell", (int)(MapCell.PowerPill)));
 
 		public static SExpr pointIsFruit =
-			Def("pointIsFruit", ArgNames("point", "world"),
-				Ceq(World.GetCell(World.Map("world"), "point"),
-					(int)(MapCell.Fruit)));
+			Def("pointIsFruit", ArgNames("pointCell"),
+				Ceq("pointCell", (int)(MapCell.Fruit)));
 
 		public static SExpr pointIsFruit_Time =
-			Def("pointIsFruit_Time", ArgNames("point", "world"),
-				And(Ceq(World.GetCell(World.Map("world"), "point"),
-					(int)(MapCell.Fruit)),
-					Cgt(World.FruitExpired("world"),
-						126)));
+			Def("pointIsFruit_Time", ArgNames("pointCell", "world"),
+				And(Ceq("pointCell", (int)(MapCell.Fruit)),
+					Cgt(World.FruitExpired("world"), 126)));
 
 		public static SExpr InitVisited =
 			Def("InitVisited", ArgNames("mapHeight", "mapWidth"),
