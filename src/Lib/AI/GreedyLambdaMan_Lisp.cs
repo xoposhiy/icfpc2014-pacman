@@ -37,7 +37,9 @@ namespace Lib.AI
 				AddNearestPointIntoQueue,
 				IsBadNearestPoint,
 				DisposeGhostsOnVisited,
-				DisposeGhost
+				DisposeGhost,
+				GetStateWithDirection,
+				InvertDirection
 				);
 			File.WriteAllText(KnownPlace.GccSamples + "GreedyLM" + ".mgcc", code);
 
@@ -47,39 +49,52 @@ namespace Lib.AI
 
 		public static SExpr main =
 			Def("main", ArgNames("world"),
-				Cons(0, Fun("GreedyStep")));
+				Cons(-1, Fun("GreedyStep")));
 
 		public static SExpr GreedyStep =
 			Def("GreedyStep", ArgNames("state", "world"),
-				Cons("state",
-					GetResultDirection(
-						Call("RecursiveFindGoal_2",
-							Call("InitQueueAndVisited",
-								"world",
-								World.LmLoc("world"),
-								Call("DisposeGhostsOnVisited",
-									Call("InitVisited",
-										Call("mapHeight", World.Map("world")),
-										Call("mapWidth", World.Map("world"))),
-									World.GhStates("world")))))));
+				Call("GetStateWithDirection",
+					Call("RecursiveFindGoal_2",
+						Call("InitQueueAndVisited",
+							"world",
+							World.LmLoc("world"),
+							Call("DisposeGhostsOnVisited",
+								Call("InitVisited",
+									Call("mapHeight", World.Map("world")),
+									Call("mapWidth", World.Map("world"))),
+								World.GhStates("world"))),
+						"state")));
 
+		public static SExpr GetStateWithDirection =
+			Def("GetStateWithDirection", ArgNames("result"), 
+				If(GetResultIsGood("result"),
+					Cons(-1, GetResultDirection("result")),
+					Cons(Call("InvertDirection", GetResultDirection("result")), GetResultDirection("result"))));
+
+		public static SExpr InvertDirection =
+			Def("InvertDirection", ArgNames("direction"), 
+				If(Ceq("direction", 0), 2,
+					If(Ceq("direction", 1), 3,
+						If(Ceq("direction", 2), 0, 1))));
 
 		public static SExpr RecursiveFindGoal_2 =
-			Def("RecursiveFindGoal_2", ArgNames("queueAndVisitedAndWorld"),
+			Def("RecursiveFindGoal_2", ArgNames("queueAndVisitedAndWorld", "badDirection"),
 				Call("RecursiveFindGoal",
 					Get(0, "queueAndVisitedAndWorld"),
 					Get(1, "queueAndVisitedAndWorld"),
-					Get(2, "queueAndVisitedAndWorld")));
+					Get(2, "queueAndVisitedAndWorld"),
+					"badDirection"));
 
 		public static SExpr RecursiveFindGoal =
-			Def("RecursiveFindGoal", ArgNames("queue", "visited", "world"),
+			Def("RecursiveFindGoal", ArgNames("queue", "visited", "world", "badDirection"),
 				If( Call("queue_isempty", "queue"), 
 					Result((int)Direction.Down, 0, 0),
 					Call("GetBestResult", 
 						Call("ResultFromQueueElement", Call("queue_peek", "queue"), 0),
-						GetResultCandidate("queue", "world", "visited"))));
+						GetResultCandidate("queue", "world", "visited", "badDirection"),
+						"badDirection")));
 
-		public static SExpr GetResultCandidate(SExpr queue, SExpr world, SExpr visited)
+		public static SExpr GetResultCandidate(SExpr queue, SExpr world, SExpr visited, SExpr badDirection)
 		{
 			return 
 				If(Call("IsGoodPoint", QueueElementGetPoint(Call("queue_peek", queue)), world),
@@ -89,7 +104,8 @@ namespace Lib.AI
 							Call("queue_dequeue", queue),
 							Call("queue_peek", queue),
 							world,
-							visited)));
+							visited),
+						badDirection));
 		}
 
 		public static SExpr ResultFromQueueElement =
@@ -97,11 +113,13 @@ namespace Lib.AI
 				Result(QueueElementGetDirection("queueElement"), "isGood", QueueElementGetDepth("queueElement")));
 
 		public static SExpr GetBestResult =
-			Def("GetBestResult", ArgNames("currentResult", "resultCandidate"),
+			Def("GetBestResult", ArgNames("currentResult", "resultCandidate", "badDirection"),
 				If(GetResultIsGood("currentResult"), "currentResult",
 					If(GetResultIsGood("resultCandidate"), "resultCandidate",
 						If(Cgt(GetResultDepth("currentResult"), GetResultDepth("resultCandidate")), "currentResult",
-							"resultCandidate"))));
+							If(Cgt(GetResultDepth("resultCandidate"), GetResultDepth("currentResult")), "resultCandidate",
+								If(Ceq(GetResultDirection("currentResult"), "badDirection"), "resultCandidate", 
+									"currentResult"))))));
 
 
 		public static SExpr Result(SExpr direction, SExpr isGood, SExpr depth)
@@ -186,7 +204,7 @@ namespace Lib.AI
 						"depth")));
 
 		private const int maxDepth = 20;
-		private const int visibleGhostDepth = 4;
+		private const int visibleGhostDepth = 7;
 		public static SExpr CallIsBadPoint(SExpr point, SExpr world, SExpr visited, SExpr depth)
 		{
 			return Call("IsBadPoint", point, world, visited, depth);

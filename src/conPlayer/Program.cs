@@ -51,7 +51,7 @@ namespace conPlayer
 			);
 
 			LMMain main = interpretedLambdaMan.Main;
-			var sim = new GameSim(MapUtils.LoadFromKnownLocation("big-world.txt"), main, ghostFactory);
+			var sim = new GameSim(MapUtils.LoadFromKnownLocation("world-classic4.txt"), main, ghostFactory);
 			var oldState = "";
 			Exception exception = null;
 			var runStepByStep = true;
