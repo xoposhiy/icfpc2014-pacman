@@ -173,7 +173,6 @@ rightOk:
 	int setMyDir
 	hlt
 
-	
 
 checkDown_start:
 	jlt checkDown, [ly], [gy]
@@ -209,7 +208,7 @@ downOk:
 
 checkLeft_start:
 	jlt checkLeft, [lx], [gx]
-	jeq end, 0, 0
+	jeq random, 0, 0
 
 checkLeft:
 	mov e, [gdirX]
@@ -219,7 +218,7 @@ checkLeft:
 	mov f, [gdirY]
 	add f, [dirLeftY]
 	jgt leftOk, f, 0
-	jeq end, 0, 0
+	jeq random, 0, 0
 
 leftOk:
 	mov e, [gx]
@@ -231,10 +230,15 @@ leftOk:
 	mov a, e
 	mov b, f
 	int getMap
-	jeq end, a, wall
+	jeq random, a, wall
 
 	mov a, left
 	int setMyDir
+	hlt
 
-end:
+random:
+	add [254], 1
+	mov a, [254]
+	and a, 3
+	int setMyDir
 	hlt
