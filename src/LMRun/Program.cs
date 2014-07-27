@@ -19,8 +19,8 @@ namespace LMRun
 
 		private static void Run(string programName, string worldName)
 		{
-			var p = File.ReadAllText(KnownPlace.GccSamples + programName + ".mgcc");
-//			var p = LocallyGreedyCarefulLambdaManOnList.code;
+			//var p = File.ReadAllText(KnownPlace.GccSamples + programName + ".mgcc");
+			var p = LocallyGreedyCarefulLambdaManOnList.Code;
 			var prog = LParser.Parse(p);
 			var world = new World(MapUtils.LoadFromKnownLocation(worldName)).ToLValue();
 			var m = new LMachineInterpreter(prog.Program);
