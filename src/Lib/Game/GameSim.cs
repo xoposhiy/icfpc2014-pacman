@@ -340,7 +340,7 @@ namespace Lib.Game
 		public void Create()
 		{
 			var map = MapUtils.Load(File.ReadAllText(@"..\..\..\..\mazes\maze1.txt"));
-			var sim = new GameSim(map, LMMain, new RandomGhostFactory());
+			var sim = new GameSim(map, LMMain, new GhostFactory(Ghost.ByType<RandomGhost>()));
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
@@ -360,7 +360,7 @@ namespace Lib.Game
 @"#####
 #.\.#
 #####");
-			var sim = new GameSim(map, LMMain, new RandomGhostFactory());
+			var sim = new GameSim(map, LMMain, new GhostFactory(Ghost.ByType<RandomGhost>()));
 			var w1 = sim.world.ToString();
 			sim.Tick();
 			var w2 = sim.world.ToString();
@@ -376,7 +376,7 @@ namespace Lib.Game
 #.\.#
 #...#
 #####");
-			var sim = new GameSim(map, LMMain, new RandomGhostFactory());
+			var sim = new GameSim(map, LMMain, new GhostFactory(Ghost.ByType<RandomGhost>()));
 			for(int i=0; i<128; i++)
 				sim.Tick();
 			Assert.AreEqual(129, sim.time);

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\ChaseGhost.cs" />
+    <Compile Include="AI\Ghost.cs" />
     <Compile Include="AI\GredySimple.cs" />
     <Compile Include="AI\GreedyLambdaMen_Lisp.cs" />
     <Compile Include="AI\Queue_Functional.cs" />
@@ -68,7 +69,6 @@
     <Compile Include="GMachine\GCmd.cs" />
     <Compile Include="GMachine\GCmdType.cs" />
     <Compile Include="GMachine\GMachine.cs" />
-    <Compile Include="GMachine\GMachineFactory.cs" />
     <Compile Include="GMachine\GMachineState.cs" />
     <Compile Include="GMachine\GMachine_Test.cs" />
     <Compile Include="GMachine\Hlt.cs" />

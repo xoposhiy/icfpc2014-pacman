@@ -11,30 +11,34 @@ namespace conPlayer
 	{
 		private static void Main(string[] args)
 		{
-//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
-//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
-//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
-//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
-//			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
+			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
+			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
+			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
+			//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
+			//			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
 
-			bool enterDebugger = false;
-			var interpretedLambdaMan = new InterpretedLambdaMan(GreedyLambdaMen_Lisp.code, runUntilStopStep: x =>
+			var enterDebugger = false;
+			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code, runUntilStopStep: x =>
+			{
+				if (enterDebugger)
 				{
-					if (enterDebugger)
-					{
-						var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
-						if (ex != null)
-							throw new DebuggerAbortedException(ex);
-						enterDebugger = false;
-					}
-					else
-						x.Interpreter.RunUntilStop();
-				});
-			LMMain main = interpretedLambdaMan.Main;
-			var ghostFactory = new RandomGhostFactory();
-			//var p = File.ReadAllText(KnownPlace.GccSamples + "sample2.mghc");
-			//var ghostFactory = new GMachineFactory(GParser.Parse(p).Program);
+					var ex = ConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
+					if (ex != null)
+						throw new DebuggerAbortedException(ex);
+					enterDebugger = false;
+				}
+				else
+					x.Interpreter.RunUntilStop();
+			});
 
+			var ghostFactory = new GhostFactory(
+				Ghost.ByProgram("flickle.ghc"),
+				Ghost.ByProgram("flipper.ghc"),
+				Ghost.ByType<ChaseGhost>(),
+				Ghost.ByProgram("sample.ghc")
+			);
+
+			LMMain main = interpretedLambdaMan.Main;
 			var sim = new GameSim(MapUtils.LoadFromKnownLocation("world-classic.txt"), main, ghostFactory);
 			var oldState = "";
 			Exception exception = null;
