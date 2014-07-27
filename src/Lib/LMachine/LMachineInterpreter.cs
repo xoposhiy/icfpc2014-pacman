@@ -24,8 +24,6 @@ namespace Lib.LMachine
 
 		private LMachineState startupState;
 
-		private int stepsCount;
-
 		[NotNull]
 		public Instruction[] Program { get; private set; }
 
@@ -64,11 +62,20 @@ namespace Lib.LMachine
 			}
 		}
 
+		public void StepBack()
+		{
+			var stepsCount = State.StepsCount;
+			Restart();
+			while (!State.Stopped && State.StepsCount < stepsCount - 1)
+				Step();
+		}
+
 		public void Step()
 		{
 			if (startupState == null)
 			{
 				startupState = new LMachineState();
+				startupState.StepsCount = State.StepsCount;
 				startupState.CurrentAddress = State.CurrentAddress;
 				foreach (var item in State.DataStack.Reverse())
 					startupState.DataStack.Push(item);
@@ -82,10 +89,10 @@ namespace Lib.LMachine
 			if (State.CurrentAddress >= Program.Length)
 				throw new InvalidOperationException(string.Format("Invalid CurrentAddress: {0}", State.CurrentAddress));
 			var instruction = Program[State.CurrentAddress];
-			Log(instruction.SourceLineNo+ "\t" +instruction.ToString());
+			Log(instruction.SourceLineNo+ "\t" +instruction);
 			instruction.Execute(State);
-			stepsCount++;
-			if (stepsCount > 3000000)
+			State.StepsCount++;
+			if (State.StepsCount > 3000000)
 				throw new LMTimeoutException();
 		}
 

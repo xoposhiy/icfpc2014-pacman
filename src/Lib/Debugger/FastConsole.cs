@@ -8,6 +8,11 @@ namespace Lib.Debugger
 	{
 		private readonly List<FastConsoleRow> rows = new List<FastConsoleRow>();
 
+		public int Height
+		{
+			get { return rows.Count; }
+		}
+
 		public void Refresh()
 		{
 			Console.Clear();

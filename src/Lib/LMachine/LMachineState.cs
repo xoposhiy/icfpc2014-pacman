@@ -10,6 +10,8 @@ namespace Lib.LMachine
 
 		public uint CurrentAddress { get; set; }
 
+		public int StepsCount { get; set; }
+
 		[CanBeNull]
 		public Frame CurrentFrame { get; set; }
 
