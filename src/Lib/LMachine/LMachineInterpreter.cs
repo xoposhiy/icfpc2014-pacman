@@ -92,7 +92,7 @@ namespace Lib.LMachine
 			Log(instruction.SourceLineNo+ "\t" +instruction);
 			instruction.Execute(State);
 			State.StepsCount++;
-			if (State.StepsCount > 3000000)
+			if (State.StepsCount > 3072 * 1000)
 				throw new LMTimeoutException();
 		}
 
