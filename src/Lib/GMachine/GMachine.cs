@@ -47,7 +47,7 @@ namespace Lib.GMachine
 			}
 		}
 
-		public bool StepBack()
+		public void StepBack()
 		{
 			var cyclesMade = State.CyclesMade;
 			ResetState();
