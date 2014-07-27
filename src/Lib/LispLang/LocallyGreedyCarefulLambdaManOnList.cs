@@ -77,8 +77,7 @@ namespace Lib.LispLang
 						"world",
 						"lmSavedState",
 						2)))
-				),
-			LambdaMenLogic);
+				));
 
 		[Test]
 		public void Test()

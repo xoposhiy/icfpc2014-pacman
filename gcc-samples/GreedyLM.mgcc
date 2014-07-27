@@ -1,0 +1,1311 @@
+LD 0 0
+LD 0 1
+LDF main
+TAP 2
+GreedyStep: ; fun(stateAndWorld)
+  LD 0 0  ; stateAndWorld
+  CAR
+  LD 0 0  ; stateAndWorld
+  CDR
+  LDF GreedyStepInternal
+  AP 2
+  RTN
+;end GreedyStep
+
+GreedyStepInternal: ; fun(state, world)
+  LD 0 0  ; state
+  LD 0 1  ; world
+  LD 0 1  ; world
+  LD 0 1  ; world
+  LDF lmLoc
+  AP 1
+  LD 0 1  ; world
+  LDF map
+  AP 1
+  LDF mapHeight
+  AP 1
+  LD 0 1  ; world
+  LDF map
+  AP 1
+  LDF mapWidth
+  AP 1
+  LDF InitVisited
+  AP 2
+  LDF InitQueueAndVisited
+  AP 3
+  LDF RecursiveFindGoal_2
+  AP 2
+  CONS
+  RTN
+;end GreedyStepInternal
+
+RecursiveFindGoal: ; fun(world, queue, visited)
+  LD 0 1  ; queue
+  LDF queue_peek
+  AP 1
+  CAR
+  LD 0 0  ; world
+  LDF map
+  AP 1
+  LDF IsGoodCell
+  AP 2
+  SEL nonzero_95 zero_94
+    LDC 0
+    TSEL endif_96 endif_96
+    nonzero_95:
+      LD 0 1  ; queue
+      LDF queue_peek
+      AP 1
+      CDR
+      JOIN
+    zero_94:
+      LD 0 0  ; world
+      LD 0 1  ; queue
+      LD 0 1  ; queue
+      LDF queue_dequeue
+      AP 1
+      LD 0 0  ; world
+      LD 0 2  ; visited
+      LDF AddNeighbours
+      AP 4
+      LDF RecursiveFindGoal_2
+      AP 2
+      JOIN
+    endif_96:
+  RTN
+;end RecursiveFindGoal
+
+RecursiveFindGoal_2: ; fun(world, queueAndVisited)
+  LD 0 0  ; world
+  LD 0 1  ; queueAndVisited
+  CAR
+  LD 0 1  ; queueAndVisited
+  CDR
+  LDF RecursiveFindGoal
+  AP 3
+  RTN
+;end RecursiveFindGoal_2
+
+InitQueueAndVisited: ; fun(world, lmPoint, visited)
+  LD 0 0  ; world
+  LD 0 1  ; lmPoint
+  LD 0 2  ; visited
+  LDF InitQueueAndVisitedFold
+  AP 3
+  LDF CombineQueueAndVisited
+  AP 1
+  RTN
+;end InitQueueAndVisited
+
+InitQueueAndVisitedFold: ; fun(world, lmPoint, visited)
+  LDC 0
+  LDC 0
+  CONS
+  LD 0 2  ; visited
+  LD 0 0  ; world
+  LDC 0
+  CONS
+  CONS
+  CONS
+  LDF AddPointIntoQueue
+  LD 0 1  ; lmPoint
+  LDF NeighboursWithDirection
+  AP 1
+  LDF fold
+  AP 3
+  RTN
+;end InitQueueAndVisitedFold
+
+CombineQueueAndVisited: ; fun(queueAndVisitedAndWorld)
+  LD 0 0  ; queueAndVisitedAndWorld
+  CAR
+  LD 0 0  ; queueAndVisitedAndWorld
+  CDR
+  CAR
+  CONS
+  RTN
+;end CombineQueueAndVisited
+
+AddNeighbours: ; fun(queue, pointAndDirection, world, visited)
+  LD 0 0  ; queue
+  LD 0 3  ; visited
+  LD 0 2  ; world
+  LDC 0
+  CONS
+  CONS
+  CONS
+  LDF AddPointIntoQueue
+  LD 0 1  ; pointAndDirection
+  CAR
+  LD 0 1  ; pointAndDirection
+  CDR
+  LDF Neighbours
+  AP 2
+  LDF fold
+  AP 3
+  RTN
+;end AddNeighbours
+
+AddPointIntoQueue: ; fun(queueAndVisitedAndWorld, pointAndDirection)
+  LD 0 0  ; queueAndVisitedAndWorld
+  CDR
+  CAR
+  LD 0 1  ; pointAndDirection
+  CAR
+  LDF getCell
+  AP 2
+  LDC 1
+  CEQ
+  SEL nonzero_104 zero_103
+    LDC 0
+    TSEL endif_105 endif_105
+    nonzero_104:
+      LDC 1
+      JOIN
+    zero_103:
+      LD 0 1  ; pointAndDirection
+      CAR
+      LD 0 0  ; queueAndVisitedAndWorld
+      CDR
+      CDR
+      CAR
+      LDF map
+      AP 1
+      LDF pointIsWall
+      AP 2
+      SEL nonzero_101 zero_100
+        LDC 0
+        TSEL endif_102 endif_102
+        nonzero_101:
+          LDC 1
+          JOIN
+        zero_100:
+          LD 0 0  ; queueAndVisitedAndWorld
+          CDR
+          CDR
+          CAR
+          LD 0 1  ; pointAndDirection
+          CAR
+          LDF ghStates
+          AP 2
+          LDF any_activeGhostAtPoint
+          AP 1
+          SEL nonzero_98 zero_97
+            LDC 0
+            TSEL endif_99 endif_99
+            nonzero_98:
+              LDC 1
+              JOIN
+            zero_97:
+              LDC 0
+              JOIN
+            endif_99:
+          JOIN
+        endif_102:
+      JOIN
+    endif_105:
+  SEL nonzero_107 zero_106
+    LDC 0
+    TSEL endif_108 endif_108
+    nonzero_107:
+      LD 0 0  ; queueAndVisitedAndWorld
+      JOIN
+    zero_106:
+      LD 0 0  ; queueAndVisitedAndWorld
+      CAR
+      LD 0 1  ; pointAndDirection
+      LDF queue_enqueue
+      AP 2
+      LD 0 0  ; queueAndVisitedAndWorld
+      CDR
+      CAR
+      LD 0 1  ; pointAndDirection
+      CAR
+      LDC 1
+      LDF setCell
+      AP 3
+      LD 0 0  ; queueAndVisitedAndWorld
+      CDR
+      CDR
+      CAR
+      LDC 0
+      CONS
+      CONS
+      CONS
+      JOIN
+    endif_108:
+  RTN
+;end AddPointIntoQueue
+
+IsGoodCell: ; fun(point, map)
+  LD 0 0  ; point
+  LD 0 1  ; map
+  LDF pointIsPill
+  AP 2
+  SEL nonzero_116 zero_115
+    LDC 0
+    TSEL endif_117 endif_117
+    nonzero_116:
+      LDC 1
+      JOIN
+    zero_115:
+      LD 0 0  ; point
+      LD 0 1  ; map
+      LDF pointIsPowerPill
+      AP 2
+      SEL nonzero_113 zero_112
+        LDC 0
+        TSEL endif_114 endif_114
+        nonzero_113:
+          LDC 1
+          JOIN
+        zero_112:
+          LD 0 0  ; point
+          LD 0 1  ; map
+          LDF pointIsFruit
+          AP 2
+          SEL nonzero_110 zero_109
+            LDC 0
+            TSEL endif_111 endif_111
+            nonzero_110:
+              LDC 1
+              JOIN
+            zero_109:
+              LDC 0
+              JOIN
+            endif_111:
+          JOIN
+        endif_114:
+      JOIN
+    endif_117:
+  RTN
+;end IsGoodCell
+
+NeighboursWithDirection: ; fun(point)
+  LD 0 0  ; point
+  LDC 0
+  LDC -1
+  CONS
+  LDF sum
+  AP 2
+  LDC 0
+  CONS
+  LD 0 0  ; point
+  LDC 1
+  LDC 0
+  CONS
+  LDF sum
+  AP 2
+  LDC 1
+  CONS
+  LD 0 0  ; point
+  LDC 0
+  LDC 1
+  CONS
+  LDF sum
+  AP 2
+  LDC 2
+  CONS
+  LD 0 0  ; point
+  LDC -1
+  LDC 0
+  CONS
+  LDF sum
+  AP 2
+  LDC 3
+  CONS
+  LDC 0
+  CONS
+  CONS
+  CONS
+  CONS
+  RTN
+;end NeighboursWithDirection
+
+Neighbours: ; fun(point, direction)
+  LD 0 0  ; point
+  LDC 0
+  LDC -1
+  CONS
+  LDF sum
+  AP 2
+  LD 0 1  ; direction
+  CONS
+  LD 0 0  ; point
+  LDC 1
+  LDC 0
+  CONS
+  LDF sum
+  AP 2
+  LD 0 1  ; direction
+  CONS
+  LD 0 0  ; point
+  LDC 0
+  LDC 1
+  CONS
+  LDF sum
+  AP 2
+  LD 0 1  ; direction
+  CONS
+  LD 0 0  ; point
+  LDC -1
+  LDC 0
+  CONS
+  LDF sum
+  AP 2
+  LD 0 1  ; direction
+  CONS
+  LDC 0
+  CONS
+  CONS
+  CONS
+  CONS
+  RTN
+;end Neighbours
+
+pointIsWall: ; fun(point, map)
+  LD 0 1  ; map
+  LD 0 0  ; point
+  LDF getCell
+  AP 2
+  LDC 0
+  CEQ
+  RTN
+;end pointIsWall
+
+pointIsPill: ; fun(point, map)
+  LD 0 1  ; map
+  LD 0 0  ; point
+  LDF getCell
+  AP 2
+  LDC 2
+  CEQ
+  RTN
+;end pointIsPill
+
+pointIsPowerPill: ; fun(point, map)
+  LD 0 1  ; map
+  LD 0 0  ; point
+  LDF getCell
+  AP 2
+  LDC 3
+  CEQ
+  RTN
+;end pointIsPowerPill
+
+pointIsFruit: ; fun(point, map)
+  LD 0 1  ; map
+  LD 0 0  ; point
+  LDF getCell
+  AP 2
+  LDC 4
+  CEQ
+  RTN
+;end pointIsFruit
+
+InitVisited: ; fun(mapHeight, mapWidth)
+  LD 0 0  ; mapHeight
+  LD 0 1  ; mapWidth
+  LDC 0
+  LDF Repeat
+  AP 2
+  LDF Repeat
+  AP 2
+  RTN
+;end InitVisited
+
+Repeat: ; fun(max, value)
+  LD 0 0  ; max
+  SEL nonzero_119 zero_118
+    LDC 0
+    TSEL endif_120 endif_120
+    nonzero_119:
+      LD 0 1  ; value
+      LD 0 0  ; max
+      LDC 1
+      SUB
+      LD 0 1  ; value
+      LDF Repeat
+      AP 2
+      CONS
+      JOIN
+    zero_118:
+      LD 0 1  ; value
+      LDC 0
+      CONS
+      JOIN
+    endif_120:
+  RTN
+;end Repeat
+
+map: ; fun(world)
+  LD 0 0  ; world
+  CAR
+  RTN
+;end map
+
+lmState: ; fun(world)
+  LD 0 0  ; world
+  CDR
+  CAR
+  RTN
+;end lmState
+
+powerRemains: ; fun(world)
+  LD 0 0  ; world
+  CDR
+  CAR
+  CAR
+  RTN
+;end powerRemains
+
+ghStates: ; fun(world)
+  LD 0 0  ; world
+  CDR
+  CDR
+  CAR
+  RTN
+;end ghStates
+
+fruit: ; fun(world)
+  LD 0 0  ; world
+  CDR
+  CDR
+  CDR
+  CAR
+  RTN
+;end fruit
+
+lmLoc: ; fun(world)
+  LD 0 0  ; world
+  LDF lmState
+  AP 1
+  CDR
+  CAR
+  RTN
+;end lmLoc
+
+lmDir: ; fun(world)
+  LD 0 0  ; world
+  LDF lmState
+  AP 1
+  CDR
+  CDR
+  CAR
+  RTN
+;end lmDir
+
+ghState: ; fun(world, ghInd)
+  LD 0 0  ; world
+  LDF ghStates
+  AP 1
+  LD 0 1  ; ghInd
+  LDF get
+  AP 2
+  RTN
+;end ghState
+
+ghLoc: ; fun(ghState)
+  LD 0 0  ; ghState
+  CDR
+  CAR
+  RTN
+;end ghLoc
+
+ghVitality: ; fun(ghState)
+  LD 0 0  ; ghState
+  CAR
+  RTN
+;end ghVitality
+
+ghDir: ; fun(ghState)
+  LD 0 0  ; ghState
+  CDR
+  CDR
+  CAR
+  RTN
+;end ghDir
+
+sum: ; fun(p1, p2)
+  LD 0 0  ; p1
+  CAR
+  LD 0 1  ; p2
+  CAR
+  ADD
+  LD 0 0  ; p1
+  CDR
+  LD 0 1  ; p2
+  CDR
+  ADD
+  CONS
+  RTN
+;end sum
+
+point: ; fun(x, y)
+  LD 0 0  ; x
+  LD 0 1  ; y
+  CONS
+  RTN
+;end point
+
+pEquals: ; fun(p1, p2)
+  LD 0 0  ; p1
+  CAR
+  LD 0 1  ; p2
+  CAR
+  CEQ
+  SEL nonzero_5 zero_4
+    LDC 0
+    TSEL endif_6 endif_6
+    nonzero_5:
+      LD 0 0  ; p1
+      CDR
+      LD 0 1  ; p2
+      CDR
+      CEQ
+      SEL nonzero_2 zero_1
+        LDC 0
+        TSEL endif_3 endif_3
+        nonzero_2:
+          LDC 1
+          JOIN
+        zero_1:
+          LDC 0
+          JOIN
+        endif_3:
+      JOIN
+    zero_4:
+      LDC 0
+      JOIN
+    endif_6:
+  RTN
+;end pEquals
+
+pdirections: ; fun()
+  LDC 0
+  LDC -1
+  CONS
+  LDC 1
+  LDC 0
+  CONS
+  LDC 0
+  LDC 1
+  CONS
+  LDC -1
+  LDC 0
+  CONS
+  LDC 0
+  CONS
+  CONS
+  CONS
+  CONS
+  RTN
+;end pdirections
+
+getCell: ; fun(map, point)
+  LD 0 0  ; map
+  LD 0 1  ; point
+  CDR
+  LDF get
+  AP 2
+  LD 0 1  ; point
+  CAR
+  LDF get
+  AP 2
+  RTN
+;end getCell
+
+setCell: ; fun(map, point, value)
+  LD 0 0  ; map
+  LD 0 1  ; point
+  CDR
+  LD 0 0  ; map
+  LD 0 1  ; point
+  CDR
+  LDF get
+  AP 2
+  LD 0 1  ; point
+  CAR
+  LD 0 2  ; value
+  LDF set
+  AP 3
+  LDF set
+  AP 3
+  RTN
+;end setCell
+
+setCellXY: ; fun(map, x, y, value)
+  LD 0 0  ; map
+  LD 0 2  ; y
+  LD 0 0  ; map
+  LD 0 2  ; y
+  LDF get
+  AP 2
+  LD 0 1  ; x
+  LD 0 3  ; value
+  LDF set
+  AP 3
+  LDF set
+  AP 3
+  RTN
+;end setCellXY
+
+mapHeight: ; fun(map)
+  LD 0 0  ; map
+  LDF getListLength
+  AP 1
+  RTN
+;end mapHeight
+
+mapWidth: ; fun(map)
+  LD 0 0  ; map
+  CAR
+  LDF getListLength
+  AP 1
+  RTN
+;end mapWidth
+
+initLMInternalState: ; fun(map)
+  LDC -1
+  LDC -1
+  CONS
+  LD 0 0  ; map
+  LDF mapHeight
+  AP 1
+  LD 0 0  ; map
+  LDF mapWidth
+  AP 1
+  CONS
+  CONS
+  RTN
+;end initLMInternalState
+
+get: ; fun(list, index)
+  LD 0 1  ; index
+  SEL nonzero_53 zero_52
+    LDC 0
+    TSEL endif_54 endif_54
+    nonzero_53:
+      LD 0 0  ; list
+      CDR
+      LD 0 1  ; index
+      LDC 1
+      SUB
+      LDF get
+      AP 2
+      JOIN
+    zero_52:
+      LD 0 0  ; list
+      CAR
+      JOIN
+    endif_54:
+  RTN
+;end get
+
+set: ; fun(list, index, value)
+  LD 0 1  ; index
+  SEL nonzero_56 zero_55
+    LDC 0
+    TSEL endif_57 endif_57
+    nonzero_56:
+      LD 0 0  ; list
+      CAR
+      LD 0 0  ; list
+      CDR
+      LD 0 1  ; index
+      LDC 1
+      SUB
+      LD 0 2  ; value
+      LDF set
+      AP 3
+      CONS
+      JOIN
+    zero_55:
+      LD 0 2  ; value
+      LD 0 0  ; list
+      CDR
+      CONS
+      JOIN
+    endif_57:
+  RTN
+;end set
+
+getListLength: ; fun(aList)
+  LD 0 0  ; aList
+  ATOM
+  SEL nonzero_59 zero_58
+    LDC 0
+    TSEL endif_60 endif_60
+    nonzero_59:
+      LDC 0
+      JOIN
+    zero_58:
+      LDC 1
+      LD 0 0  ; aList
+      CDR
+      LDF getListLength
+      AP 1
+      ADD
+      JOIN
+    endif_60:
+  RTN
+;end getListLength
+
+fold: ; fun(initElem, func, elemList)
+  LD 0 2  ; elemList
+  ATOM
+  SEL nonzero_62 zero_61
+    LDC 0
+    TSEL endif_63 endif_63
+    nonzero_62:
+      LD 0 0  ; initElem
+      JOIN
+    zero_61:
+      LD 0 0  ; initElem
+      LD 0 2  ; elemList
+      CAR
+      LD 0 1  ; func
+      AP 2
+      LD 0 1  ; func
+      LD 0 2  ; elemList
+      CDR
+      LDF fold
+      AP 3
+      JOIN
+    endif_63:
+  RTN
+;end fold
+
+any: ; fun(list, f)
+  LD 0 0  ; list
+  ATOM
+  SEL nonzero_26 zero_25
+    LDC 0
+    TSEL endif_27 endif_27
+    nonzero_26:
+      LDC 0
+      JOIN
+    zero_25:
+      LD 0 0  ; list
+      CAR
+      LD 0 1  ; f
+      AP 1
+      SEL nonzero_23 zero_22
+        LDC 0
+        TSEL endif_24 endif_24
+        nonzero_23:
+          LDC 1
+          JOIN
+        zero_22:
+          LD 0 0  ; list
+          CDR
+          LD 0 1  ; f
+          LDF any
+          AP 2
+          JOIN
+        endif_24:
+      JOIN
+    endif_27:
+  RTN
+;end any
+
+max: ; fun(list)
+  LD 0 0  ; list
+  LDC -2147483648
+  LDF _max_iter
+  AP 2
+  RTN
+  _max_iter: ; fun(list, maxValue)
+    LD 0 0  ; list
+    ATOM
+    SEL nonzero_32 zero_31
+      LDC 0
+      TSEL endif_33 endif_33
+      nonzero_32:
+        LD 0 1  ; maxValue
+        JOIN
+      zero_31:
+        LD 0 0  ; list
+        CDR
+        LD 0 0  ; list
+        CAR
+        LD 0 1  ; maxValue
+        CGT
+        SEL nonzero_29 zero_28
+          LDC 0
+          TSEL endif_30 endif_30
+          nonzero_29:
+            LD 0 0  ; list
+            CAR
+            JOIN
+          zero_28:
+            LD 0 1  ; maxValue
+            JOIN
+          endif_30:
+        LDF _max_iter
+        AP 2
+        JOIN
+      endif_33:
+    RTN
+  ;end _max_iter
+  
+  RTN
+;end max
+
+min: ; fun(list)
+  LD 0 0  ; list
+  LDC 2147483647
+  LDF _min_iter
+  AP 2
+  RTN
+  _min_iter: ; fun(list, minValue)
+    LD 0 0  ; list
+    ATOM
+    SEL nonzero_50 zero_49
+      LDC 0
+      TSEL endif_51 endif_51
+      nonzero_50:
+        LD 0 1  ; minValue
+        JOIN
+      zero_49:
+        LD 0 0  ; list
+        CDR
+        LD 0 1  ; minValue
+        LD 0 0  ; list
+        CAR
+        CGT
+        SEL nonzero_47 zero_46
+          LDC 0
+          TSEL endif_48 endif_48
+          nonzero_47:
+            LD 0 0  ; list
+            CAR
+            JOIN
+          zero_46:
+            LD 0 1  ; minValue
+            JOIN
+          endif_48:
+        LDF _min_iter
+        AP 2
+        JOIN
+      endif_51:
+    RTN
+  ;end _min_iter
+  
+  RTN
+;end min
+
+argmax: ; fun(list)
+  LD 0 0  ; list
+  LDC -1
+  LDC -2147483648
+  LDC 0
+  LDF _argmax_iter
+  AP 4
+  RTN
+  _argmax_iter: ; fun(list, maxIndex, maxValue, headIndex)
+    LD 0 0  ; list
+    ATOM
+    SEL nonzero_38 zero_37
+      LDC 0
+      TSEL endif_39 endif_39
+      nonzero_38:
+        LD 0 1  ; maxIndex
+        JOIN
+      zero_37:
+        LD 0 0  ; list
+        CAR
+        LD 0 2  ; maxValue
+        CGT
+        SEL nonzero_35 zero_34
+          LDC 0
+          TSEL endif_36 endif_36
+          nonzero_35:
+            LD 0 0  ; list
+            CDR
+            LD 0 3  ; headIndex
+            LD 0 0  ; list
+            CAR
+            LD 0 3  ; headIndex
+            LDC 1
+            ADD
+            LDF _argmax_iter
+            AP 4
+            JOIN
+          zero_34:
+            LD 0 0  ; list
+            CDR
+            LD 0 1  ; maxIndex
+            LD 0 2  ; maxValue
+            LD 0 3  ; headIndex
+            LDC 1
+            ADD
+            LDF _argmax_iter
+            AP 4
+            JOIN
+          endif_36:
+        JOIN
+      endif_39:
+    RTN
+  ;end _argmax_iter
+  
+  RTN
+;end argmax
+
+argmin: ; fun(list)
+  LD 0 0  ; list
+  LDC -1
+  LDC 2147483647
+  LDC 0
+  LDF _argmin_iter
+  AP 4
+  RTN
+  _argmin_iter: ; fun(list, minIndex, minValue, headIndex)
+    LD 0 0  ; list
+    ATOM
+    SEL nonzero_44 zero_43
+      LDC 0
+      TSEL endif_45 endif_45
+      nonzero_44:
+        LD 0 1  ; minIndex
+        JOIN
+      zero_43:
+        LD 0 2  ; minValue
+        LD 0 0  ; list
+        CAR
+        CGT
+        SEL nonzero_41 zero_40
+          LDC 0
+          TSEL endif_42 endif_42
+          nonzero_41:
+            LD 0 0  ; list
+            CDR
+            LD 0 3  ; headIndex
+            LD 0 0  ; list
+            CAR
+            LD 0 3  ; headIndex
+            LDC 1
+            ADD
+            LDF _argmin_iter
+            AP 4
+            JOIN
+          zero_40:
+            LD 0 0  ; list
+            CDR
+            LD 0 1  ; minIndex
+            LD 0 2  ; minValue
+            LD 0 3  ; headIndex
+            LDC 1
+            ADD
+            LDF _argmin_iter
+            AP 4
+            JOIN
+          endif_42:
+        JOIN
+      endif_45:
+    RTN
+  ;end _argmin_iter
+  
+  RTN
+;end argmin
+
+queue_enqueue: ; fun(q, value)
+  LD 0 1  ; value
+  LD 0 0  ; q
+  CAR
+  CONS
+  LD 0 0  ; q
+  CDR
+  CONS
+  RTN
+;end queue_enqueue
+
+queue_peek: ; fun(q)
+  LD 0 0  ; q
+  CDR
+  ATOM
+  SEL nonzero_8 zero_7
+    LDC 0
+    TSEL endif_9 endif_9
+    nonzero_8:
+      LD 0 0  ; q
+      LDF queue_transfer
+      AP 1
+      LDF queue_peek
+      AP 1
+      JOIN
+    zero_7:
+      LD 0 0  ; q
+      CDR
+      CAR
+      JOIN
+    endif_9:
+  RTN
+;end queue_peek
+
+queue_dequeue: ; fun(q)
+  LD 0 0  ; q
+  CDR
+  ATOM
+  SEL nonzero_11 zero_10
+    LDC 0
+    TSEL endif_12 endif_12
+    nonzero_11:
+      LD 0 0  ; q
+      LDF queue_transfer
+      AP 1
+      LDF queue_dequeue
+      AP 1
+      JOIN
+    zero_10:
+      LD 0 0  ; q
+      CDR
+      CAR
+      LD 0 0  ; q
+      CAR
+      LD 0 0  ; q
+      CDR
+      CDR
+      CONS
+      CONS
+      JOIN
+    endif_12:
+  RTN
+;end queue_dequeue
+
+queue_transfer: ; fun(q)
+  LD 0 0  ; q
+  CAR
+  ATOM
+  SEL nonzero_14 zero_13
+    LDC 0
+    TSEL endif_15 endif_15
+    nonzero_14:
+      LD 0 0  ; q
+      JOIN
+    zero_13:
+      LD 0 0  ; q
+      CAR
+      CDR
+      LD 0 0  ; q
+      CAR
+      CAR
+      LD 0 0  ; q
+      CDR
+      CONS
+      CONS
+      LDF queue_transfer
+      AP 1
+      JOIN
+    endif_15:
+  RTN
+;end queue_transfer
+
+queue_isempty: ; fun(q)
+  LD 0 0  ; q
+  CAR
+  ATOM
+  SEL nonzero_20 zero_19
+    LDC 0
+    TSEL endif_21 endif_21
+    nonzero_20:
+      LD 0 0  ; q
+      CDR
+      ATOM
+      SEL nonzero_17 zero_16
+        LDC 0
+        TSEL endif_18 endif_18
+        nonzero_17:
+          LDC 1
+          JOIN
+        zero_16:
+          LDC 0
+          JOIN
+        endif_18:
+      JOIN
+    zero_19:
+      LDC 0
+      JOIN
+    endif_21:
+  RTN
+;end queue_isempty
+
+activeGhostAtPoint: ; fun(ghost, point)
+  LD 0 0  ; ghost
+  LDF ghVitality
+  AP 1
+  LDC 0
+  CEQ
+  SEL nonzero_68 zero_67
+    LDC 0
+    TSEL endif_69 endif_69
+    nonzero_68:
+      LD 0 0  ; ghost
+      LDF ghLoc
+      AP 1
+      LD 0 1  ; point
+      LDF pEquals
+      AP 2
+      SEL nonzero_65 zero_64
+        LDC 0
+        TSEL endif_66 endif_66
+        nonzero_65:
+          LDC 1
+          JOIN
+        zero_64:
+          LDC 0
+          JOIN
+        endif_66:
+      JOIN
+    zero_67:
+      LDC 0
+      JOIN
+    endif_69:
+  RTN
+;end activeGhostAtPoint
+
+frightGhostAtPoint: ; fun(ghost, point)
+  LD 0 0  ; ghost
+  LDF ghVitality
+  AP 1
+  LDC 1
+  CEQ
+  SEL nonzero_74 zero_73
+    LDC 0
+    TSEL endif_75 endif_75
+    nonzero_74:
+      LD 0 0  ; ghost
+      LDF ghLoc
+      AP 1
+      LD 0 1  ; point
+      LDF pEquals
+      AP 2
+      SEL nonzero_71 zero_70
+        LDC 0
+        TSEL endif_72 endif_72
+        nonzero_71:
+          LDC 1
+          JOIN
+        zero_70:
+          LDC 0
+          JOIN
+        endif_72:
+      JOIN
+    zero_73:
+      LDC 0
+      JOIN
+    endif_75:
+  RTN
+;end frightGhostAtPoint
+
+ghostAtPoint: ; fun(ghost, point)
+  LD 0 0  ; ghost
+  LDF ghLoc
+  AP 1
+  LD 0 1  ; point
+  LDF pEquals
+  AP 2
+  RTN
+;end ghostAtPoint
+
+any_activeGhostAtPoint: ; fun(aList, arg1)
+  LD 0 0  ; aList
+  ATOM
+  SEL nonzero_80 zero_79
+    LDC 0
+    TSEL endif_81 endif_81
+    nonzero_80:
+      LDC 0
+      JOIN
+    zero_79:
+      LD 0 0  ; aList
+      CAR
+      LD 0 1  ; arg1
+      LDF activeGhostAtPoint
+      AP 2
+      SEL nonzero_77 zero_76
+        LDC 0
+        TSEL endif_78 endif_78
+        nonzero_77:
+          LDC 1
+          JOIN
+        zero_76:
+          LD 0 0  ; aList
+          CDR
+          LD 0 1  ; arg1
+          LDF any_activeGhostAtPoint
+          AP 2
+          JOIN
+        endif_78:
+      JOIN
+    endif_81:
+  RTN
+;end any_activeGhostAtPoint
+
+any_frightGhostAtPoint: ; fun(aList, arg1)
+  LD 0 0  ; aList
+  ATOM
+  SEL nonzero_86 zero_85
+    LDC 0
+    TSEL endif_87 endif_87
+    nonzero_86:
+      LDC 0
+      JOIN
+    zero_85:
+      LD 0 0  ; aList
+      CAR
+      LD 0 1  ; arg1
+      LDF frightGhostAtPoint
+      AP 2
+      SEL nonzero_83 zero_82
+        LDC 0
+        TSEL endif_84 endif_84
+        nonzero_83:
+          LDC 1
+          JOIN
+        zero_82:
+          LD 0 0  ; aList
+          CDR
+          LD 0 1  ; arg1
+          LDF any_frightGhostAtPoint
+          AP 2
+          JOIN
+        endif_84:
+      JOIN
+    endif_87:
+  RTN
+;end any_frightGhostAtPoint
+
+any_ghostAtPoint: ; fun(aList, arg1)
+  LD 0 0  ; aList
+  ATOM
+  SEL nonzero_92 zero_91
+    LDC 0
+    TSEL endif_93 endif_93
+    nonzero_92:
+      LDC 0
+      JOIN
+    zero_91:
+      LD 0 0  ; aList
+      CAR
+      LD 0 1  ; arg1
+      LDF ghostAtPoint
+      AP 2
+      SEL nonzero_89 zero_88
+        LDC 0
+        TSEL endif_90 endif_90
+        nonzero_89:
+          LDC 1
+          JOIN
+        zero_88:
+          LD 0 0  ; aList
+          CDR
+          LD 0 1  ; arg1
+          LDF any_ghostAtPoint
+          AP 2
+          JOIN
+        endif_90:
+      JOIN
+    endif_93:
+  RTN
+;end any_ghostAtPoint

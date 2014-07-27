@@ -1,6 +1,6 @@
-﻿using Lib.Game;
+﻿using System.IO;
+using Lib.Game;
 using Lib.LispLang;
-using Lib.Parsing.LParsing;
 using NUnit.Framework;
 
 namespace Lib.AI
@@ -10,7 +10,7 @@ namespace Lib.AI
 		[Test]
 		public void Main()
 		{
-			var code = Compile(
+			var code = CompileWithLibs(
 				Def("GreedyStep", ArgNames("stateAndWorld"),
 					Call("GreedyStepInternal", Car("stateAndWorld"), Cdr("stateAndWorld"))),
 
@@ -25,6 +25,7 @@ namespace Lib.AI
 									Call("mapHeight", Call("map", "world")),
 									Call("mapWidth", Call("map", "world"))))))),
 
+
 				Def("RecursiveFindGoal", ArgNames("world", "queue", "visited"),
 					If(Call("IsGoodCell", Car(Call("queue_peek", "queue")), Call("map", "world")),
 						Cdr(Call("queue_peek", "queue")),
@@ -35,7 +36,6 @@ namespace Lib.AI
 								Call("queue_dequeue", "queue"),
 								"world",
 								"visited")))),
-
 
 				Def("RecursiveFindGoal_2", ArgNames("world", "queueAndVisited"),
 					Call("RecursiveFindGoal",
@@ -50,7 +50,7 @@ namespace Lib.AI
 				Def("InitQueueAndVisitedFold", ArgNames("world", "lmPoint", "visited"),
 					Call("fold",
 						List(Cons(0, 0), "visited", "world"),
-						"AddPointsIntoQueue",
+						Fun("AddPointIntoQueue"),
 						Call("NeighboursWithDirection", "lmPoint"))),
 
 				Def("CombineQueueAndVisited", ArgNames("queueAndVisitedAndWorld"),
@@ -60,10 +60,10 @@ namespace Lib.AI
 				Def("AddNeighbours", ArgNames("queue", "pointAndDirection", "world", "visited"),
 					Call("fold",
 						List("queue", "visited", "world"),
-						"AddPointsIntoQueue",
+						Fun("AddPointIntoQueue"),
 						Call("Neighbours", Car("pointAndDirection"), Cdr("pointAndDirection")))),
 
-				Def("AddPointsIntoQueue", ArgNames("queueAndVisitedAndWorld", "pointAndDirection"),	//TODO:ghost neighbours
+				Def("AddPointIntoQueue", ArgNames("queueAndVisitedAndWorld", "pointAndDirection"),	//TODO:ghost neighbours
 					If(	Or(	Ceq(Call("getCell", Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection")),
 								1),
 							Call("pointIsWall", 
@@ -115,12 +115,11 @@ namespace Lib.AI
 
 				Def("Repeat", ArgNames("max", "value"),
 					If("max", 
-						Cons("value", Call("Repeat", Call("Sub", "max", 1), "value")), 
-						Cons("value", 0))),
-
-				LambdaMenLogic
+						Cons("value", Call("Repeat", Sub("max", 1), "value")), 
+						Cons("value", 0)))
 				);
-			LParser.Parse(code);
+
+			File.WriteAllText(KnownPlace.GccSamples + "GreedyLM" + ".mgcc", code);
 		}
 	}
 }

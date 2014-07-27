@@ -145,7 +145,7 @@ namespace Lib.LispLang
 				If(Atom("elemList"),
 					"initElem",
 					Call("fold", 
-						CallFunRef("func", "initElem", Car("elemList")),
+						CallFunRef("func", "initElem", Get(0, "elemList")),
 						"func",
 						Cdr("elemList")))),
 			any,
@@ -158,7 +158,14 @@ namespace Lib.LispLang
 
 		public static string CompileWithLibs(params SExpr[] main)
 		{
-			return Compile(loader.Concat(main).Concat(worldApi).Concat(listApi).Concat(queueApi).ToArray());
+			return
+				Compile(loader
+					.Concat(main)
+					.Concat(worldApi)
+					.Concat(listApi)
+					.Concat(queueApi)
+					.Concat(LambdaMenLogic)
+					.ToArray());
 		}
 
 		public static readonly SExpr[] LambdaMenLogic =
