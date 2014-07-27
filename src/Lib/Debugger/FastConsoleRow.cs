@@ -78,7 +78,7 @@ namespace Lib.Debugger
 				charInfos[i].charData = ' ';
 				charInfos[i].attributes = 0;
 			}
-			var bufSize = new ConsoleApi.COORD { X = (short)Length, Y = 1 };
+			var bufSize = new ConsoleApi.COORD { X = (short)charInfos.Length, Y = 1 };
 			var bufferCoord = new ConsoleApi.COORD { X = 0, Y = 0 };
 
 			var writeRegion = new ConsoleApi.SMALL_RECT

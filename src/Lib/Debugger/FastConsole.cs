@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lib.Debugger
 {
@@ -9,6 +10,7 @@ namespace Lib.Debugger
 
 		public void Refresh()
 		{
+			Console.Clear();
 			var writer = new FastConsoleWriter(this, new List<FastConsoleRow>(rows));
 			rows.Clear();
 			writer.EndWrite();
@@ -61,14 +63,14 @@ namespace Lib.Debugger
 			{
 				if (string.IsNullOrEmpty(text))
 					return;
-				//if (!string.IsNullOrEmpty(text) && text.IndexOf("\n") >= 0)
-				//{
-				//	var texts = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-				//	for (int index = 0; index < texts.Length - 1; index++)
-				//		WriteLine(texts[index]);
-				//	Write(texts.Last());
-				//	return;
-				//}
+				if (!string.IsNullOrEmpty(text) && text.IndexOf("\n") >= 0)
+				{
+					var texts = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+					for (int index = 0; index < texts.Length - 1; index++)
+						WriteLine(texts[index]);
+					Write(texts.Last());
+					return;
+				}
 				while (rows.Count <= line)
 					rows.Add(new FastConsoleRow());
 				if (rows[line].Length + text.Length > Console.WindowWidth)
@@ -88,6 +90,10 @@ namespace Lib.Debugger
 
 			public void EndWrite()
 			{
+				for (var i = Math.Min(line + 1, fastConsole.rows.Count); i < fastConsole.rows.Count; i++)
+					WriteLine();
+				while (rows.Count <= line)
+					rows.Add(new FastConsoleRow());
 				for (var i = 0; i < Math.Min(rows.Count, fastConsole.rows.Count); i++)
 				{
 					if (!rows[i].Equals(fastConsole.rows[i]))

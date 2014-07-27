@@ -14,7 +14,7 @@ namespace LMRun
 	{
 		private static void Main(string[] args)
 		{
-			Run("GreedyLM", "maze1.txt");
+			Run("local", "maze1.txt");
 		}
 
 		private static void Run(string programName, string worldName)
