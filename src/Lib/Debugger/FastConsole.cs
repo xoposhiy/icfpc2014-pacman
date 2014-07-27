@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Principal;
 
 namespace Lib.Debugger
 {
@@ -51,8 +53,25 @@ namespace Lib.Debugger
 
 			public void Write(string text)
 			{
+				if (string.IsNullOrEmpty(text))
+					return;
+				//if (!string.IsNullOrEmpty(text) && text.IndexOf("\n") >= 0)
+				//{
+				//	var texts = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+				//	for (int index = 0; index < texts.Length - 1; index++)
+				//		WriteLine(texts[index]);
+				//	Write(texts.Last());
+				//	return;
+				//}
 				while (rows.Count <= line)
 					rows.Add(new FastConsoleRow());
+				if (rows[line].Length + text.Length > Console.WindowWidth)
+				{
+					var breakIndex = Console.WindowWidth - rows[line].Length;
+					WriteLine(text.Substring(0, breakIndex));
+					Write(text.Substring(breakIndex));
+					return;
+				}
 				rows[line].Segments.Add(new FastConsoleRowSegment(ForegroundColor, BackgroundColor, text));
 			}
 
