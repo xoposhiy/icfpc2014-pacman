@@ -15,7 +15,7 @@ namespace Lib.LispLang
 	[TestFixture]
 	public class LocallyGreedyCarefulLM_Lisp : Api
 	{
-		public static int depth = 4;
+		public static int depth = 3;
 
 
 		public string Code

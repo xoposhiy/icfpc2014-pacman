@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AI\ChaseGhost.cs" />
     <Compile Include="AI\CarefulGreedyLambdaMan_Lisp.cs" />
+    <Compile Include="AI\DeltaMan.cs" />
     <Compile Include="AI\Ghost.cs" />
     <Compile Include="AI\GredySimple.cs" />
     <Compile Include="AI\GreedyLambdaMan_Lisp.cs" />

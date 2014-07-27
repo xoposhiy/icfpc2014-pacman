@@ -140,7 +140,7 @@ namespace Lib.Game
 			pillsCount = GetLocationsOf(map, MapCell.Pill).Count();
 			updateQueue.Add(new UpdateInfo(time + settings.lambdaManPeriod, -1));
 			for (int i = 0; i < world.ghosts.Count; i++)
-				updateQueue.Add(new UpdateInfo(time + settings.ghostPeriod[i], i));
+				updateQueue.Add(new UpdateInfo(time + settings.ghostPeriod[i%4], i));
 			finished = false;
 		}
 
