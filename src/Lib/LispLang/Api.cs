@@ -201,10 +201,10 @@ namespace Lib.LispLang
 		{
 			public static SExpr[] Definitions { get { return new SExpr[]
 			{
-				Def("map", ArgNames("world"), Get(0, "world")),
-				Def("lmState", ArgNames("world"), Get(1, "world")),
-				Def("ghStates", ArgNames("world"), Get(2, "world")),
-				Def("fruitExpired", ArgNames("world"), Get(3, "world")),
+				Def("map", ArgNames("world"), GetTuple4(0, "world")),
+				Def("lmState", ArgNames("world"), GetTuple4(1, "world")),
+				Def("ghStates", ArgNames("world"), GetTuple4(2, "world")),
+				Def("fruitExpired", ArgNames("world"), GetTuple4(3, "world")),
 				Def("getCell", ArgNames("map", "point"), Call("get", Call("get", "map", Y("point")), X("point")))
 			}; } }
 
@@ -260,32 +260,32 @@ namespace Lib.LispLang
 
 			public static SExpr GhVitality(SExpr ghIndex, SExpr world)
 			{
-				return Get(0, GhState(ghIndex, world));
+				return GhVitality(GhState(ghIndex, world));
 			}
 
 			public static SExpr GhVitality(SExpr ghost)
 			{
-				return Get(0, ghost);
+				return GetTuple3(0, ghost);
 			}
 
 			public static SExpr GhLoc(SExpr ghIndex, SExpr world)
 			{
-				return Get(1, GhState(ghIndex, world));
+				return GhLoc(GhState(ghIndex, world));
 			}
 
 			public static SExpr GhLoc(SExpr ghost)
 			{
-				return Get(1, ghost);
+				return GetTuple3(1, ghost);
 			}
 
 			public static SExpr GhDir(SExpr ghIndex, SExpr world)
 			{
-				return Get(2, GhState(ghIndex, world));
+				return GhDir(GhState(ghIndex, world));
 			}
 
 			public static SExpr GhDir(SExpr ghost)
 			{
-				return Get(2, ghost);
+				return GetTuple3(2, ghost);
 			}
 
 			

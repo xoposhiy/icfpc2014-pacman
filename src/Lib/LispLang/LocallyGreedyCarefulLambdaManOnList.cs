@@ -35,10 +35,10 @@ namespace Lib.LispLang
 			{
 				return CompileWithLibs(
 					Def("main", ArgNames("world"),
-						//Cons(
-						//	LmSavedState.Create(Call("map", "world")),
-						//	Fun("LMStep"))
-						Call("LMStep", LmSavedState.Create(Call("map", "world")), "world")
+						Cons(
+							LmSavedState.Create(Call("map", "world")),
+							Fun("LMStep"))
+						//Call("LMStep", LmSavedState.Create(Call("map", "world")), "world")
 						),
 					Def("LMStep", ArgNames("lmSavedState", "world"),
 						Cons(LmSavedState.Create("lmSavedState", "world"),
@@ -54,8 +54,7 @@ namespace Lib.LispLang
 								"lmSavedState",
 								depth)))
 						),
-					LambdaMenLogic,
-					Api.World.Definitions,
+					World.Definitions,
 					LmSavedState.Definitions,
 					Score.Definitions);
 
@@ -78,20 +77,20 @@ namespace Lib.LispLang
 						Def("scoreOfGhosts", ArgNames("ghosts", "point", "powerRemaining"),
 						Add(
 							If(And(
-								IsGreater(0, "powerRemaining"),
+								IsGreater(254, "powerRemaining"),
 								Call("any_ghostAtPoint", Args("ghosts", "point"))),
 								//Then
 								-100,
 								//Else
 								0),
-							If(Call("any_frightGhostAtPoint", Args("ghosts", "point")), 5, 0))),
+							If(Call("any_frightGhostAtPoint", Args("ghosts", "point")), 10, 0))),
 
 						Def("scoreOfPoint", ArgNames("prevLoc", "nextLoc", "world", "visitedPoints", "depth"),
-							Add(Add(
-								ScoreOfCell(World.GetCell(World.Map("world"), "nextLoc"), "world"),
+							Add(Add(Add(
+								ScoreOfCell("nextLoc", "world"),
 								ScoreOfGhosts("nextLoc", "world")),
-								If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0))
-								//Sub(0, Call("countPointsAs", Args("visitedPoints", "nextLoc"))))
+								If(Call("pEquals", Args("prevLoc", "nextLoc")), Sub(Sub(0, "depth"), 1), 0)),
+								Sub(0, Call("countPointsAs", Args("visitedPoints", "nextLoc"))))
 						),
 
 						Def("scoreOfDirection", ArgNames("prevLoc", "currLoc", "nextLoc", "world", "lmstate", "depth"),

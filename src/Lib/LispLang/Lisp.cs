@@ -153,6 +153,30 @@ namespace Lib.LispLang
 			return Car(list);
 		}
 
+		public static SExpr GetTuple(int index, int tLen, SExpr tuple)
+		{
+			while (index != 0)
+			{
+				tuple = Cdr(tuple);
+				index --;
+				tLen--;
+			}
+			if (index < tLen - 1)
+				return Car(tuple);
+			else
+				return tuple;
+		}
+
+		public static SExpr GetTuple3(int index, SExpr tuple)
+		{
+			return GetTuple(index, 3, tuple);
+		}
+
+		public static SExpr GetTuple4(int index, SExpr tuple)
+		{
+			return GetTuple(index, 4, tuple);
+		}
+
 		public static SExpr Sub(SExpr a, SExpr b)
 		{
 			return Cmd("SUB", a, b);
