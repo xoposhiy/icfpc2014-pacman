@@ -58,7 +58,10 @@ namespace Lib.LMachine
 		public void Restart()
 		{
 			if (startupState != null)
+			{
 				State = startupState;
+				startupState = null;
+			}
 		}
 
 		public void Step()
