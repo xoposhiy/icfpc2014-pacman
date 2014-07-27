@@ -28,7 +28,7 @@ namespace conPlayer
 			//var p = File.ReadAllText(KnownPlace.GccSamples + "sample2.mghc");
 			//var ghostFactory = new GMachineFactory(GParser.Parse(p).Program);
 
-			var sim = new GameSim(MapUtils.LoadFromKnownLocation("maze1.txt"), main, ghostFactory);
+			var sim = new GameSim(MapUtils.LoadFromKnownLocation("world-classic.txt"), main, ghostFactory);
 			var oldState = "";
 			Exception exception = null;
 			while (!sim.finished)
@@ -49,7 +49,7 @@ namespace conPlayer
 					Console.WriteLine(newState);
 					Console.WriteLine("Use Cursor keys to control Lambda Man. Time: {0}", sim.time);
 					oldState = newState;
-					Console.ReadKey();
+					//Console.ReadKey();
 				}
 			}
 			if (exception != null)

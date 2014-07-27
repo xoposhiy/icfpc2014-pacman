@@ -13,7 +13,6 @@ GreedyStep: ; fun(state, world)
   LD 0 0  ; state
   LD 0 1  ; world
   LD 0 1  ; world
-  LD 0 1  ; world
   LDF lmLoc
   AP 1
   LD 0 1  ; world
@@ -31,17 +30,32 @@ GreedyStep: ; fun(state, world)
   LDF InitQueueAndVisited
   AP 3
   LDF RecursiveFindGoal_2
-  AP 2
+  AP 1
   CONS
   RTN
 ;end GreedyStep
 
-RecursiveFindGoal: ; fun(world, queue, visited)
-  LD 0 1  ; queue
+RecursiveFindGoal_2: ; fun(queueAndVisitedAndWorld)
+  LD 0 0  ; queueAndVisitedAndWorld
+  CAR
+  LD 0 0  ; queueAndVisitedAndWorld
+  CDR
+  CAR
+  LD 0 0  ; queueAndVisitedAndWorld
+  CDR
+  CDR
+  CAR
+  LDF RecursiveFindGoal
+  AP 3
+  RTN
+;end RecursiveFindGoal_2
+
+RecursiveFindGoal: ; fun(queue, visited, world)
+  LD 0 0  ; queue
   LDF queue_peek
   AP 1
   CAR
-  LD 0 0  ; world
+  LD 0 2  ; world
   LDF map
   AP 1
   LDF IsGoodCell
@@ -50,63 +64,30 @@ RecursiveFindGoal: ; fun(world, queue, visited)
     LDC 0
     TSEL endif_3 endif_3
     nonzero_2:
-      LD 0 1  ; queue
+      LD 0 0  ; queue
       LDF queue_peek
       AP 1
       CDR
       JOIN
     zero_1:
-      LD 0 0  ; world
-      LD 0 1  ; queue
+      LD 0 0  ; queue
       LDF queue_dequeue
       AP 1
-      LD 0 1  ; queue
+      LD 0 0  ; queue
       LDF queue_peek
       AP 1
-      LD 0 0  ; world
-      LD 0 2  ; visited
+      LD 0 2  ; world
+      LD 0 1  ; visited
       LDF AddNeighbours
       AP 4
       LDF RecursiveFindGoal_2
-      AP 2
+      AP 1
       JOIN
     endif_3:
   RTN
 ;end RecursiveFindGoal
 
-RecursiveFindGoal_2: ; fun(world, queueAndVisited)
-  LD 0 0  ; world
-  LD 0 1  ; queueAndVisited
-  CAR
-  LD 0 1  ; queueAndVisited
-  CDR
-  LDF RecursiveFindGoal
-  AP 3
-  RTN
-;end RecursiveFindGoal_2
-
 InitQueueAndVisited: ; fun(world, lmPoint, visited)
-  LD 0 0  ; world
-  LD 0 1  ; lmPoint
-  LD 0 2  ; visited
-  LDF InitQueueAndVisitedFold
-  AP 3
-  LDF CombineQueueAndVisited
-  AP 1
-  RTN
-;end InitQueueAndVisited
-
-CombineQueueAndVisited: ; fun(queueAndVisitedAndWorld)
-  LD 0 0  ; queueAndVisitedAndWorld
-  CAR
-  LD 0 0  ; queueAndVisitedAndWorld
-  CDR
-  CAR
-  CONS
-  RTN
-;end CombineQueueAndVisited
-
-InitQueueAndVisitedFold: ; fun(world, lmPoint, visited)
   LDC 0
   LDC 0
   CONS
@@ -123,7 +104,7 @@ InitQueueAndVisitedFold: ; fun(world, lmPoint, visited)
   LDF fold
   AP 3
   RTN
-;end InitQueueAndVisitedFold
+;end InitQueueAndVisited
 
 AddNeighbours: ; fun(queue, pointAndDirection, world, visited)
   LD 0 0  ; queue

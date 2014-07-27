@@ -3,7 +3,6 @@ using Lib.Game;
 using Lib.LispLang;
 using Lib.LMachine.Intructions;
 using Lib.Parsing.LParsing;
-using NUnit.Framework;
 
 namespace Lib.AI
 {
@@ -20,7 +19,6 @@ namespace Lib.AI
 				Def("GreedyStep", ArgNames("state", "world"),
 					Cons("state",
 						Call("RecursiveFindGoal_2",
-							"world",
 							Call("InitQueueAndVisited", 
 								"world", 
 								Call("lmLoc", "world"),
@@ -29,31 +27,23 @@ namespace Lib.AI
 									Call("mapWidth", Call("map", "world"))))))),
 
 
-				Def("RecursiveFindGoal", ArgNames("world", "queue", "visited"),
+				Def("RecursiveFindGoal_2", ArgNames("queueAndVisitedAndWorld"),
+					Call("RecursiveFindGoal",
+						Get(0, "queueAndVisitedAndWorld"),
+						Get(1, "queueAndVisitedAndWorld"),
+						Get(2, "queueAndVisitedAndWorld"))),
+
+				Def("RecursiveFindGoal", ArgNames("queue", "visited", "world"),
 					If(Call("IsGoodCell", Car(Call("queue_peek", "queue")), Call("map", "world")),
 						Cdr(Call("queue_peek", "queue")),
 						Call("RecursiveFindGoal_2", 
-							"world",
 							Call("AddNeighbours",
 								Call("queue_dequeue", "queue"), 
 								Call("queue_peek", "queue"),
 								"world",
 								"visited")))),
 
-				Def("RecursiveFindGoal_2", ArgNames("world", "queueAndVisited"),
-					Call("RecursiveFindGoal",
-						"world",
-						Car("queueAndVisited"),
-						Cdr("queueAndVisited"))),
-
 				Def("InitQueueAndVisited", ArgNames("world", "lmPoint", "visited"),
-					Call("CombineQueueAndVisited", 
-						Call("InitQueueAndVisitedFold", "world", "lmPoint", "visited"))),
-
-				Def("CombineQueueAndVisited", ArgNames("queueAndVisitedAndWorld"),
-					Cons(Get(0, "queueAndVisitedAndWorld"), Get(1, "queueAndVisitedAndWorld"))),
-
-				Def("InitQueueAndVisitedFold", ArgNames("world", "lmPoint", "visited"),
 					Call("fold",
 						List(Cons(0, 0), "visited", "world"),
 						Fun("AddPointIntoQueue"),

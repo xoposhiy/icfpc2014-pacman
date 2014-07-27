@@ -24,7 +24,7 @@ namespace Lib.AI
 			Func<Point, bool> isCorrect = p => getCell(p) != MapCell.Wall;
 			Func<Point, Point, Point> sum = (p1, p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
 			Func<Point, Point, bool> isReverseDirection = (p, p1) => sum(p, p1).Equals(new Point(0, 0));
-			var dirs = new List<Point>() { new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0) };
+			var dirs = new List<Point>{ new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0) };
 
 			var possibleDirs = dirs.Select((d, i) => i).Where(i => !isReverseDirection(dirs[i], dirs[(int)currState.direction]) && isCorrect(sum(curr, dirs[i]))).ToArray();
 			if (possibleDirs.Length > 0)
