@@ -56,8 +56,6 @@ RecursiveFindGoal: ; fun(queue, visited, world)
   AP 1
   CAR
   LD 0 2  ; world
-  LDF map
-  AP 1
   LDF IsGoodCell
   AP 2
   SEL nonzero_2 zero_1
@@ -217,9 +215,11 @@ AddPointIntoQueue: ; fun(queueAndVisitedAndWorld, pointAndDirection)
   RTN
 ;end AddPointIntoQueue
 
-IsGoodCell: ; fun(point, map)
+IsGoodCell: ; fun(point, world)
   LD 0 0  ; point
-  LD 0 1  ; map
+  LD 0 1  ; world
+  LDF map
+  AP 1
   LDF pointIsPill
   AP 2
   SEL nonzero_23 zero_22
@@ -230,7 +230,9 @@ IsGoodCell: ; fun(point, map)
       JOIN
     zero_22:
       LD 0 0  ; point
-      LD 0 1  ; map
+      LD 0 1  ; world
+      LDF map
+      AP 1
       LDF pointIsPowerPill
       AP 2
       SEL nonzero_20 zero_19
@@ -241,8 +243,8 @@ IsGoodCell: ; fun(point, map)
           JOIN
         zero_19:
           LD 0 0  ; point
-          LD 0 1  ; map
-          LDF pointIsFruit
+          LD 0 1  ; world
+          LDF pointIsFruit_Time
           AP 2
           SEL nonzero_17 zero_16
             LDC 0
@@ -373,8 +375,10 @@ pointIsPowerPill: ; fun(point, map)
   RTN
 ;end pointIsPowerPill
 
-pointIsFruit: ; fun(point, map)
-  LD 0 1  ; map
+pointIsFruit: ; fun(point, world)
+  LD 0 1  ; world
+  LDF map
+  AP 1
   LD 0 0  ; point
   LDF getCell
   AP 2
@@ -382,6 +386,43 @@ pointIsFruit: ; fun(point, map)
   CEQ
   RTN
 ;end pointIsFruit
+
+pointIsFruit_Time: ; fun(point, world)
+  LD 0 1  ; world
+  LDF map
+  AP 1
+  LD 0 0  ; point
+  LDF getCell
+  AP 2
+  LDC 4
+  CEQ
+  SEL nonzero_29 zero_28
+    LDC 0
+    TSEL endif_30 endif_30
+    nonzero_29:
+      LD 0 1  ; world
+      CDR
+      CDR
+      CDR
+      LDC 126
+      CGT
+      SEL nonzero_26 zero_25
+        LDC 0
+        TSEL endif_27 endif_27
+        nonzero_26:
+          LDC 1
+          JOIN
+        zero_25:
+          LDC 0
+          JOIN
+        endif_27:
+      JOIN
+    zero_28:
+      LDC 0
+      JOIN
+    endif_30:
+  RTN
+;end pointIsFruit_Time
 
 InitVisited: ; fun(mapHeight, mapWidth)
   LD 0 0  ; mapHeight
@@ -396,10 +437,10 @@ InitVisited: ; fun(mapHeight, mapWidth)
 
 Repeat: ; fun(max, value)
   LD 0 0  ; max
-  SEL nonzero_26 zero_25
+  SEL nonzero_32 zero_31
     LDC 0
-    TSEL endif_27 endif_27
-    nonzero_26:
+    TSEL endif_33 endif_33
+    nonzero_32:
       LD 0 1  ; value
       LD 0 0  ; max
       LDC 1
@@ -409,10 +450,10 @@ Repeat: ; fun(max, value)
       AP 2
       CONS
       JOIN
-    zero_25:
+    zero_31:
       LDC 0
       JOIN
-    endif_27:
+    endif_33:
   RTN
 ;end Repeat
 
@@ -532,30 +573,30 @@ pEquals: ; fun(p1, p2)
   LD 0 1  ; p2
   CAR
   CEQ
-  SEL nonzero_32 zero_31
+  SEL nonzero_38 zero_37
     LDC 0
-    TSEL endif_33 endif_33
-    nonzero_32:
+    TSEL endif_39 endif_39
+    nonzero_38:
       LD 0 0  ; p1
       CDR
       LD 0 1  ; p2
       CDR
       CEQ
-      SEL nonzero_29 zero_28
+      SEL nonzero_35 zero_34
         LDC 0
-        TSEL endif_30 endif_30
-        nonzero_29:
+        TSEL endif_36 endif_36
+        nonzero_35:
           LDC 1
           JOIN
-        zero_28:
+        zero_34:
           LDC 0
           JOIN
-        endif_30:
+        endif_36:
       JOIN
-    zero_31:
+    zero_37:
       LDC 0
       JOIN
-    endif_33:
+    endif_39:
   RTN
 ;end pEquals
 
@@ -660,10 +701,10 @@ initLMInternalState: ; fun(map)
 
 get: ; fun(list, index)
   LD 0 1  ; index
-  SEL nonzero_80 zero_79
+  SEL nonzero_86 zero_85
     LDC 0
-    TSEL endif_81 endif_81
-    nonzero_80:
+    TSEL endif_87 endif_87
+    nonzero_86:
       LD 0 0  ; list
       CDR
       LD 0 1  ; index
@@ -672,20 +713,20 @@ get: ; fun(list, index)
       LDF get
       AP 2
       JOIN
-    zero_79:
+    zero_85:
       LD 0 0  ; list
       CAR
       JOIN
-    endif_81:
+    endif_87:
   RTN
 ;end get
 
 set: ; fun(list, index, value)
   LD 0 1  ; index
-  SEL nonzero_83 zero_82
+  SEL nonzero_89 zero_88
     LDC 0
-    TSEL endif_84 endif_84
-    nonzero_83:
+    TSEL endif_90 endif_90
+    nonzero_89:
       LD 0 0  ; list
       CAR
       LD 0 0  ; list
@@ -698,26 +739,26 @@ set: ; fun(list, index, value)
       AP 3
       CONS
       JOIN
-    zero_82:
+    zero_88:
       LD 0 2  ; value
       LD 0 0  ; list
       CDR
       CONS
       JOIN
-    endif_84:
+    endif_90:
   RTN
 ;end set
 
 getListLength: ; fun(aList)
   LD 0 0  ; aList
   ATOM
-  SEL nonzero_86 zero_85
+  SEL nonzero_92 zero_91
     LDC 0
-    TSEL endif_87 endif_87
-    nonzero_86:
+    TSEL endif_93 endif_93
+    nonzero_92:
       LDC 0
       JOIN
-    zero_85:
+    zero_91:
       LDC 1
       LD 0 0  ; aList
       CDR
@@ -725,20 +766,20 @@ getListLength: ; fun(aList)
       AP 1
       ADD
       JOIN
-    endif_87:
+    endif_93:
   RTN
 ;end getListLength
 
 fold: ; fun(initElem, func, elemList)
   LD 0 2  ; elemList
   ATOM
-  SEL nonzero_89 zero_88
+  SEL nonzero_95 zero_94
     LDC 0
-    TSEL endif_90 endif_90
-    nonzero_89:
+    TSEL endif_96 endif_96
+    nonzero_95:
       LD 0 0  ; initElem
       JOIN
-    zero_88:
+    zero_94:
       LD 0 0  ; initElem
       LD 0 2  ; elemList
       CAR
@@ -750,40 +791,40 @@ fold: ; fun(initElem, func, elemList)
       LDF fold
       AP 3
       JOIN
-    endif_90:
+    endif_96:
   RTN
 ;end fold
 
 any: ; fun(list, f)
   LD 0 0  ; list
   ATOM
-  SEL nonzero_53 zero_52
+  SEL nonzero_59 zero_58
     LDC 0
-    TSEL endif_54 endif_54
-    nonzero_53:
+    TSEL endif_60 endif_60
+    nonzero_59:
       LDC 0
       JOIN
-    zero_52:
+    zero_58:
       LD 0 0  ; list
       CAR
       LD 0 1  ; f
       AP 1
-      SEL nonzero_50 zero_49
+      SEL nonzero_56 zero_55
         LDC 0
-        TSEL endif_51 endif_51
-        nonzero_50:
+        TSEL endif_57 endif_57
+        nonzero_56:
           LDC 1
           JOIN
-        zero_49:
+        zero_55:
           LD 0 0  ; list
           CDR
           LD 0 1  ; f
           LDF any
           AP 2
           JOIN
-        endif_51:
+        endif_57:
       JOIN
-    endif_54:
+    endif_60:
   RTN
 ;end any
 
@@ -796,34 +837,34 @@ max: ; fun(list)
   _max_iter: ; fun(list, maxValue)
     LD 0 0  ; list
     ATOM
-    SEL nonzero_59 zero_58
+    SEL nonzero_65 zero_64
       LDC 0
-      TSEL endif_60 endif_60
-      nonzero_59:
+      TSEL endif_66 endif_66
+      nonzero_65:
         LD 0 1  ; maxValue
         JOIN
-      zero_58:
+      zero_64:
         LD 0 0  ; list
         CDR
         LD 0 0  ; list
         CAR
         LD 0 1  ; maxValue
         CGT
-        SEL nonzero_56 zero_55
+        SEL nonzero_62 zero_61
           LDC 0
-          TSEL endif_57 endif_57
-          nonzero_56:
+          TSEL endif_63 endif_63
+          nonzero_62:
             LD 0 0  ; list
             CAR
             JOIN
-          zero_55:
+          zero_61:
             LD 0 1  ; maxValue
             JOIN
-          endif_57:
+          endif_63:
         LDF _max_iter
         AP 2
         JOIN
-      endif_60:
+      endif_66:
     RTN
   ;end _max_iter
   
@@ -839,34 +880,34 @@ min: ; fun(list)
   _min_iter: ; fun(list, minValue)
     LD 0 0  ; list
     ATOM
-    SEL nonzero_77 zero_76
+    SEL nonzero_83 zero_82
       LDC 0
-      TSEL endif_78 endif_78
-      nonzero_77:
+      TSEL endif_84 endif_84
+      nonzero_83:
         LD 0 1  ; minValue
         JOIN
-      zero_76:
+      zero_82:
         LD 0 0  ; list
         CDR
         LD 0 1  ; minValue
         LD 0 0  ; list
         CAR
         CGT
-        SEL nonzero_74 zero_73
+        SEL nonzero_80 zero_79
           LDC 0
-          TSEL endif_75 endif_75
-          nonzero_74:
+          TSEL endif_81 endif_81
+          nonzero_80:
             LD 0 0  ; list
             CAR
             JOIN
-          zero_73:
+          zero_79:
             LD 0 1  ; minValue
             JOIN
-          endif_75:
+          endif_81:
         LDF _min_iter
         AP 2
         JOIN
-      endif_78:
+      endif_84:
     RTN
   ;end _min_iter
   
@@ -884,21 +925,21 @@ argmax: ; fun(list)
   _argmax_iter: ; fun(list, maxIndex, maxValue, headIndex)
     LD 0 0  ; list
     ATOM
-    SEL nonzero_65 zero_64
+    SEL nonzero_71 zero_70
       LDC 0
-      TSEL endif_66 endif_66
-      nonzero_65:
+      TSEL endif_72 endif_72
+      nonzero_71:
         LD 0 1  ; maxIndex
         JOIN
-      zero_64:
+      zero_70:
         LD 0 0  ; list
         CAR
         LD 0 2  ; maxValue
         CGT
-        SEL nonzero_62 zero_61
+        SEL nonzero_68 zero_67
           LDC 0
-          TSEL endif_63 endif_63
-          nonzero_62:
+          TSEL endif_69 endif_69
+          nonzero_68:
             LD 0 0  ; list
             CDR
             LD 0 3  ; headIndex
@@ -910,7 +951,7 @@ argmax: ; fun(list)
             LDF _argmax_iter
             AP 4
             JOIN
-          zero_61:
+          zero_67:
             LD 0 0  ; list
             CDR
             LD 0 1  ; maxIndex
@@ -921,9 +962,9 @@ argmax: ; fun(list)
             LDF _argmax_iter
             AP 4
             JOIN
-          endif_63:
+          endif_69:
         JOIN
-      endif_66:
+      endif_72:
     RTN
   ;end _argmax_iter
   
@@ -941,21 +982,21 @@ argmin: ; fun(list)
   _argmin_iter: ; fun(list, minIndex, minValue, headIndex)
     LD 0 0  ; list
     ATOM
-    SEL nonzero_71 zero_70
+    SEL nonzero_77 zero_76
       LDC 0
-      TSEL endif_72 endif_72
-      nonzero_71:
+      TSEL endif_78 endif_78
+      nonzero_77:
         LD 0 1  ; minIndex
         JOIN
-      zero_70:
+      zero_76:
         LD 0 2  ; minValue
         LD 0 0  ; list
         CAR
         CGT
-        SEL nonzero_68 zero_67
+        SEL nonzero_74 zero_73
           LDC 0
-          TSEL endif_69 endif_69
-          nonzero_68:
+          TSEL endif_75 endif_75
+          nonzero_74:
             LD 0 0  ; list
             CDR
             LD 0 3  ; headIndex
@@ -967,7 +1008,7 @@ argmin: ; fun(list)
             LDF _argmin_iter
             AP 4
             JOIN
-          zero_67:
+          zero_73:
             LD 0 0  ; list
             CDR
             LD 0 1  ; minIndex
@@ -978,9 +1019,9 @@ argmin: ; fun(list)
             LDF _argmin_iter
             AP 4
             JOIN
-          endif_69:
+          endif_75:
         JOIN
-      endif_72:
+      endif_78:
     RTN
   ;end _argmin_iter
   
@@ -1002,22 +1043,22 @@ queue_peek: ; fun(q)
   LD 0 0  ; q
   CDR
   ATOM
-  SEL nonzero_35 zero_34
+  SEL nonzero_41 zero_40
     LDC 0
-    TSEL endif_36 endif_36
-    nonzero_35:
+    TSEL endif_42 endif_42
+    nonzero_41:
       LD 0 0  ; q
       LDF queue_transfer
       AP 1
       LDF queue_peek
       AP 1
       JOIN
-    zero_34:
+    zero_40:
       LD 0 0  ; q
       CDR
       CAR
       JOIN
-    endif_36:
+    endif_42:
   RTN
 ;end queue_peek
 
@@ -1025,17 +1066,17 @@ queue_dequeue: ; fun(q)
   LD 0 0  ; q
   CDR
   ATOM
-  SEL nonzero_38 zero_37
+  SEL nonzero_44 zero_43
     LDC 0
-    TSEL endif_39 endif_39
-    nonzero_38:
+    TSEL endif_45 endif_45
+    nonzero_44:
       LD 0 0  ; q
       LDF queue_transfer
       AP 1
       LDF queue_dequeue
       AP 1
       JOIN
-    zero_37:
+    zero_43:
       LD 0 0  ; q
       CAR
       LD 0 0  ; q
@@ -1043,39 +1084,11 @@ queue_dequeue: ; fun(q)
       CDR
       CONS
       JOIN
-    endif_39:
+    endif_45:
   RTN
 ;end queue_dequeue
 
 queue_transfer: ; fun(q)
-  LD 0 0  ; q
-  CAR
-  ATOM
-  SEL nonzero_41 zero_40
-    LDC 0
-    TSEL endif_42 endif_42
-    nonzero_41:
-      LD 0 0  ; q
-      JOIN
-    zero_40:
-      LD 0 0  ; q
-      CAR
-      CDR
-      LD 0 0  ; q
-      CAR
-      CAR
-      LD 0 0  ; q
-      CDR
-      CONS
-      CONS
-      LDF queue_transfer
-      AP 1
-      JOIN
-    endif_42:
-  RTN
-;end queue_transfer
-
-queue_isempty: ; fun(q)
   LD 0 0  ; q
   CAR
   ATOM
@@ -1084,23 +1097,51 @@ queue_isempty: ; fun(q)
     TSEL endif_48 endif_48
     nonzero_47:
       LD 0 0  ; q
-      CDR
-      ATOM
-      SEL nonzero_44 zero_43
-        LDC 0
-        TSEL endif_45 endif_45
-        nonzero_44:
-          LDC 1
-          JOIN
-        zero_43:
-          LDC 0
-          JOIN
-        endif_45:
       JOIN
     zero_46:
-      LDC 0
+      LD 0 0  ; q
+      CAR
+      CDR
+      LD 0 0  ; q
+      CAR
+      CAR
+      LD 0 0  ; q
+      CDR
+      CONS
+      CONS
+      LDF queue_transfer
+      AP 1
       JOIN
     endif_48:
+  RTN
+;end queue_transfer
+
+queue_isempty: ; fun(q)
+  LD 0 0  ; q
+  CAR
+  ATOM
+  SEL nonzero_53 zero_52
+    LDC 0
+    TSEL endif_54 endif_54
+    nonzero_53:
+      LD 0 0  ; q
+      CDR
+      ATOM
+      SEL nonzero_50 zero_49
+        LDC 0
+        TSEL endif_51 endif_51
+        nonzero_50:
+          LDC 1
+          JOIN
+        zero_49:
+          LDC 0
+          JOIN
+        endif_51:
+      JOIN
+    zero_52:
+      LDC 0
+      JOIN
+    endif_54:
   RTN
 ;end queue_isempty
 
@@ -1109,40 +1150,6 @@ activeGhostAtPoint: ; fun(ghost, point)
   LDF ghVitality
   AP 1
   LDC 0
-  CEQ
-  SEL nonzero_95 zero_94
-    LDC 0
-    TSEL endif_96 endif_96
-    nonzero_95:
-      LD 0 0  ; ghost
-      LDF ghLoc
-      AP 1
-      LD 0 1  ; point
-      LDF pEquals
-      AP 2
-      SEL nonzero_92 zero_91
-        LDC 0
-        TSEL endif_93 endif_93
-        nonzero_92:
-          LDC 1
-          JOIN
-        zero_91:
-          LDC 0
-          JOIN
-        endif_93:
-      JOIN
-    zero_94:
-      LDC 0
-      JOIN
-    endif_96:
-  RTN
-;end activeGhostAtPoint
-
-frightGhostAtPoint: ; fun(ghost, point)
-  LD 0 0  ; ghost
-  LDF ghVitality
-  AP 1
-  LDC 1
   CEQ
   SEL nonzero_101 zero_100
     LDC 0
@@ -1170,6 +1177,40 @@ frightGhostAtPoint: ; fun(ghost, point)
       JOIN
     endif_102:
   RTN
+;end activeGhostAtPoint
+
+frightGhostAtPoint: ; fun(ghost, point)
+  LD 0 0  ; ghost
+  LDF ghVitality
+  AP 1
+  LDC 1
+  CEQ
+  SEL nonzero_107 zero_106
+    LDC 0
+    TSEL endif_108 endif_108
+    nonzero_107:
+      LD 0 0  ; ghost
+      LDF ghLoc
+      AP 1
+      LD 0 1  ; point
+      LDF pEquals
+      AP 2
+      SEL nonzero_104 zero_103
+        LDC 0
+        TSEL endif_105 endif_105
+        nonzero_104:
+          LDC 1
+          JOIN
+        zero_103:
+          LDC 0
+          JOIN
+        endif_105:
+      JOIN
+    zero_106:
+      LDC 0
+      JOIN
+    endif_108:
+  RTN
 ;end frightGhostAtPoint
 
 ghostAtPoint: ; fun(ghost, point)
@@ -1185,40 +1226,6 @@ ghostAtPoint: ; fun(ghost, point)
 any_activeGhostAtPoint: ; fun(aList, arg1)
   LD 0 0  ; aList
   ATOM
-  SEL nonzero_107 zero_106
-    LDC 0
-    TSEL endif_108 endif_108
-    nonzero_107:
-      LDC 0
-      JOIN
-    zero_106:
-      LD 0 0  ; aList
-      CAR
-      LD 0 1  ; arg1
-      LDF activeGhostAtPoint
-      AP 2
-      SEL nonzero_104 zero_103
-        LDC 0
-        TSEL endif_105 endif_105
-        nonzero_104:
-          LDC 1
-          JOIN
-        zero_103:
-          LD 0 0  ; aList
-          CDR
-          LD 0 1  ; arg1
-          LDF any_activeGhostAtPoint
-          AP 2
-          JOIN
-        endif_105:
-      JOIN
-    endif_108:
-  RTN
-;end any_activeGhostAtPoint
-
-any_frightGhostAtPoint: ; fun(aList, arg1)
-  LD 0 0  ; aList
-  ATOM
   SEL nonzero_113 zero_112
     LDC 0
     TSEL endif_114 endif_114
@@ -1229,7 +1236,7 @@ any_frightGhostAtPoint: ; fun(aList, arg1)
       LD 0 0  ; aList
       CAR
       LD 0 1  ; arg1
-      LDF frightGhostAtPoint
+      LDF activeGhostAtPoint
       AP 2
       SEL nonzero_110 zero_109
         LDC 0
@@ -1241,16 +1248,16 @@ any_frightGhostAtPoint: ; fun(aList, arg1)
           LD 0 0  ; aList
           CDR
           LD 0 1  ; arg1
-          LDF any_frightGhostAtPoint
+          LDF any_activeGhostAtPoint
           AP 2
           JOIN
         endif_111:
       JOIN
     endif_114:
   RTN
-;end any_frightGhostAtPoint
+;end any_activeGhostAtPoint
 
-any_ghostAtPoint: ; fun(aList, arg1)
+any_frightGhostAtPoint: ; fun(aList, arg1)
   LD 0 0  ; aList
   ATOM
   SEL nonzero_119 zero_118
@@ -1263,7 +1270,7 @@ any_ghostAtPoint: ; fun(aList, arg1)
       LD 0 0  ; aList
       CAR
       LD 0 1  ; arg1
-      LDF ghostAtPoint
+      LDF frightGhostAtPoint
       AP 2
       SEL nonzero_116 zero_115
         LDC 0
@@ -1275,11 +1282,45 @@ any_ghostAtPoint: ; fun(aList, arg1)
           LD 0 0  ; aList
           CDR
           LD 0 1  ; arg1
-          LDF any_ghostAtPoint
+          LDF any_frightGhostAtPoint
           AP 2
           JOIN
         endif_117:
       JOIN
     endif_120:
+  RTN
+;end any_frightGhostAtPoint
+
+any_ghostAtPoint: ; fun(aList, arg1)
+  LD 0 0  ; aList
+  ATOM
+  SEL nonzero_125 zero_124
+    LDC 0
+    TSEL endif_126 endif_126
+    nonzero_125:
+      LDC 0
+      JOIN
+    zero_124:
+      LD 0 0  ; aList
+      CAR
+      LD 0 1  ; arg1
+      LDF ghostAtPoint
+      AP 2
+      SEL nonzero_122 zero_121
+        LDC 0
+        TSEL endif_123 endif_123
+        nonzero_122:
+          LDC 1
+          JOIN
+        zero_121:
+          LD 0 0  ; aList
+          CDR
+          LD 0 1  ; arg1
+          LDF any_ghostAtPoint
+          AP 2
+          JOIN
+        endif_123:
+      JOIN
+    endif_126:
   RTN
 ;end any_ghostAtPoint

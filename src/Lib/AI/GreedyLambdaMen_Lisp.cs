@@ -34,7 +34,7 @@ namespace Lib.AI
 						Get(2, "queueAndVisitedAndWorld"))),
 
 				Def("RecursiveFindGoal", ArgNames("queue", "visited", "world"),
-					If(Call("IsGoodCell", Car(Call("queue_peek", "queue")), Call("map", "world")),
+					If(Call("IsGoodCell", Car(Call("queue_peek", "queue")), "world"),
 						Cdr(Call("queue_peek", "queue")),
 						Call("RecursiveFindGoal_2", 
 							Call("AddNeighbours",
@@ -69,10 +69,10 @@ namespace Lib.AI
 							Call("setCell", Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection"), 1),
 							Get(2, "queueAndVisitedAndWorld")))),
 
-				Def("IsGoodCell", ArgNames("point", "map"),	//TODO: fruit time, fright ghosts
-					Or(Call("pointIsPill", "point", "map"),
-						Call("pointIsPowerPill", "point", "map"),
-						Call("pointIsFruit", "point", "map"))),
+				Def("IsGoodCell", ArgNames("point", "world"),	//TODO: fright ghosts
+					Or(Call("pointIsPill", "point", Call("map", "world")),
+						Call("pointIsPowerPill", "point", Call("map", "world")),
+						Call("pointIsFruit_Time", "point", "world"))),
 
 				Def("NeighboursWithDirection", ArgNames("point"),
 					List(Cons(Call("sum", "point", Cons(0, -1)), 0),
@@ -98,9 +98,15 @@ namespace Lib.AI
 					Ceq(Call("getCell", "map", "point"),
 						(int)(MapCell.PowerPill))),
 
-				Def("pointIsFruit", ArgNames("point", "map"), 
-					Ceq(Call("getCell", "map", "point"),
+				Def("pointIsFruit", ArgNames("point", "world"),
+					Ceq(Call("getCell", Call("map", "world"), "point"),
 						(int)(MapCell.Fruit))),
+
+				Def("pointIsFruit_Time", ArgNames("point", "world"),
+					And(Ceq(Call("getCell", Call("map", "world"), "point"),
+							(int)(MapCell.Fruit)),
+						IsGreater(Cdr(Cdr(Cdr("world"))),
+							126))),
 
 				Def("InitVisited", ArgNames("mapHeight", "mapWidth"), 
 					Call("Repeat", "mapHeight", Call("Repeat", "mapWidth", 0))),
