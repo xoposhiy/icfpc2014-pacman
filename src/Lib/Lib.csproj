@@ -53,6 +53,7 @@
     <Compile Include="Debugger\ConsoleApi.cs" />
     <Compile Include="Debugger\ConsoleDebugger.cs" />
     <Compile Include="Debugger\ConsoleDebuggerStateView.cs" />
+    <Compile Include="Debugger\DebuggerAbortedException.cs" />
     <Compile Include="Debugger\FastConsole.cs" />
     <Compile Include="Debugger\FastConsoleRow.cs" />
     <Compile Include="Debugger\FastConsoleRowSegment.cs" />

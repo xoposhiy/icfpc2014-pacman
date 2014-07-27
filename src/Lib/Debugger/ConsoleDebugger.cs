@@ -32,10 +32,12 @@ namespace Lib.Debugger
 					exception = null;
 				}
 				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.Escape)
-					break;
+				{
+					if (!m.State.Stopped)
+						return new DebuggerAbortedException(exception);
+					return null;
+				}
 			}
-			ShowState(console, m, prog, exception);
-			return exception;
 		}
 
 		private static void ShowState([NotNull] FastConsole console, [NotNull] LMachineInterpreter m, [NotNull] ParseResult<Instruction> prog, [CanBeNull] Exception exception)
