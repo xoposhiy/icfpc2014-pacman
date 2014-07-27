@@ -27,6 +27,8 @@
 
 ; vars
 	
+	steps = 48
+	isFright = 49
 	lx = 100
 	ly = 101
 	gx = 102
@@ -47,7 +49,7 @@
 	map_g_right =119
 	map_g_down =120
 	map_g_left =121
-	isFright = 49
+	
 	
 ; entry point
 	int getMyIndex
@@ -106,6 +108,7 @@
 	mov [56], up
 	mov [57], right
 	
+	
 ; set isFright
 ; it can be used to invert directionas follows: invertedDir = [50 + isFright + initialDirection]
 	mov [isFright], 4 ; frighten by default
@@ -115,53 +118,60 @@
 
 ; the strategy!
 
-	
-; consider_dir(gx, lx, right, map_g_right)
+; "random" walk. 
+; will be overriden later by more appropriate decision if any
+	add [steps], 1
+	mov a, [steps]
+	and a, 3
+	int setMyDir
+
+; select direction making lambda closer to ghost
+; consider_dir(gx, lx, right)
 	mov a, right
 	mov b, [gx]
 	mov c, [lx]
-	mov d, [map_g_right]
 	mov [return], pc
 	mov pc, consider_dir
 
-; consider_dir(lx, gx, left, map_g_left)
+; consider_dir(lx, gx, left)
 	mov a, left
 	mov b, [lx]
 	mov c, [gx]
-	mov d, [map_g_left]
 	mov [return], pc
 	mov pc, consider_dir
 
-; consider_dir(gy, ly, down, map_g_down)
+; consider_dir(gy, ly, down)
 	mov a, down
 	mov b, [gy]
 	mov c, [ly]
-	mov d, [map_g_down]
 	mov [return], pc
 	mov pc, consider_dir
 
-; consider_dir(ly, gy, up, map_g_up)
+; consider_dir(ly, gy, up)
 	mov a, up
 	mov b, [ly]
 	mov c, [gy]
-	mov d, [map_g_up]
 	mov [return], pc
 	mov pc, consider_dir
 
 hlt;
 
-consider_dir: ; (dir, c1, c2, map_g_dir)
+consider_dir: ; (dir, c1, c2)
 ;In:
 ;	a - direction to set
 ;	b, c - ordinates to compare
-;	d - mapcell of ghost destination
 ; 	[return2] - (return_addr-2)
-	JEQ end_consider_dir, d, wall
+
 	; invert direction if frighten
 	; a := [a + 50 + isFright]
 		add a, 50
 		add a, [isFright]
 		mov a, [a]
+	; calculate map_g_dest
+		mov d, map_g_up
+		add d, a
+		mov d, [d]
+	JEQ end_consider_dir, d, wall
 	mov pc, set_dir_if_less
 end_consider_dir:
 	add [return], 2
@@ -175,6 +185,7 @@ set_dir_if_less:
 ;usage set_dir_if_less(gx, lx, right)
 	JGT set_dir_if_less_end, b, c
 	JEQ set_dir_if_less_end, b, c
+	mov h, [steps]
 	int 8
 	int setMyDir
 set_dir_if_less_end:
