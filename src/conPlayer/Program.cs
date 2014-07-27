@@ -11,14 +11,15 @@ namespace conPlayer
 	{
 		private static void Main(string[] args)
 		{
-			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
-			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
-			//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
-			//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
-			//			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)ConsoleStep);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GredySimple.Step);
+//			LMMain main = w => Tuple.Create(LValue.FromInt(42), (LMStep)GreedyLambdaMen.LambdaMenGreedyStep);
+//			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
+//			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
 
 			var enterDebugger = false;
-			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.Code, runUntilStopStep: x =>
+//			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.Code, runUntilStopStep: x =>
+			var interpretedLambdaMan = new InterpretedLambdaMan(CarefulGreedyLmbdaMen_lisp.code, runUntilStopStep: x =>
 			{
 				if (enterDebugger)
 				{
