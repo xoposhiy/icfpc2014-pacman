@@ -71,13 +71,13 @@ namespace Lib.LispLang
 						If(Ceq("cell", (int)MapCell.Pill), 1,
 							If(Ceq("cell", (int)MapCell.Empty), -1,
 								If(Ceq("cell", (int)MapCell.PowerPill), 5,
-									If(And(Ceq("cell", (int)MapCell.Fruit), IsGreater(World.FruitExpired("world"), 127)), 30,
+									If(And(Ceq("cell", (int)MapCell.Fruit), Cgt(World.FruitExpired("world"), 127)), 30,
 										0))))),
 
 						Def("scoreOfGhosts", ArgNames("ghosts", "point", "powerRemaining"),
 						Add(
 							If(And(
-								IsGreater(254, "powerRemaining"),
+								Cgt(254, "powerRemaining"),
 								Call("any_ghostAtPoint", Args("ghosts", "point"))),
 								//Then
 								-100,
@@ -100,7 +100,7 @@ namespace Lib.LispLang
 								ScoreOfPoint("prevLoc", "nextLoc", "world", "lmstate",  "depth")
 								),
 								If(
-									IsGreater("depth", 0),
+									Cgt("depth", 0),
 									Call("max", ScoreOfDirections("currLoc", "nextLoc", "world", "lmstate", Sub("depth", 1))),
 									0)),
 							// Else

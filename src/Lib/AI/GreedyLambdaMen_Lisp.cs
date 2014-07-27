@@ -21,10 +21,10 @@ namespace Lib.AI
 						Call("RecursiveFindGoal_2",
 							Call("InitQueueAndVisited", 
 								"world", 
-								Call("lmLoc", "world"),
+								World.LmLoc("world"),
 								Call("InitVisited",
-									Call("mapHeight", Call("map", "world")),
-									Call("mapWidth", Call("map", "world"))))))),
+									Call("mapHeight", World.Map("world")),
+									Call("mapWidth", World.Map("world"))))))),
 
 
 				Def("RecursiveFindGoal_2", ArgNames("queueAndVisitedAndWorld"),
@@ -56,13 +56,13 @@ namespace Lib.AI
 						Call("Neighbours", Car("pointAndDirection"), Cdr("pointAndDirection")))),
 
 				Def("AddPointIntoQueue", ArgNames("queueAndVisitedAndWorld", "pointAndDirection"),	//TODO:ghost neighbours
-					If(	Or(	Ceq(Call("getCell", Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection")),
+					If(	Or(	Ceq(World.GetCell(Get(1, "queueAndVisitedAndWorld"), Car("pointAndDirection")),
 								1),
 							Call("pointIsWall", 
 								Car("pointAndDirection"), 
-								Call("map", Get(2, "queueAndVisitedAndWorld"))),
+								World.Map(Get(2, "queueAndVisitedAndWorld"))),
 							Call("any_activeGhostAtPoint",
-								Call("ghStates", Get(2, "queueAndVisitedAndWorld")),
+								World.GhStates(Get(2, "queueAndVisitedAndWorld")),
 								Car("pointAndDirection"))),
 						"queueAndVisitedAndWorld",
 						List(Call("queue_enqueue", Get(0, "queueAndVisitedAndWorld"), "pointAndDirection"),
@@ -70,8 +70,8 @@ namespace Lib.AI
 							Get(2, "queueAndVisitedAndWorld")))),
 
 				Def("IsGoodCell", ArgNames("point", "world"),	//TODO: fright ghosts
-					Or(Call("pointIsPill", "point", Call("map", "world")),
-						Call("pointIsPowerPill", "point", Call("map", "world")),
+					Or(Call("pointIsPill", "point", World.Map("world")),
+						Call("pointIsPowerPill", "point", World.Map("world")),
 						Call("pointIsFruit_Time", "point", "world"))),
 
 				Def("NeighboursWithDirection", ArgNames("point"),
@@ -86,26 +86,26 @@ namespace Lib.AI
 						Cons(Call("sum", "point", Cons(0, 1)), "direction"),
 						Cons(Call("sum", "point", Cons(-1, 0)), "direction"))),
 
-				Def("pointIsWall", ArgNames("point", "map"), 
-					Ceq(Call("getCell", "map", "point"),
+				Def("pointIsWall", ArgNames("point", "map"),
+					Ceq(World.GetCell("map", "point"),
 						(int)(MapCell.Wall))),
 
-				Def("pointIsPill", ArgNames("point", "map"), 
-					Ceq(Call("getCell", "map", "point"),
+				Def("pointIsPill", ArgNames("point", "map"),
+					Ceq(World.GetCell("map", "point"),
 						(int)(MapCell.Pill))),
 
-				Def("pointIsPowerPill", ArgNames("point", "map"), 
-					Ceq(Call("getCell", "map", "point"),
+				Def("pointIsPowerPill", ArgNames("point", "map"),
+					Ceq(World.GetCell("map", "point"),
 						(int)(MapCell.PowerPill))),
 
 				Def("pointIsFruit", ArgNames("point", "world"),
-					Ceq(Call("getCell", Call("map", "world"), "point"),
+					Ceq(World.GetCell(World.Map("world"), "point"),
 						(int)(MapCell.Fruit))),
 
 				Def("pointIsFruit_Time", ArgNames("point", "world"),
-					And(Ceq(Call("getCell", Call("map", "world"), "point"),
+					And(Ceq(World.GetCell(World.Map("world"), "point"),
 							(int)(MapCell.Fruit)),
-						IsGreater(Cdr(Cdr(Cdr("world"))),
+						Cgt(World.FruitExpired("world"),
 							126))),
 
 				Def("InitVisited", ArgNames("mapHeight", "mapWidth"), 

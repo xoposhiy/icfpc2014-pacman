@@ -125,12 +125,12 @@ namespace Lib.LispLang
 		}
 		public static SExpr Max(SExpr a, SExpr b)
 		{
-			return If(IsGreater(a, b), a, b);
+			return If(Cgt(a, b), a, b);
 		}
 
 		public static SExpr Min(SExpr a, SExpr b)
 		{
-			return If(IsGreater(b, a), a, b);
+			return If(Cgt(b, a), a, b);
 		}
 
 		public static SExpr X(SExpr point)
@@ -223,7 +223,7 @@ namespace Lib.LispLang
 			return If(expr, 0, 1);
 		}
 
-		public static SExpr IsGreater(SExpr a, SExpr b)
+		public static SExpr Cgt(SExpr a, SExpr b)
 		{
 			return Cmd("CGT", a, b);
 		}

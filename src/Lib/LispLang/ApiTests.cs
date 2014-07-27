@@ -91,7 +91,7 @@ namespace Lib.LispLang
 					Call("any", List(0, 1), Fun("gtzero")),
 					Call("any", List(0, 0), Fun("gtzero")),
 					Return(),
-					Def("gtzero", ArgNames("x"), IsGreater("x", 0)),
+					Def("gtzero", ArgNames("x"), Cgt("x", 0)),
 					Return(),
 					any),
 				0, 1, 1);

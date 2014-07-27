@@ -82,7 +82,7 @@ namespace Lib.LispLang
 				Def("_argmax_iter", ArgNames("list", "maxIndex", "maxValue", "headIndex"),
 					If(Atom("list"),
 						"maxIndex",
-						If(IsGreater(Car("list"), "maxValue"),
+						If(Cgt(Car("list"), "maxValue"),
 							Call("_argmax_iter", Cdr("list"), "headIndex", Car("list"), Add("headIndex", 1)),
 							Call("_argmax_iter", Cdr("list"), "maxIndex", "maxValue", Add("headIndex", 1))
 							)))
@@ -95,7 +95,7 @@ namespace Lib.LispLang
 				Def("_argmin_iter", ArgNames("list", "minIndex", "minValue", "headIndex"),
 					If(Atom("list"),
 						"minIndex",
-						If(IsGreater("minValue", Car("list")),
+						If(Cgt("minValue", Car("list")),
 							Call("_argmin_iter", Cdr("list"), "headIndex", Car("list"), Add("headIndex", 1)),
 							Call("_argmin_iter", Cdr("list"), "minIndex", "minValue", Add("headIndex", 1))
 							)))
@@ -156,6 +156,7 @@ namespace Lib.LispLang
 					.Concat(listApi)
 					.Concat(queueApi)
 					.Concat(LambdaMenLogic)
+					.Concat(World.Definitions)
 					.ToArray());
 		}
 
@@ -244,10 +245,9 @@ namespace Lib.LispLang
 			{
 				return Get(2, LmState(world));
 			}
-	#endregion
+			#endregion
 
 			#region Ghosts
-
 			public static SExpr GhStates(SExpr world)
 			{
 				return Call("ghStates", world);
@@ -287,8 +287,6 @@ namespace Lib.LispLang
 			{
 				return GetTuple3(2, ghost);
 			}
-
-			
 			#endregion
 
 			public static SExpr FruitExpired(SExpr world)
