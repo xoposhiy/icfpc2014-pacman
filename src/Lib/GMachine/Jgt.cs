@@ -27,5 +27,10 @@ namespace Lib.GMachine
 			if (x > y)
 				state.Pc = TargetAddress;
 		}
+
+		protected override string ArgsToGhc()
+		{
+			return string.Format("{0}, {1}, {2}", TargetAddress, X, Y);
+		}
 	}
 }

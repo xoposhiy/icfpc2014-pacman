@@ -23,5 +23,10 @@ namespace Lib.GMachine
 			var y = state.ReadValue(Src);
 			state.WriteValue(Dst, (byte)(x - y));
 		}
+
+		protected override string ArgsToGhc()
+		{
+			return string.Format("{0}, {1}", Dst, Src);
+		}
 	}
 }

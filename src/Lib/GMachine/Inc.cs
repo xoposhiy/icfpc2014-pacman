@@ -18,5 +18,10 @@ namespace Lib.GMachine
 			var value = state.ReadValue(Dst);
 			state.WriteValue(Dst, ++value);
 		}
+
+		protected override string ArgsToGhc()
+		{
+			return string.Format("{0}", Dst);
+		}
 	}
 }

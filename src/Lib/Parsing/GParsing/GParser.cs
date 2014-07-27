@@ -29,7 +29,12 @@ namespace Lib.Parsing.GParsing
 			{
 				parameter = null;
 				int address;
-				if (labels.TryGetValue(argString, out address) || int.TryParse(argString, out address))
+				if (labels.TryGetValue(argString, out address))
+				{
+					parameter = (byte)sourceLineToAddress[address];
+					return true;
+				}
+				if (int.TryParse(argString, out address))
 				{
 					parameter = (byte)address;
 					return true;
@@ -69,9 +74,14 @@ namespace Lib.Parsing.GParsing
 					return false;
 				}
 				int value;
-				if (constants.TryGetValue(argString, out value) || labels.TryGetValue(argString, out value) || int.TryParse(argString, out value))
+				if (constants.TryGetValue(argString, out value) || int.TryParse(argString, out value))
 				{
 					parameter = GArg.Const((byte)value);
+					return true;
+				}
+				if (labels.TryGetValue(argString, out value))
+				{
+					parameter = GArg.Const((byte)sourceLineToAddress[value]);
 					return true;
 				}
 				if (argString.Length == 1 && char.ToLower(argString[0]) >= 'a' && char.ToLower(argString[0]) <= 'h')

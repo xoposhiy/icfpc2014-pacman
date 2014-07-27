@@ -13,5 +13,10 @@ namespace Lib.GMachine
 		{
 			state.Hlt = true;
 		}
+
+		protected override string ArgsToGhc()
+		{
+			return string.Empty;
+		}
 	}
 }

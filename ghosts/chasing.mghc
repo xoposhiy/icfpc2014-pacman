@@ -1,0 +1,240 @@
+; interruts
+	setMyDir = 0
+	getLPos = 1
+	getMyIndex = 3
+	getGStartPos = 4
+	getGPos = 5
+	getGState = 6
+	getMap = 7
+
+; dir consts
+	up = 0
+	right = 1
+	down = 2
+	left = 3
+; ghost consts
+	std = 0
+	fright = 1
+	invisible = 2
+; map consts
+	wall = 0
+	empty = 1
+	pill = 2
+	ppill = 3
+	fruit = 4
+	lStart = 5
+	gStart = 6
+
+; program state consts
+	inited = 1
+
+; vars
+	lx = 100
+	ly = 101
+	gx = 102
+	gy = 103
+	gmode = 104
+	gdir = 105
+	gindex = 106
+	gdirX = 107
+	gdirY = 108
+; upx, upy, rgx, rgy, dwx, dwy, lfx, lfy (8)
+	dirs = 200
+	dirUpX = 200
+	dirUpY = 201
+	dirRightX = 202
+	dirRightY = 203
+	dirDownX = 204
+	dirDownY = 205
+	dirLeftX = 206
+	dirLeftY = 207
+; dirsX
+	dirsX = 208 ; 4 items
+	dirsY = 212 ; 4 items
+
+; entry poit
+	jeq step, [255], inited
+	mov [255], inited
+
+; initialization
+	int getMyIndex
+		mov [gindex], a
+	mov [dirUpX], 0
+	mov [dirUpY], -1
+	mov [dirDownX], 0
+	mov [dirDownY], 1
+	mov [dirRightX], 1
+	mov [dirRightY], 0
+	mov [dirLeftX], -1
+	mov [dirLeftY], 0
+	mov c, dirsX
+	mov [c], 0
+	inc c
+	mov [c], 1
+	inc c
+	mov [c], 0
+	inc c
+	mov [c], -1
+	mov c, dirsY
+	mov [c], -1
+	inc c
+	mov [c], 0
+	inc c
+	mov [c], 1
+	inc c
+	mov [c], 0
+
+; h = gIndex
+; (f, g) = (gx, gy)
+; (d, e) = (lx, ly)
+step:
+	mov a, [gindex]
+	int getGPos
+		mov [gx], a
+		mov [gy], b
+	mov a, [gindex]
+	int getGState
+		mov [gmode], a
+		mov [gdir], b
+	int getLPos
+		mov [lx], a
+		mov [ly], b
+
+	; [gdirX] = dirsX[gdir]
+	mov c, dirsX
+	add c, gdir
+	mov [gdirX], [c]
+	; [gdirY] = dirsY[gdir]
+	mov c, dirsY
+	add c, gdir
+	mov [gdirY], [c]
+
+
+checkUp_start:
+	jlt checkUp, [ly], [gy]
+	jeq checkRight_start, 0, 0
+
+checkUp:
+	mov e, [gdirX]
+	add e, [dirUpX]
+	jgt upOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirUpY]
+	jgt upOk, f, 0
+
+	jeq checkRight_start, 0, 0
+
+upOk:
+	mov e, [gx]
+	add e, [dirUpX]
+	mov f, [gy]
+	add f, [dirUpY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq checkRight_start, a, wall
+
+	mov a, up
+	int setMyDir
+	hlt
+
+
+checkRight_start:
+	jlt checkRight, [lx], [gx]
+	jeq checkDown_start, 0, 0
+
+checkRight:
+	mov e, [gdirX]
+	add e, [dirRightX]
+	jgt rightOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirRightY]
+	jgt rightOk, f, 0
+
+	jeq checkDown_start, 0, 0
+
+rightOk:
+	mov e, [gx]
+	add e, [dirRightX]
+	mov f, [gy]
+	add f, [dirRightY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq checkDown_start, a, wall
+
+	mov a, right
+	int setMyDir
+	hlt
+
+	
+
+checkDown_start:
+	jlt checkDown, [ly], [gy]
+	jeq checkLeft_start, 0, 0
+
+checkDown:
+	mov e, [gdirX]
+	add e, [dirDownX]
+	jgt downOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirDownY]
+	jgt downOk, f, 0
+
+	jeq checkLeft_start, 0, 0
+
+downOk:
+	mov e, [gx]
+	add e, [dirDownX]
+	mov f, [gy]
+	add f, [dirDownY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq checkLeft_start, a, wall
+
+	mov a, down
+	int setMyDir
+	hlt
+
+
+checkLeft_start:
+	jlt checkLeft, [lx], [gx]
+	jeq end, 0, 0
+
+checkLeft:
+	mov e, [gdirX]
+	add e, [dirLeftX]
+	jgt leftOk, e, 0
+
+	mov f, [gdirY]
+	add f, [dirLeftY]
+	jgt leftOk, f, 0
+	jeq end, 0, 0
+
+leftOk:
+	mov e, [gx]
+	add e, [dirLeftX]
+	mov f, [gy]
+	add f, [dirLeftY]
+
+	; a = map[e, f]
+	mov a, e
+	mov b, f
+	int getMap
+	jeq end, a, wall
+
+	mov a, left
+	int setMyDir
+
+end:
+	hlt

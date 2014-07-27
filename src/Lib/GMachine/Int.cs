@@ -49,6 +49,11 @@ namespace Lib.GMachine
 			}
 		}
 
+		protected override string ArgsToGhc()
+		{
+			return string.Format("{0}", I);
+		}
+
 		private static void Int0([NotNull] GMachineState state, [NotNull] IGhostInterruptService interruptService)
 		{
 			var newDirection = state.Registers[0] > 3 ? (Direction?)null : (Direction)state.Registers[0];
