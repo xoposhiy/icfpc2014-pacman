@@ -2,6 +2,7 @@
 using System.IO;
 using Lib.Game;
 using Lib.GMachine;
+using Lib.Parsing;
 using Lib.Parsing.GParsing;
 
 namespace Lib.AI
@@ -22,7 +23,7 @@ namespace Lib.AI
 		{
 			return new Ghost
 			{
-				Program = GParser.Parse(File.ReadAllText(KnownPlace.Ghosts + name)).Program
+				ParseResult = GParser.Parse(File.ReadAllText(KnownPlace.Ghosts + name))
 			};
 		}
 
@@ -31,7 +32,7 @@ namespace Lib.AI
 		}
 
 		[CanBeNull]
-		public GCmd[] Program { get; private set; }
+		public ParseResult<GCmd> ParseResult { get; private set; }
 
 		[CanBeNull]
 		public Type GhostType { get; private set; }

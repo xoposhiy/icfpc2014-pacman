@@ -4,9 +4,12 @@ namespace Lib.GMachine
 {
 	public class GException : Exception
 	{
-		public GException(Exception innerException)
+		public GMachine Machine { get; protected set; }
+
+		public GException(GMachine machine, Exception innerException)
 			: base("G-Program failed", innerException)
 		{
+			Machine = machine;
 		}
 	}
 }

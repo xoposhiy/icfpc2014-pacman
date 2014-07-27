@@ -77,9 +77,10 @@ calcDirection: ; fun(lmSavedState, world)
   LDF sum
   AP 2
   LD 0 1  ; world
-  LDC 0
+  LD 0 0  ; lmSavedState
+  LDC 3
   LDF scoreOfDirection
-  AP 5
+  AP 6
   LD 0 0  ; lmSavedState
   LDF lmSavedState.Loc
   AP 1
@@ -99,9 +100,10 @@ calcDirection: ; fun(lmSavedState, world)
   LDF sum
   AP 2
   LD 0 1  ; world
-  LDC 0
+  LD 0 0  ; lmSavedState
+  LDC 3
   LDF scoreOfDirection
-  AP 5
+  AP 6
   LD 0 0  ; lmSavedState
   LDF lmSavedState.Loc
   AP 1
@@ -121,9 +123,10 @@ calcDirection: ; fun(lmSavedState, world)
   LDF sum
   AP 2
   LD 0 1  ; world
-  LDC 0
+  LD 0 0  ; lmSavedState
+  LDC 3
   LDF scoreOfDirection
-  AP 5
+  AP 6
   LD 0 0  ; lmSavedState
   LDF lmSavedState.Loc
   AP 1
@@ -143,9 +146,10 @@ calcDirection: ; fun(lmSavedState, world)
   LDF sum
   AP 2
   LD 0 1  ; world
-  LDC 0
+  LD 0 0  ; lmSavedState
+  LDC 3
   LDF scoreOfDirection
-  AP 5
+  AP 6
   LDC 0
   CONS
   CONS
@@ -156,6 +160,48 @@ calcDirection: ; fun(lmSavedState, world)
   AP 1
   RTN
 ;end calcDirection
+
+map: ; fun(world)
+  LD 0 0  ; world
+  CAR
+  RTN
+;end map
+
+lmState: ; fun(world)
+  LD 0 0  ; world
+  CDR
+  CAR
+  RTN
+;end lmState
+
+ghStates: ; fun(world)
+  LD 0 0  ; world
+  CDR
+  CDR
+  CAR
+  RTN
+;end ghStates
+
+fruitExpired: ; fun(world)
+  LD 0 0  ; world
+  CDR
+  CDR
+  CDR
+  RTN
+;end fruitExpired
+
+getCell: ; fun(map, point)
+  LD 0 0  ; map
+  LD 0 1  ; point
+  CDR
+  LDF get
+  AP 2
+  LD 0 1  ; point
+  CAR
+  LDF get
+  AP 2
+  RTN
+;end getCell
 
 getMapSize: ; fun(lmstate)
   LD 0 0  ; lmstate
@@ -182,123 +228,135 @@ scoreOfCell: ; fun(cell, world)
   LD 0 0  ; cell
   LDC 2
   CEQ
-  SEL nonzero_113 zero_112
+  SEL nonzero_116 zero_115
     LDC 0
-    TSEL endif_114 endif_114
-    nonzero_113:
+    TSEL endif_117 endif_117
+    nonzero_116:
       LDC 1
       JOIN
-    zero_112:
+    zero_115:
       LD 0 0  ; cell
-      LDC 3
+      LDC 1
       CEQ
-      SEL nonzero_110 zero_109
+      SEL nonzero_113 zero_112
         LDC 0
-        TSEL endif_111 endif_111
-        nonzero_110:
-          LDC 5
+        TSEL endif_114 endif_114
+        nonzero_113:
+          LDC -1
           JOIN
-        zero_109:
+        zero_112:
           LD 0 0  ; cell
-          LDC 4
+          LDC 3
           CEQ
-          SEL nonzero_104 zero_103
+          SEL nonzero_110 zero_109
             LDC 0
-            TSEL endif_105 endif_105
-            nonzero_104:
-              LD 0 1  ; world
-              LDF fruitExpired
-              AP 1
-              LDC 0
-              CGT
-              SEL nonzero_101 zero_100
+            TSEL endif_111 endif_111
+            nonzero_110:
+              LDC 5
+              JOIN
+            zero_109:
+              LD 0 0  ; cell
+              LDC 4
+              CEQ
+              SEL nonzero_104 zero_103
                 LDC 0
-                TSEL endif_102 endif_102
-                nonzero_101:
-                  LDC 1
+                TSEL endif_105 endif_105
+                nonzero_104:
+                  LD 0 1  ; world
+                  LDF fruitExpired
+                  AP 1
+                  LDC 127
+                  CGT
+                  SEL nonzero_101 zero_100
+                    LDC 0
+                    TSEL endif_102 endif_102
+                    nonzero_101:
+                      LDC 1
+                      JOIN
+                    zero_100:
+                      LDC 0
+                      JOIN
+                    endif_102:
                   JOIN
-                zero_100:
+                zero_103:
                   LDC 0
                   JOIN
-                endif_102:
+                endif_105:
+              SEL nonzero_107 zero_106
+                LDC 0
+                TSEL endif_108 endif_108
+                nonzero_107:
+                  LDC 30
+                  JOIN
+                zero_106:
+                  LDC 0
+                  JOIN
+                endif_108:
               JOIN
-            zero_103:
-              LDC 0
-              JOIN
-            endif_105:
-          SEL nonzero_107 zero_106
-            LDC 0
-            TSEL endif_108 endif_108
-            nonzero_107:
-              LDC 30
-              JOIN
-            zero_106:
-              LDC 0
-              JOIN
-            endif_108:
+            endif_111:
           JOIN
-        endif_111:
+        endif_114:
       JOIN
-    endif_114:
+    endif_117:
   RTN
 ;end scoreOfCell
 
 scoreOfGhosts: ; fun(ghosts, point, powerRemaining)
-  LDC 0
+  LDC 254
   LD 0 2  ; powerRemaining
   CGT
-  SEL nonzero_119 zero_118
-    LDC 0
-    TSEL endif_120 endif_120
-    nonzero_119:
-      LD 0 0  ; ghosts
-      LD 0 1  ; point
-      LDF any_ghostAtPoint
-      AP 2
-      SEL nonzero_116 zero_115
-        LDC 0
-        TSEL endif_117 endif_117
-        nonzero_116:
-          LDC 1
-          JOIN
-        zero_115:
-          LDC 0
-          JOIN
-        endif_117:
-      JOIN
-    zero_118:
-      LDC 0
-      JOIN
-    endif_120:
   SEL nonzero_122 zero_121
     LDC 0
     TSEL endif_123 endif_123
     nonzero_122:
-      LDC -100
+      LD 0 0  ; ghosts
+      LD 0 1  ; point
+      LDF any_ghostAtPoint
+      AP 2
+      SEL nonzero_119 zero_118
+        LDC 0
+        TSEL endif_120 endif_120
+        nonzero_119:
+          LDC 1
+          JOIN
+        zero_118:
+          LDC 0
+          JOIN
+        endif_120:
       JOIN
     zero_121:
       LDC 0
       JOIN
     endif_123:
-  LD 0 0  ; ghosts
-  LD 0 1  ; point
-  LDF any_frightGhostAtPoint
-  AP 2
   SEL nonzero_125 zero_124
     LDC 0
     TSEL endif_126 endif_126
     nonzero_125:
-      LDC 10
+      LDC -100
       JOIN
     zero_124:
       LDC 0
       JOIN
     endif_126:
+  LD 0 0  ; ghosts
+  LD 0 1  ; point
+  LDF any_frightGhostAtPoint
+  AP 2
+  SEL nonzero_128 zero_127
+    LDC 0
+    TSEL endif_129 endif_129
+    nonzero_128:
+      LDC 10
+      JOIN
+    zero_127:
+      LDC 0
+      JOIN
+    endif_129:
   ADD
   RTN
 ;end scoreOfGhosts
 
-scoreOfPoint: ; fun(prevLoc, nextLoc, world, depth)
+scoreOfPoint: ; fun(prevLoc, nextLoc, world, visitedPoints, depth)
   LD 0 2  ; world
   LDF map
   AP 1
@@ -323,25 +381,32 @@ scoreOfPoint: ; fun(prevLoc, nextLoc, world, depth)
   LD 0 1  ; nextLoc
   LDF pEquals
   AP 2
-  SEL nonzero_128 zero_127
+  SEL nonzero_131 zero_130
     LDC 0
-    TSEL endif_129 endif_129
-    nonzero_128:
+    TSEL endif_132 endif_132
+    nonzero_131:
       LDC 0
-      LD 0 3  ; depth
+      LD 0 4  ; depth
       SUB
       LDC 1
       SUB
       JOIN
-    zero_127:
+    zero_130:
       LDC 0
       JOIN
-    endif_129:
+    endif_132:
+  ADD
+  LDC 0
+  LD 0 3  ; visitedPoints
+  LD 0 1  ; nextLoc
+  LDF countPointsAs
+  AP 2
+  SUB
   ADD
   RTN
 ;end scoreOfPoint
 
-scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, depth)
+scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, lmstate, depth)
   LD 0 3  ; world
   LDF map
   AP 1
@@ -350,37 +415,40 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, depth)
   AP 2
   LDC 0
   CEQ
-  SEL nonzero_131 zero_130
+  SEL nonzero_134 zero_133
     LDC 0
-    TSEL endif_132 endif_132
-    nonzero_131:
+    TSEL endif_135 endif_135
+    nonzero_134:
       LDC 0
       JOIN
-    zero_130:
+    zero_133:
       LDC 1
       JOIN
-    endif_132:
-  SEL nonzero_137 zero_136
+    endif_135:
+  SEL nonzero_140 zero_139
     LDC 0
-    TSEL endif_138 endif_138
-    nonzero_137:
-      LD 0 4  ; depth
+    TSEL endif_141 endif_141
+    nonzero_140:
+      LD 0 5  ; depth
       LDC 1
       ADD
       LD 0 0  ; prevLoc
       LD 0 2  ; nextLoc
       LD 0 3  ; world
-      LD 0 4  ; depth
+      LD 0 4  ; lmstate
+      LDF lmSavedState.VisitedPoints
+      AP 1
+      LD 0 5  ; depth
       LDF scoreOfPoint
-      AP 4
+      AP 5
       MUL
-      LD 0 4  ; depth
+      LD 0 5  ; depth
       LDC 0
       CGT
-      SEL nonzero_134 zero_133
+      SEL nonzero_137 zero_136
         LDC 0
-        TSEL endif_135 endif_135
-        nonzero_134:
+        TSEL endif_138 endif_138
+        nonzero_137:
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -390,11 +458,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, depth)
           LDF sum
           AP 2
           LD 0 3  ; world
-          LD 0 4  ; depth
+          LD 0 4  ; lmstate
+          LD 0 5  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 5
+          AP 6
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -404,11 +473,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, depth)
           LDF sum
           AP 2
           LD 0 3  ; world
-          LD 0 4  ; depth
+          LD 0 4  ; lmstate
+          LD 0 5  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 5
+          AP 6
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -418,11 +488,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, depth)
           LDF sum
           AP 2
           LD 0 3  ; world
-          LD 0 4  ; depth
+          LD 0 4  ; lmstate
+          LD 0 5  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 5
+          AP 6
           LD 0 1  ; currLoc
           LD 0 2  ; nextLoc
           LD 0 2  ; nextLoc
@@ -432,11 +503,12 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, depth)
           LDF sum
           AP 2
           LD 0 3  ; world
-          LD 0 4  ; depth
+          LD 0 4  ; lmstate
+          LD 0 5  ; depth
           LDC 1
           SUB
           LDF scoreOfDirection
-          AP 5
+          AP 6
           LDC 0
           CONS
           CONS
@@ -445,16 +517,16 @@ scoreOfDirection: ; fun(prevLoc, currLoc, nextLoc, world, depth)
           LDF max
           AP 1
           JOIN
-        zero_133:
+        zero_136:
           LDC 0
           JOIN
-        endif_135:
+        endif_138:
       ADD
       JOIN
-    zero_136:
+    zero_139:
       LDC -1000
       JOIN
-    endif_138:
+    endif_141:
   RTN
 ;end scoreOfDirection
 

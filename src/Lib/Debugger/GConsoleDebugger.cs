@@ -7,11 +7,11 @@ namespace Lib.Debugger
 	public static class GConsoleDebugger
 	{
 		[CanBeNull]
-		public static Exception Run([NotNull] GMachine.GMachine m, [NotNull] ParseResult<GCmd> prog, [CanBeNull] Exception exception = null)
+		public static Exception Run([NotNull] GMachine.GMachine m, [CanBeNull] Exception exception = null)
 		{
 			Console.Clear();
 			var console = new FastConsole();
-			ShowState(console, m, prog, exception);
+			ShowState(console, m, m.ParseResult, exception);
 			while (true)
 			{
 				var cmd = Console.ReadKey(true);
@@ -20,23 +20,23 @@ namespace Lib.Debugger
 				else if (cmd.Modifiers == 0 && (cmd.Key == ConsoleKey.F11 || cmd.Key == ConsoleKey.F10))
 				{
 					exception = StepSafe1(m.Step);
-					ShowState(console, m, prog, exception);
+					ShowState(console, m, m.ParseResult, exception);
 				}
 				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F12)
 				{
 					exception = StepSafe2(m.StepBack);
-					ShowState(console, m, prog, exception);
+					ShowState(console, m, m.ParseResult, exception);
 				}
 				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.F5)
 				{
 					exception = StepSafe2(m.RunToEnd);
-					ShowState(console, m, prog, exception);
+					ShowState(console, m, m.ParseResult, exception);
 				}
 				else if (cmd.Modifiers == ConsoleModifiers.Control && cmd.Key == ConsoleKey.R)
 				{
 					m.ResetState();
 					exception = null;
-					ShowState(console, m, prog, exception);
+					ShowState(console, m, m.ParseResult, exception);
 				}
 				else if (cmd.Modifiers == 0 && cmd.Key == ConsoleKey.Escape)
 				{

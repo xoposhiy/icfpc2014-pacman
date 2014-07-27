@@ -36,5 +36,10 @@ namespace Lib.AI
 				interruptService.SetNewDirectionForThisGhost(bestDir);
 			}
 		}
+
+		public int GhostIndex
+		{
+			get { return interruptService.GetThisGhostIndex(); }
+		}
 	}
 }

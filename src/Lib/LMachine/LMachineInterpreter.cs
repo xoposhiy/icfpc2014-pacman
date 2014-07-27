@@ -90,7 +90,14 @@ namespace Lib.LMachine
 				throw new InvalidOperationException(string.Format("Invalid CurrentAddress: {0}", State.CurrentAddress));
 			var instruction = Program[State.CurrentAddress];
 			Log(instruction.SourceLineNo+ "\t" +instruction);
-			instruction.Execute(State);
+			try
+			{
+				instruction.Execute(State);
+			}
+			catch (Exception e)
+			{
+				throw new LException(e);
+			}
 			State.StepsCount++;
 			if (State.StepsCount > 3072 * 1000)
 				throw new LMTimeoutException();

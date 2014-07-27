@@ -2,7 +2,7 @@
 using Lib.AI;
 using Lib.Debugger;
 using Lib.Game;
-using Lib.LispLang;
+using Lib.GMachine;
 using Lib.LMachine;
 
 namespace conPlayer
@@ -17,22 +17,35 @@ namespace conPlayer
 //			LMMain main = new LocallyGreedyCarefulLambdaMan().Main;
 //			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
 
-			var enterDebugger = false;
+			var enterLDebugger = false;
+			//			var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyCarefulLM_Lisp().Code, runUntilStopStep: x =>
 			var interpretedLambdaMan = new InterpretedLambdaMan(CarefulGreedyLambdaMan_Lisp.code, runUntilStopStep: x =>
-//			var interpretedLambdaMan = new InterpretedLambdaMan(new LocallyCarefulLM_Lisp().Code, runUntilStopStep: x =>
 			{
-				if (enterDebugger)
+				if (enterLDebugger)
 				{
 						var ex = LConsoleDebugger.Run(x.Interpreter, x.ProgramParseResult);
 					if (ex != null)
 						throw new DebuggerAbortedException(ex);
-					enterDebugger = false;
+					enterLDebugger = false;
 				}
 				else
 					x.Interpreter.RunUntilStop();
 			});
 
+			var enterGDebugger = false;
 			var ghostFactory = new GhostFactory(
+				x =>
+				{
+					if (enterGDebugger)
+					{
+						var ex = GConsoleDebugger.Run(x);
+						if (ex != null)
+							throw new DebuggerAbortedException(ex);
+						enterGDebugger = false;
+					}
+					else
+						x.RunToEnd();
+				},
 				Ghost.ByProgram("flickle.ghc"),
 				Ghost.ByProgram("flipper.ghc"),
 				Ghost.ByType<ChaseGhost>(),
@@ -71,14 +84,16 @@ namespace conPlayer
 						else if (pressed.Modifiers == 0 && pressed.Key == ConsoleKey.F6)
 							runStepByStep = true;
 						else if (pressed.Modifiers == 0 && pressed.Key == ConsoleKey.F2)
-							enterDebugger = true;
+							enterLDebugger = true;
 					}
 					//Console.ReadKey();
 				}
 			}
 			if (exception != null)
 			{
-				if (!(exception is DebuggerAbortedException))
+				if (exception is GException)
+					GConsoleDebugger.Run(((GException)exception).Machine, exception);
+				if (exception is LException)
 					LConsoleDebugger.Run(interpretedLambdaMan.Interpreter, interpretedLambdaMan.ProgramParseResult, exception);
 			}
 			else

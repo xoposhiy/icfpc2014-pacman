@@ -1,19 +1,29 @@
 using System;
 using Lib.Game;
+using Lib.Parsing;
 
 namespace Lib.GMachine
 {
 	public class GMachine : IGMachine
 	{
 		private readonly IGhostInterruptService interruptService;
+		private readonly Action<GMachine> runUntilStopStep;
 		private GMachineState lastInitialState;
 
-		public GMachine([NotNull] GCmd[] program, [NotNull] IGhostInterruptService interruptService)
+		public GMachine([NotNull] ParseResult<GCmd> parseResult, [NotNull] IGhostInterruptService interruptService, Action<GMachine> runUntilStopStep)
 		{
 			this.interruptService = interruptService;
-			Program = program;
+			this.runUntilStopStep = runUntilStopStep ?? (machine => machine.RunToEnd());
+			ParseResult = parseResult;
+			Program = parseResult.Program;
 			State = new GMachineState();
+			GhostIndex = interruptService.GetThisGhostIndex();
 		}
+
+		public int GhostIndex { get; private set; }
+
+		[NotNull]
+		public ParseResult<GCmd> ParseResult { get; private set; }
 
 		[NotNull]
 		public GCmd[] Program { get; private set; }
@@ -24,7 +34,7 @@ namespace Lib.GMachine
 		public void Run()
 		{
 			Init();
-			RunToEnd();
+			runUntilStopStep(this);
 		}
 
 		public void Init()
@@ -67,7 +77,7 @@ namespace Lib.GMachine
 			}
 			catch (Exception e)
 			{
-				throw new GException(e);
+				throw new GException(this, e);
 			}
 			if (State.Pc == pc)
 				State.Pc++;
