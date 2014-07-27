@@ -18,7 +18,7 @@ namespace conPlayer
 			//			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code);
 
 			var enterDebugger = false;
-			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.code, runUntilStopStep: x =>
+			var interpretedLambdaMan = new InterpretedLambdaMan(LocallyGreedyCarefulLambdaManOnList.Code, runUntilStopStep: x =>
 			{
 				if (enterDebugger)
 				{
