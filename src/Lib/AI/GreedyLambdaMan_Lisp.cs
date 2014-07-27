@@ -29,7 +29,6 @@ namespace Lib.AI
 				pointIsWall,
 				pointIsPill,
 				pointIsPowerPill,
-				pointIsFruit,
 				pointIsFruit_Time,
 				InitVisited,
 				Repeat
@@ -65,14 +64,16 @@ namespace Lib.AI
 
 		public static SExpr RecursiveFindGoal =
 			Def("RecursiveFindGoal", ArgNames("queue", "visited", "world"),
-				If(Call("IsGoodPoint", Car(Call("queue_peek", "queue")), "world"),
-					Cdr(Call("queue_peek", "queue")),
-					Call("RecursiveFindGoal_2",
-						Call("AddNeighbours",
-							Call("queue_dequeue", "queue"),
-							Call("queue_peek", "queue"),
-							"world",
-							"visited"))));
+				If( Call("queue_isempty", "queue"), 
+					(int)Direction.Down,
+					If(	Call("IsGoodPoint", Car(Call("queue_peek", "queue")), "world"),
+						Cdr(Call("queue_peek", "queue")),
+						Call("RecursiveFindGoal_2",
+							Call("AddNeighbours",
+								Call("queue_dequeue", "queue"),
+								Call("queue_peek", "queue"),
+								"world",
+								"visited")))));
 
 		public static SExpr InitQueueAndVisited =
 			Def("InitQueueAndVisited", ArgNames("world", "lmPoint", "visited"),
@@ -152,10 +153,6 @@ namespace Lib.AI
 		public static SExpr pointIsPowerPill =
 			Def("pointIsPowerPill", ArgNames("pointCell"),
 				Ceq("pointCell", (int)(MapCell.PowerPill)));
-
-		public static SExpr pointIsFruit =
-			Def("pointIsFruit", ArgNames("pointCell"),
-				Ceq("pointCell", (int)(MapCell.Fruit)));
 
 		public static SExpr pointIsFruit_Time =
 			Def("pointIsFruit_Time", ArgNames("pointCell", "world"),

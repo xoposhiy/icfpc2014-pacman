@@ -28,7 +28,6 @@ namespace Lib.AI
 				pointIsWall,
 				pointIsPill,
 				pointIsPowerPill,
-				pointIsFruit,
 				pointIsFruit_Time,
 				InitVisited,
 				Repeat,
