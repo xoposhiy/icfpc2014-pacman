@@ -22,6 +22,10 @@ namespace Lib.Debugger
 
 		public void ShowState(bool followCurrentAddress)
 		{
+			console.Write("Ghost #");
+			console.ForegroundColor = ConsoleColor.Magenta;
+			console.WriteLine(m.GhostIndex);
+			console.ResetColor();
 			for (var i = 0; i < prog.CodeLines.Length; i++)
 			{
 				console.ForegroundColor = ConsoleColor.Green;
@@ -99,7 +103,7 @@ namespace Lib.Debugger
 			console.ForegroundColor = ConsoleColor.Cyan;
 			console.WriteLine("Data memory:");
 			console.ResetColor();
-			const int bucketCount = 3;
+			const int bucketCount = 2;
 			for (int i = 0; i < m.State.DataMemory.Length / bucketCount + m.State.DataMemory.Length % bucketCount; i++)
 			{
 				for (int j = 0; j < bucketCount; j++)
@@ -133,8 +137,15 @@ namespace Lib.Debugger
 			{
 				console.Write(" (");
 				console.ForegroundColor = ConsoleColor.Yellow;
+				bool first = true;
 				foreach (var constant in constants)
+				{
+					if (first)
+						first = false;
+					else
+						console.Write(", ");
 					console.Write(constant);
+				}
 				console.ResetColor();
 				console.Write(")");
 			}
@@ -149,7 +160,7 @@ namespace Lib.Debugger
 			for (int i = 0; i < m.State.Registers.Length; i++)
 			{
 				console.ForegroundColor = ConsoleColor.Magenta;
-				console.Write((char)i + 'a');
+				console.Write(GArg.Reg((byte)i));
 				console.ResetColor();
 				console.Write(" = ");
 				WriteValue(m.State.Registers[i]);

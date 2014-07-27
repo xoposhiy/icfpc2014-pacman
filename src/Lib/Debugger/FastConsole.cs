@@ -78,6 +78,11 @@ namespace Lib.Debugger
 			{
 				if (string.IsNullOrEmpty(text))
 					return;
+				if (text.IndexOf('\t') >= 0)
+				{
+					Write(text.Replace("\t", "    "));
+					return;
+				}
 				if (!string.IsNullOrEmpty(text) && text.IndexOf("\n") >= 0)
 				{
 					var texts = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);

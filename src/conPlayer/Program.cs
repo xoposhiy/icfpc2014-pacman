@@ -46,10 +46,7 @@ namespace conPlayer
 					else
 						x.RunToEnd();
 				},
-				Ghost.ByProgram("flickle.ghc"),
-				Ghost.ByProgram("flipper.ghc"),
-				Ghost.ByType<ChaseGhost>(),
-				Ghost.ByProgram("sample.ghc")
+				Ghost.ByProgram("chasing.mghc")
 			);
 
 			LMMain main = interpretedLambdaMan.Main;
