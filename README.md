@@ -33,7 +33,7 @@ Due to small allowed program size we write ghost AIs in macroassembler without a
 Interesting part in host AI is the way to emulate functions with the help of PC-register and variable [return] for storing return address.
 
 Sample from chasing2:
-```assembly
+```nasm
 mod_dif:
 ;In: a, b
 ;Out: a = |a-b|
