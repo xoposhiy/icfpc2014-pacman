@@ -8,7 +8,7 @@
   * Alexey Kungurtsev
   * Ksenia Zhagorina
 
-All from SKB Kontur [http://www.kontur.ru] and [Ural Federal University](http://www.urfu.ru)
+(SKB Kontur)[http://www.kontur.ru] and [Ural Federal University](http://www.urfu.ru)
 
 Used language: C#
 
@@ -97,4 +97,4 @@ Final lambda-man AI is here:
 
 ### Debugger
 
-Cool visual debugger was made for both macroassemblers. See [src/Lib/Debugger] for details.
+Cool visual debugger was made for both macroassemblers. See [src/Lib/Debugger](src/Lib/Debugger) for details.
