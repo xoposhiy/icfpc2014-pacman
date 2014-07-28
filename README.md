@@ -49,7 +49,7 @@ end_mod_dif:
 ```
 
 And the call:
-```assembly
+```nasm
 ; a = mod_dif(2, 5)
   mov a, 2
   mov b, 5
