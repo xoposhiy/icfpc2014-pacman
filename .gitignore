@@ -24,3 +24,4 @@ _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 packages/
+result/code/src/*
