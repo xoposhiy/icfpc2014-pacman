@@ -149,31 +149,27 @@ crowd:
 	crowd_ghost_loop:
 		jeq end_crowd, c, [gindex] ; not found
 		; d = dist to ghost c
-		mov a, c
-		int getGPos ; (a, b) - coordinates of other ghost
-		mov e, a
-		mov f, b
-		;d = mod_dif(gx, e)
-			mov a, [gx]
-			mov b, e
-			mov [return], pc
-			mov pc, mod_dif
-			mov d, a;
-		;a = mod_dif(gy, f)
-			mov a, [gy]
-			mov b, f
-			mov [return], pc
-			mov pc, mod_dif
-		;d = max(a, d)
-			jgt crowd_ghost_loop_dist, d, a
-			mov d, a
-			crowd_ghost_loop_dist:
+			mov a, c
+			int getGPos ; (a, b) - coordinates of other ghost
+			mov e, a
+			mov f, b
+			;d = mod_dif(gx, e)
+				mov a, [gx]
+				mov b, e
+				mov [return], pc
+				mov pc, mod_dif
+				mov d, a;
+			;a = mod_dif(gy, f)
+				mov a, [gy]
+				mov b, f
+				mov [return], pc
+				mov pc, mod_dif
+			;d = max(a, d)
+				jgt crowd_ghost_loop_dist, d, a
+				mov d, a
+				crowd_ghost_loop_dist:
 		jgt crowd_ghost_loop_too_far, d, 1 ; too far
-		
-		mov a, 88
-		mov b, 88
-		int 8
-		
+
 		mov a, [gindex]
 		mov [return], pc
 		mov pc, random_walk
@@ -184,31 +180,30 @@ crowd:
 	end_crowd_ghost_loop:
 end_crowd:
 
-;	if Frighten and far - just do random walk
 fright_random_walk:
-	jeq end_fright_random_walk, [isFright], 0 ; no fright -> no random walk
-	
+; if Frighten and far from lambda - just do random walk 
+	jeq end_fright_random_walk, [isFright], 0 ; no fright -> no random walk. exit
 	; c = |gx - lx|
-	mov a, gx
-	mov b, lx
-	mov [return], pc
-	mov pc, mod_dif
-	mov c, a
-
+		mov a, gx
+		mov b, lx
+		mov [return], pc
+		mov pc, mod_dif
+		mov c, a
 	; a = |gy - ly|
-	mov a, gy
-	mov b, ly
-	mov [return], pc
-	mov pc, mod_dif
-	
+		mov a, gy
+		mov b, ly
+		mov [return], pc
+		mov pc, mod_dif
 	; a = dist(ghost, lambda)
-	jgt fright_random_walk_dist, a, c
+		jgt fright_random_walk_dist, a, c
 		mov a, c
-	fright_random_walk_dist:
-	jlt end_fright_random_walk, a, 7 ; not far 
-	mov a, [last_random_dir]
-	mov [return], pc
-	mov pc, random_walk
+		fright_random_walk_dist:
+	; exit if not far
+		jlt end_fright_random_walk, a, 7 ; not far 
+	;random_walk([last_random_dir])
+		mov a, [last_random_dir]
+		mov [return], pc
+		mov pc, random_walk
 	mov pc, end
 end_fright_random_walk:
 
@@ -216,14 +211,14 @@ chasing:
 ; select direction making lambda closer to ghost
 	jeq chasing_horr, [prefere_vert], 1
 	chasing_vert:
-	; consider_dir(gy, ly, down)
+	; consider_dir(down, gy, ly)
 		mov a, down
 		mov b, [gy]
 		mov c, [ly]
 		mov [return], pc
 		mov pc, consider_dir
 
-	; consider_dir(ly, gy, up)
+	; consider_dir(up, ly, gy)
 		mov a, up
 		mov b, [ly]
 		mov c, [gy]
@@ -233,14 +228,14 @@ chasing:
 	jeq end_chasing, [prefere_vert], 1
 
 	chasing_horr:
-	; consider_dir(gx, lx, right)
+	; consider_dir(right, gx, lx)
 		mov a, right
 		mov b, [gx]
 		mov c, [lx]
 		mov [return], pc
 		mov pc, consider_dir
 
-	; consider_dir(lx, gx, left)
+	; consider_dir(left, lx, gx)
 		mov a, left
 		mov b, [lx]
 		mov c, [gx]
@@ -250,7 +245,8 @@ chasing:
 end_chasing:
 
 ; skip random walk if no need
-jlt end, [next_dir], 4
+	jlt end, [next_dir], 4
+; random_walk([last_random_dir])	
 	mov a, [last_random_dir]
 	mov [return], pc
 	mov pc, random_walk
@@ -258,11 +254,6 @@ jlt end, [next_dir], 4
 end:
 	mov a, [next_dir]
 	int setMyDir
-	mov b, [prefere_vert]
-	mov f, [gdir]
-	mov g, [inverted_gdir]
-	mov h, [steps]
-	;int 8
 	hlt;
 
 	
@@ -284,22 +275,19 @@ end_mod_dif:
 	mov pc, [return]
 
 random_walk: 
-;In: a - start direction to try
-	mov [return2], [return]
+;In: a - start direction to try is (a+1)
+	mov [return2], [return] ;[return] will be overriden by called functions, so store it in [return2]
 	and a, 3
 	mov b, a
-	
-	random_walk_loop: ; loop over 4 directions starting with 
+	random_walk_loop: ; loop over 4 directions starting with (a+1)
 		inc a
 		and a, 3
 		mov [return], pc
 		mov pc, set_next_dir_if_correct_move
 		jlt end_random_walk_found, [next_dir], 4
-		jeq end_random_walk, a, b		; not found
+		jeq end_random_walk, a, b ; not found
 		mov pc, random_walk_loop
 	end_random_walk_found:
-		mov a, [next_dir]
-		int 8
 		mov [last_random_dir], [next_dir]
 end_random_walk:
 	add [return2], 2
