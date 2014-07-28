@@ -19,9 +19,9 @@ Used language: C#
 Both Ghost CPU and Lambda-Man CPU has macroassembler with constants and labels.
 
 Source code:
-  * Abstract macroassembler[ParsrBase.cs](src/Lib/Parsing/ParserBase.cs)
-  * GHC macroassembler[GParser.cs](src/Lib/Parsing/GParsing/GParser.cs)
-  * GCC macroassembler[LParser.cs](src/Lib/Parsing/LParsing/LParser.cs)
+  * Abstract macroassembler [ParsrBase.cs](src/Lib/Parsing/ParserBase.cs)
+  * GHC macroassembler [GParser.cs](src/Lib/Parsing/GParsing/GParser.cs)
+  * GCC macroassembler [LParser.cs](src/Lib/Parsing/LParsing/LParser.cs)
 
 ###Ghost AI
 
