@@ -59,9 +59,17 @@ And the call:
 ; execution will continue from this line
 ```
 
-#### Algorithm description
+#### Algorithm components
 
-TODO
+**Random walk**. In all cases it has no more clever decisions AI uses random walk. It searches first correct direction starting from given direction. It stores last chosen direction and by default next time starts search direction from different one.
+
+**Chasing**. Select direction to make ghost a bit closer (in fright mode - further) to lambda-man.
+
+**Ghost collaoration**. If ghost is near another ghost with smaller index it falls back into random walk. It make higher-index ghosts to spread while smaller-index ghost still chasing the lambda-man.
+
+**Horizontal and vertical preference during chasing**. During chasing odd ghosts prefere to select horizontal directions, while even ghosts - vertical. It helps them to surround the lambda-man.
+
+**Fright mode far enough**. If ghost is far enough from the lambda-man in fright mode, it just falls back into random walk.
 
 ### Lambda AI
 
