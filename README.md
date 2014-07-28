@@ -8,9 +8,7 @@
   * Alexey Kungurtsev
   * Ksenia Zhagorina
 
-Russia, Ekaterinburg.
-
-[SKB Kontur](http://www.kontur.ru) and [Ural Federal University](http://www.urfu.ru)
+[SKB Kontur](http://www.kontur.ru) and [Ural Federal University](http://www.urfu.ru), Russia, Ekaterinburg.
 
 Language: C#
 
