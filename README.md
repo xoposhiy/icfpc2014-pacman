@@ -72,4 +72,29 @@ And the call:
 
 ### Lambda AI
 
-TODO
+Macroassembler for GCC considered to be too low level and we build lisp-like language on top of it.
+
+Lisp-like language was build as Internal DSL in C#:
+
+```csharp
+SExpr main = Def("main", ArgNames("world", "ghosts"), Cons(42, Fun("step")));
+SExpr step = Def("step", ArgNames("state", "world"), Cons("state", (int)Direction.Right));
+
+string gccCode = Compile(main, step);
+```
+
+Where SExpr — is something who know how to translate it into macroassembler gcc-code.
+
+Neigher tail recursion optimization, nor any other optimizations. Stupid simple.
+
+Everything refered to the lisp-translator lives here [src/Lib/LispLang](src/Lib/LispLang).
+
+Final lambda-man AI is here:
+* Lisp-like source code [GreedyLambdaMan_Lisp.cs](src/Lib/AI/GreedyLambdaMan_Lisp.cs)
+* The same in macroassembler [GreedyLM.mgcc](gcc-samples/GreedyLM.mgcc)
+* The same in pure gcc [GreedyLM.gcc](gcc-samples/GreedyLM.gcc)
+
+
+### Debugger
+
+Cool visual debugger was made for both macroassemblers. See [src/Lib/Debugger] for details.
