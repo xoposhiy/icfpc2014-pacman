@@ -53,6 +53,7 @@
 	map_g_right =119
 	map_g_down =120
 	map_g_left =121
+	return2 = 254
 	return = 255
 	
 	
@@ -141,9 +142,51 @@ end_initialization:
 
 ; the strategy!
 
+crowd:
+; random_walk if another standard ghost less index is nearby. not in fright mode.
+	jgt end_crowd, [isFright], 0; exit if fright 
+	mov c, 0
+	crowd_ghost_loop:
+		jeq end_crowd, c, [gindex] ; not found
+		; d = dist to ghost c
+		mov a, c
+		int getGPos ; (a, b) - coordinates of other ghost
+		mov e, a
+		mov f, b
+		;d = mod_dif(gx, e)
+			mov a, [gx]
+			mov b, e
+			mov [return], pc
+			mov pc, mod_dif
+			mov d, a;
+		;a = mod_dif(gy, f)
+			mov a, [gy]
+			mov b, f
+			mov [return], pc
+			mov pc, mod_dif
+		;d = max(a, d)
+			jgt crowd_ghost_loop_dist, d, a
+			mov d, a
+			crowd_ghost_loop_dist:
+		jgt crowd_ghost_loop_too_far, d, 1 ; too far
+		
+		mov a, 88
+		mov b, 88
+		int 8
+		
+		mov a, [gindex]
+		mov [return], pc
+		mov pc, random_walk
+		mov pc, end
+		
+		crowd_ghost_loop_too_far:
+		inc c
+	end_crowd_ghost_loop:
+end_crowd:
+
 ;	if Frighten and far - just do random walk
 fright_random_walk:
-	jeq end_fright_random_walk, [isFright], 0 ; not frighten
+	jeq end_fright_random_walk, [isFright], 0 ; no fright -> no random walk
 	
 	; c = |gx - lx|
 	mov a, gx
@@ -163,8 +206,10 @@ fright_random_walk:
 		mov a, c
 	fright_random_walk_dist:
 	jlt end_fright_random_walk, a, 7 ; not far 
-	mov [return], end
+	mov a, [last_random_dir]
+	mov [return], pc
 	mov pc, random_walk
+	mov pc, end
 end_fright_random_walk:
 
 chasing:
@@ -206,6 +251,7 @@ end_chasing:
 
 ; skip random walk if no need
 jlt end, [next_dir], 4
+	mov a, [last_random_dir]
 	mov [return], pc
 	mov pc, random_walk
 
@@ -216,7 +262,7 @@ end:
 	mov f, [gdir]
 	mov g, [inverted_gdir]
 	mov h, [steps]
-	int 8
+	;int 8
 	hlt;
 
 	
@@ -238,22 +284,26 @@ end_mod_dif:
 	mov pc, [return]
 
 random_walk: 
-	; next_dir = (last_random_dir + 1) % 4
-	; last_random_dir = next_dir
-	mov a, [last_random_dir]
+;In: a - start direction to try
+	mov [return2], [return]
+	and a, 3
+	mov b, a
+	
 	random_walk_loop: ; loop over 4 directions starting with 
 		inc a
 		and a, 3
 		mov [return], pc
 		mov pc, set_next_dir_if_correct_move
 		jlt end_random_walk_found, [next_dir], 4
-		jeq end_random_walk, a, [last_random_dir]		; not found
+		jeq end_random_walk, a, b		; not found
 		mov pc, random_walk_loop
 	end_random_walk_found:
+		mov a, [next_dir]
+		int 8
 		mov [last_random_dir], [next_dir]
 end_random_walk:
-	add [return], 2
-	mov pc, [return]
+	add [return2], 2
+	mov pc, [return2]
 
 set_next_dir_if_correct_move:
 ; In a - direction to set
