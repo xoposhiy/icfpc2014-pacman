@@ -26,9 +26,14 @@
 	gStart = 6
 
 ; vars
-	
-	steps = 48
-	isFright = 49
+
+	is_inited = 60
+	steps = 61
+	next_dir = 62
+	inverted_gdir = 63
+	isFright = 64
+	prefere_vert = 65
+	last_random_dir = 66
 	lx = 100
 	ly = 101
 	gx = 102
@@ -36,7 +41,6 @@
 	gmode = 104
 	gdir = 105
 	gindex = 106
-	return = 255
 	gx_up = 110
 	gx_right = 111
 	gx_down = 112
@@ -49,9 +53,11 @@
 	map_g_right =119
 	map_g_down =120
 	map_g_left =121
+	return = 255
 	
 	
 ; entry point
+	mov [next_dir], -1 ;no dir selected yet
 	int getMyIndex
 		mov [gindex], a
 	mov a, [gindex]
@@ -98,64 +104,175 @@
 	int getMap
 	mov [map_g_down], a
 
+	; isFright mechanism:
+	; it can be used to invert directionas follows: right = [50 + [isFright] + left]
+	; and just invert dir as follows: right = [54 + left]
 	; [49] = isFright
-	mov [50], up
-	mov [51], right
-	mov [52], down
-	mov [53], left
-	mov [54], down
-	mov [55], left
-	mov [56], up
-	mov [57], right
+		mov [50], up
+		mov [51], right
+		mov [52], down
+		mov [53], left
+		mov [54], down
+		mov [55], left
+		mov [56], up
+		mov [57], right
+		mov [isFright], 4 ; frighten by default
+		jeq end_isFright, [gmode], fright;
+		mov [isFright], 0 	; not frighten
+	end_isFright:
 	
+	;set inverted ghost direction
+		mov a, [gdir];
+		add a, 54
+		mov [inverted_gdir], [a] 
+		
+;initialize last_random_dir and prefere_vert
+	jeq end_initialization, [is_inited], 1
+	mov [last_random_dir], [gindex]
+	and [last_random_dir], 3
 	
-; set isFright
-; it can be used to invert directionas follows: invertedDir = [50 + isFright + initialDirection]
-	mov [isFright], 4 ; frighten by default
-	jeq end_set_isFright, [gmode], fright;
-	mov [isFright], 0 	; not frighten
-	end_set_isFright:
+	mov [prefere_vert], [gindex]
+	and [prefere_vert], 1
+
+	mov [is_inited], 1
+end_initialization:
+
+	add [steps], 1
 
 ; the strategy!
 
-; "random" walk. 
-; will be overriden later by more appropriate decision if any
-	add [steps], 1
-	mov a, [steps]
-	and a, 3
-	int setMyDir
+;	if Frighten and far - just do random walk
+fright_random_walk:
+	jeq end_fright_random_walk, [isFright], 0 ; not frighten
+	
+	; c = |gx - lx|
+	mov a, gx
+	mov b, lx
+	mov [return], pc
+	mov pc, mod_dif
+	mov c, a
 
+	; a = |gy - ly|
+	mov a, gy
+	mov b, ly
+	mov [return], pc
+	mov pc, mod_dif
+	
+	; a = dist(ghost, lambda)
+	jgt fright_random_walk_dist, a, c
+		mov a, c
+	fright_random_walk_dist:
+	jlt end_fright_random_walk, a, 7 ; not far 
+	mov [return], end
+	mov pc, random_walk
+end_fright_random_walk:
+
+chasing:
 ; select direction making lambda closer to ghost
-; consider_dir(gx, lx, right)
-	mov a, right
-	mov b, [gx]
-	mov c, [lx]
+	jeq chasing_horr, [prefere_vert], 1
+	chasing_vert:
+	; consider_dir(gy, ly, down)
+		mov a, down
+		mov b, [gy]
+		mov c, [ly]
+		mov [return], pc
+		mov pc, consider_dir
+
+	; consider_dir(ly, gy, up)
+		mov a, up
+		mov b, [ly]
+		mov c, [gy]
+		mov [return], pc
+		mov pc, consider_dir
+
+	jeq end_chasing, [prefere_vert], 1
+
+	chasing_horr:
+	; consider_dir(gx, lx, right)
+		mov a, right
+		mov b, [gx]
+		mov c, [lx]
+		mov [return], pc
+		mov pc, consider_dir
+
+	; consider_dir(lx, gx, left)
+		mov a, left
+		mov b, [lx]
+		mov c, [gx]
+		mov [return], pc
+		mov pc, consider_dir
+	jeq chasing_vert, [prefere_vert], 1
+end_chasing:
+
+; skip random walk if no need
+jlt end, [next_dir], 4
 	mov [return], pc
-	mov pc, consider_dir
+	mov pc, random_walk
 
-; consider_dir(lx, gx, left)
-	mov a, left
-	mov b, [lx]
-	mov c, [gx]
-	mov [return], pc
-	mov pc, consider_dir
+end:
+	mov a, [next_dir]
+	int setMyDir
+	mov b, [prefere_vert]
+	mov f, [gdir]
+	mov g, [inverted_gdir]
+	mov h, [steps]
+	int 8
+	hlt;
 
-; consider_dir(gy, ly, down)
-	mov a, down
-	mov b, [gy]
-	mov c, [ly]
-	mov [return], pc
-	mov pc, consider_dir
+	
+	
+;==================================
+; Functions
+;==================================
+mod_dif:
+;In: a, b
+;Out: a = |a-b|
+	jgt mod_dif_gt, a, b
+		sub b, a
+		mov a, b
+		mov pc, end_mod_dif
+	mod_dif_gt:
+		sub a, b
+end_mod_dif:
+	add [return], 2
+	mov pc, [return]
 
-; consider_dir(ly, gy, up)
-	mov a, up
-	mov b, [ly]
-	mov c, [gy]
-	mov [return], pc
-	mov pc, consider_dir
+random_walk: 
+	; next_dir = (last_random_dir + 1) % 4
+	; last_random_dir = next_dir
+	mov a, [last_random_dir]
+	random_walk_loop: ; loop over 4 directions starting with 
+		inc a
+		and a, 3
+		mov [return], pc
+		mov pc, set_next_dir_if_correct_move
+		jlt end_random_walk_found, [next_dir], 4
+		jeq end_random_walk, a, [last_random_dir]		; not found
+		mov pc, random_walk_loop
+	end_random_walk_found:
+		mov [last_random_dir], [next_dir]
+end_random_walk:
+	add [return], 2
+	mov pc, [return]
 
-hlt;
-
+set_next_dir_if_correct_move:
+; In a - direction to set
+	; invert direction if frighten
+	; a := [a + 50 + isFright]
+		add a, 50
+		add a, [isFright]
+		mov a, [a]
+	; calculate map_g_dest
+		mov d, map_g_up
+		add d, a
+		mov d, [d]
+	jeq end_consider_dir, d, wall			; cant go to wall
+	jeq end_consider_dir, a, [inverted_gdir]  ; cant go back
+	mov [next_dir], a
+end_set_next_dir_if_correct_move:	
+	add [return], 2
+	mov pc, [return]
+	
 consider_dir: ; (dir, c1, c2)
 ;In:
 ;	a - direction to set
@@ -171,8 +288,9 @@ consider_dir: ; (dir, c1, c2)
 		mov d, map_g_up
 		add d, a
 		mov d, [d]
-	JEQ end_consider_dir, d, wall
-	mov pc, set_dir_if_less
+	jeq end_consider_dir, d, wall			; cant go to wall
+	jeq end_consider_dir, a, [inverted_gdir]  ; cant go back
+	mov pc, set_dir_if_less  ; set_dir_if_less(dir, c1, c2)
 end_consider_dir:
 	add [return], 2
 	mov pc, [return]
@@ -183,11 +301,9 @@ set_dir_if_less:
 ;	b, c - ordinates to compare
 ;set new direction a if b < c
 ;usage set_dir_if_less(gx, lx, right)
-	JGT set_dir_if_less_end, b, c
-	JEQ set_dir_if_less_end, b, c
-	mov h, [steps]
-	int 8
-	int setMyDir
+	jgt set_dir_if_less_end, b, c
+	jeq set_dir_if_less_end, b, c
+	mov [next_dir], a
 set_dir_if_less_end:
 	add [return], 2
 	mov pc, [return]
