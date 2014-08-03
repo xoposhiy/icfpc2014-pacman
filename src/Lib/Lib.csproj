@@ -33,6 +33,10 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\external\nunit\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Sprache, Version=1.10.0.37, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\external\sprache\Sprache.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -75,6 +79,7 @@
     <Compile Include="GMachine\GCmdType.cs" />
     <Compile Include="GMachine\GException.cs" />
     <Compile Include="GMachine\GMachine.cs" />
+    <Compile Include="GMachine\GMachine2.cs" />
     <Compile Include="GMachine\GMachineState.cs" />
     <Compile Include="GMachine\GMachine_Test.cs" />
     <Compile Include="GMachine\Hlt.cs" />
@@ -94,6 +99,7 @@
     <Compile Include="LMachine\LStack_Test.cs" />
     <Compile Include="LMachine\LMTimeoutException.cs" />
     <Compile Include="LMachine\LStackExtensions.cs" />
+    <Compile Include="Parsing\AsmParser.cs" />
     <Compile Include="Parsing\GParsing\GParser.cs" />
     <Compile Include="GMachine\Sub.cs" />
     <Compile Include="GMachine\Xor.cs" />
