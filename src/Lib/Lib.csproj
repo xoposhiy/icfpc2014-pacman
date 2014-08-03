@@ -99,7 +99,12 @@
     <Compile Include="LMachine\LStack_Test.cs" />
     <Compile Include="LMachine\LMTimeoutException.cs" />
     <Compile Include="LMachine\LStackExtensions.cs" />
-    <Compile Include="Parsing\AsmParser.cs" />
+    <Compile Include="NewLang\CompilationWriter.cs" />
+    <Compile Include="NewLang\Queue.cs" />
+    <Compile Include="NewLang\SE.cs" />
+    <Compile Include="NewLang\SE_Test.cs" />
+    <Compile Include="NewLang\Stack.cs" />
+    <Compile Include="Parsing\GParser2.cs" />
     <Compile Include="Parsing\GParsing\GParser.cs" />
     <Compile Include="GMachine\Sub.cs" />
     <Compile Include="GMachine\Xor.cs" />
